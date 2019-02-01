@@ -11,6 +11,7 @@
     "deploy": "npm run build && node build/zip.ts",
     "analyz": "vue-cli-service build --mode analyz",
     "report": "npm_config_generate_report=true npm run build",
+    "test": "",
     "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6"
   },
   "dependencies": {
