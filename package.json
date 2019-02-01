@@ -1,0 +1,79 @@
+{
+  "name": "vue-cli3-typescript-template",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A front-end template built on vue-cli3 and typescript",
+  "author": "liwb <liwb@gmail.com>",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "deploy": "npm run build && node build/zip.ts",
+    "analyz": "vue-cli-service build --mode analyz",
+    "report": "npm_config_generate_report=true npm run build",
+    "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6"
+  },
+  "dependencies": {
+    "@liwb/cloud-utils": "^1.3.0",
+    "@types/js-cookie": "^2.2.0",
+    "@types/node": "^10.12.18",
+    "@types/nprogress": "^0.0.29",
+    "@types/webpack-env": "^1.13.6",
+    "axios": "^0.18.0",
+    "element-ui": "^2.5.3",
+    "magicless": "^1.1.0",
+    "normalize.css": "^8.0.1",
+    "register-service-worker": "^1.5.2",
+    "vue": "^2.5.21",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.2",
+    "vue-svgicon": "^3.2.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.4",
+    "@vue/cli-plugin-pwa": "^3.0.4",
+    "@vue/cli-plugin-typescript": "^3.0.4",
+    "@vue/cli-service": "^3.0.4",
+    "archiver": "^3.0.0",
+    "chalk": "^2.4.2",
+    "compression-webpack-plugin": "^2.0.0",
+    "html-webpack-include-assets-plugin": "^1.0.6",
+    "husky": "^1.3.1",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "lint-staged": "^8.1.0",
+    "postcss-pxtorem": "^4.0.1",
+    "runjs": "^4.3.3",
+    "script-ext-html-webpack-plugin": "^2.1.3",
+    "typescript": "^3.2.2",
+    "vue-cli-plugin-element": "^1.0.1",
+    "vue-template-compiler": "^2.5.21",
+    "webpack-bundle-analyzer": "^3.0.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "keywords": [
+    "vue-cli3",
+    "vue",
+    "typescript",
+    "admin",
+    "element-ui-admin",
+    "axios"
+  ],
+  "lint-staged": {
+    "*.{ts,vue}": [
+      "npm run lint",
+      "git add"
+    ]
+  },
+  "scripts-info": {
+    "serve": "运行开发服务器",
+    "build": "生产环境执行构建",
+    "analyz": "生产环境执行构建打包分析",
+    "deploy": "生产环境执行构建并压缩zip包"
+  }
+}
