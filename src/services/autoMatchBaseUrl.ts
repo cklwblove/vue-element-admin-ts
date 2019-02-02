@@ -1,11 +1,6 @@
 import {UPLOAD_PREFIX} from '../constant';
 
-/**
- * 根据前缀，自动匹配基础的url
- * 根据项目所需，自己扩展
- * @param prefix
- * @returns {string}
- */
+// 根据前缀，自动匹配基础的url
 export default function autoMatchBaseUrl(prefix: string) {
   let baseUrl = '';
   switch (prefix) {

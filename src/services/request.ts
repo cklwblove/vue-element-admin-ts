@@ -93,17 +93,6 @@ function checkStatus(response) {
   };
 }
 
-/**
- * 基于axios ajax请求
- * @param url
- * @param method
- * @param timeout
- * @param prefix 用来拼接url地址
- * @param data
- * @param headers
- * @param dataType
- * @returns {Promise.<T>}
- */
 export default function request(url, {
   method = 'post',
   timeout = TIMEOUT,

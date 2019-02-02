@@ -18,6 +18,14 @@
     "no-var-requires": false,
     "object-literal-sort-keys": false,
     "no-consecutive-blank-lines": false,
-    "no-console": false
+    "no-console": false,
+    "completed-docs": false,
+    "curly": [
+      true,
+      "ignore-same-line"
+    ],
+    "jsdoc-format": false,
+    "no-redundant-jsdoc": false,
+    "max-line-length": [true, 500]
   }
 }
