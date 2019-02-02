@@ -2,7 +2,7 @@ import Vue from 'vue';
 import request from './request';
 import urls from './RESTFULLURL';
 
-const FUNS = {};
+const FUNS: any = {};
 
 Object.keys(urls).forEach((key) => {
   FUNS[key] = (options = {}) => {
