@@ -13,7 +13,8 @@
     "analyz": "vue-cli-service build --mode analyz",
     "report": "npm_config_generate_report=true npm run build",
     "test": "",
-    "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6"
+    "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6",
+    "release": "sh ./build/release.sh"
   },
   "dependencies": {
     "@liwb/cloud-utils": "^1.3.0",
