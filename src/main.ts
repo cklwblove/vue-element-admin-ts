@@ -4,7 +4,7 @@ import SvgIcon from 'vue-svgicon';
 import App from './App.vue';
 import router from './router';
 import i18n from './lang';
-import './icons';
+import './icons/components';
 import './router/router.interceptor';
 import './filters';
 import './services';
