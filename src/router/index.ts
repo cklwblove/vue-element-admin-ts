@@ -6,7 +6,7 @@
  */
 
 import Vue, { AsyncComponent } from 'vue';
-import Router from 'vue-router';
+import Router, {RouteConfig} from 'vue-router';
 
 Vue.use(Router);
 
@@ -35,8 +35,7 @@ export const constantRouterMap = [
   {
     path: '/login',
     name: 'login',
-    component: loadView('login'),
-    hidden: true
+    component: loadView('login')
   },
   {
     path: '*', redirect: '/404'

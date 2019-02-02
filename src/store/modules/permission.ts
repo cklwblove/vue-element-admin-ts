@@ -1,6 +1,6 @@
 import {getModule, Module, VuexModule, Mutation, Action} from 'vuex-module-decorators';
 import {asyncRouterMap, constantRouterMap} from '@/router';
-import {Route} from 'vue-router';
+import { RouteConfig } from 'vue-router';
 import store from '@/store';
 
 /**
@@ -8,7 +8,7 @@ import store from '@/store';
  * @param roles
  * @param route
  */
-function hasPermission(roles, route: Route) {
+function hasPermission(roles: string[], route: RouteConfig) {
   if (route.meta && route.meta.roles) {
     return roles.some((role) => route.meta.roles.includes(role));
   } else {
@@ -21,11 +21,11 @@ function hasPermission(roles, route: Route) {
  * @param routes asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter(routes, roles) {
-  const res = [];
+function filterAsyncRouter(routes: RouteConfig[], roles: string[]) {
+  const res: RouteConfig[] = [];
 
   routes.forEach((route) => {
-    const tmp = {...route};
+    const tmp: RouteConfig = {...route};
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRouter(tmp.children, roles);
@@ -38,8 +38,8 @@ function filterAsyncRouter(routes, roles) {
 }
 
 export interface IPermissionState {
-  routers: string[];
-  addRouters: string[];
+  routers: RouteConfig[];
+  addRouters: RouteConfig[];
 }
 
 @Module({dynamic: true, store, name: 'permission'})
@@ -63,7 +63,7 @@ class Permission extends VuexModule implements IPermissionState {
   @Mutation
   private setRoutes(routers) {
     this.addRouters = routers;
-    this.routers = constantRouterMap.concat(routers);
+    this.routers = (constantRouterMap as any).concat(routers);
   }
 }
 
