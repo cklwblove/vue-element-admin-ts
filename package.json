@@ -1,6 +1,6 @@
 {
   "name": "vue-cli3-typescript-template",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "A front-end template built on vue-cli3 and typescript",
   "author": "liwb <liwb@gmail.com>",
