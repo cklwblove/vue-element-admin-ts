@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import {VuexModule, Module, Action, Mutation, getModule} from 'vuex-module-decorators';
+import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators';
 import store from '@/store';
 
 export enum DeviceType {
@@ -31,15 +31,20 @@ class App extends VuexModule implements IAppState {
   public size = Cookies.get('size') || 'medium';
 
   @Action({commit: 'TOGGLE_SIDEBAR'})
+  public ToggleSideBar(withoutAnimation: boolean) {
+    return withoutAnimation;
+  }
 
   @Action({commit: 'TOGGLE_DEVICE'})
   public ToggleDevice(device: DeviceType) {
     return device;
   }
+
   @Action({commit: 'SET_LANGUAGE'})
   public SetLanguage(language: string) {
     return language;
   }
+
   @Action({commit: 'SET_SIZE'})
   public SetSize(size: string) {
     return size;
