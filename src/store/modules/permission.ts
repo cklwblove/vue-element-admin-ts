@@ -61,7 +61,7 @@ class Permission extends VuexModule implements IPermissionState {
   }
 
   @Mutation
-  private setRoutes(routers) {
+  private SET_ROUTERS(routers) {
     this.addRouters = routers;
     this.routers = (constantRouterMap as any).concat(routers);
   }
