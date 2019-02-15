@@ -12,11 +12,12 @@
 </template>
 
 <script lang="ts">
-  import { Vue } from 'vue-property-decorator';
+  import { Component, Vue } from 'vue-property-decorator';
   import { AppModule } from '@/store/modules/app';
   import i18n from '@/lang';
   import {Message} from 'element-ui';
 
+  @Component
   export default class LangSelect extends Vue {
     get language() {
       return this.$store.getters.language;
