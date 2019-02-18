@@ -7,10 +7,12 @@
 
 import Vue, { AsyncComponent } from 'vue';
 import Router, {RouteConfig} from 'vue-router';
+import Layout from '@/views/layout/Layout.vue';
 
 Vue.use(Router);
 
 const loadView = (view: string): AsyncComponent => (): any => import(`@views/${view}/index.vue`);
+
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -33,9 +35,33 @@ const loadView = (view: string): AsyncComponent => (): any => import(`@views/${v
  **/
 export const constantRouterMap = [
   {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: loadView('redirect')
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'login',
     component: loadView('login')
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: loadView('dashboard'),
+        name: 'Dashboard',
+        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+      }
+    ]
   },
   {
     path: '*', redirect: '/404'

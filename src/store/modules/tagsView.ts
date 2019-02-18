@@ -85,7 +85,7 @@ class TagsView extends VuexModule implements ITagsView {
   }
 
   @Action
-  public DelAllViews(view: Route) {
+  public DelAllViews(view?: Route) {
     return new Promise((resolve) => {
       store.dispatch('DelAllVisitedViews', view);
       store.dispatch('DelAllCachedViews', view);
@@ -113,7 +113,7 @@ class TagsView extends VuexModule implements ITagsView {
   }
 
   @Action({commit: 'UPDATE_VISITED_VIEW'})
-  public updateVisitedView(view: Route) {
+  public UpdateVisitedView(view: Route) {
     return view;
   }
 

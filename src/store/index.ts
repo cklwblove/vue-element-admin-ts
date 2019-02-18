@@ -5,6 +5,7 @@ import { IErrorLog } from './modules/errorLog';
 import { ITagsView } from './modules/tagsView';
 import { IUserState } from './modules/user';
 import { IPermissionState } from './modules/permission';
+import getters from './getters';
 
 Vue.use(Vuex);
 
@@ -17,6 +18,6 @@ export interface IRootState {
 }
 
 // Declare empty store first, dynamically register all modules later.
-const store = new Vuex.Store<IRootState>({});
+const store = new Vuex.Store<IRootState>({getters});
 
 export default store;

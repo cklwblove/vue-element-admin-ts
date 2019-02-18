@@ -87,7 +87,7 @@ class User extends VuexModule implements IUserState {
   // 获取用户信息
   @MutationAction({mutate: ['roles', 'name', 'avatar']})
   public async GetUserInfo() {
-    const {data} = await services.userInfo({});
+    const {data} = await services.userInfo({method: 'get'});
     const {roles, name, avatar} = data;
     if (data.roles && data.roles.length) {
       return {
@@ -109,6 +109,12 @@ class User extends VuexModule implements IUserState {
       token: '',
       roles: []
     };
+  }
+
+  @Action({commit: 'SET_TOKEN'})
+  public async FedLogOut() {
+    removeToken();
+    return '';
   }
 
   // 动态修改权限

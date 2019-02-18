@@ -30,8 +30,13 @@ class App extends VuexModule implements IAppState {
 
   public size = Cookies.get('size') || 'medium';
 
+  @Action({commit: 'CLOSE_SIDEBAR'})
+  public CloseSideBar(withoutAnimation) {
+    return withoutAnimation;
+  }
+
   @Action({commit: 'TOGGLE_SIDEBAR'})
-  public ToggleSideBar(withoutAnimation: boolean) {
+  public ToggleSideBar(withoutAnimation?: boolean) {
     return withoutAnimation;
   }
 
