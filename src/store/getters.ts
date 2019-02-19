@@ -16,7 +16,7 @@ const getters = {
   setting: (state: IRootState) => state.user.setting,
   permission_routers: (state: IRootState) => state.permission.routers,
   addRouters: (state: IRootState) => state.permission.addRouters,
-  errorLog: (state: IRootState) => state.errorLog.logs
+  errorLogs: (state: IRootState) => state.errorLog.logs
 };
 
 

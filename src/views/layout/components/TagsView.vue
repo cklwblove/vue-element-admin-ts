@@ -25,147 +25,152 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
-import { generateTitle } from '@/utils/i18n';
-import { TagsViewModule } from '@/store/modules/tagsView';
-import {
-  ScrollPane
-} from '@/components';
-
-@Component({
-  components: {
+  import { Component, Vue, Watch } from 'vue-property-decorator';
+  import { TagsViewModule } from '@/store/modules/tagsView';
+  import {
     ScrollPane
-  }
-})
-export default class TagsView extends Vue {
-  public visible: boolean = false;
-  public top: number = 0;
-  public left: number = 0;
-  public selectedTag: any = {};
+  } from '@/components';
 
-  get visitedViews() {
-    return this.$store.getters.visitedViews;
-  }
-
-  @Watch('$route')
-  public onRouteChange() {
-    this.addViewTags();
-    this.moveToCurrentTag();
-  }
-
-  @Watch('visible')
-  public onVisibleChange(value) {
-    if (value) {
-      document.body.addEventListener('click', this.closeMenu);
-    } else {
-      document.body.removeEventListener('click', this.closeMenu);
+  @Component({
+    components: {
+      ScrollPane
     }
-  }
+  })
+  export default class TagsView extends Vue {
+    public visible: boolean = false;
+    public top: number = 0;
+    public left: number = 0;
+    public selectedTag: any = {};
 
-  public mounted() {
-    this.addViewTags();
-  }
+    public $refs!: {
+      scrollPane: any;
+      tag: any;
+    };
 
-  public generateTitle(title) {
-    const hasKey = this.$te('route.' + title);
-
-    if (hasKey) {
-      // $t :this method from vue-i18n, inject in @/lang/index.js
-      const translatedTitle = this.$t('route.' + title);
-
-      return translatedTitle;
+    get visitedViews() {
+      return this.$store.getters.visitedViews;
     }
-    return title;
-  }
 
-  public isActive(route) {
-    return route.path === this.$route.path;
-  }
-
-  public addViewTags() {
-    const {name} = this.$route;
-    if (name) {
-      TagsViewModule.AddView(this.$route);
+    @Watch('$route')
+    public onRouteChange() {
+      this.addViewTags();
+      this.moveToCurrentTag();
     }
-    return false;
-  }
 
-  public moveToCurrentTag() {
-    const tags = this.$refs.tag;
-    this.$nextTick(() => {
-      for (const tag of tags) {
-        if (tag.to.path === this.$route.path) {
-          this.$refs.scrollPane.moveToTarget(tag);
-
-          // when query is different then update
-          if (tag.to.fullPath !== this.$route.fullPath) {
-            TagsViewModule.UpdateVisitedView(this.$route);
-          }
-          break;
-        }
+    @Watch('visible')
+    public onVisibleChange(value) {
+      if (value) {
+        document.body.addEventListener('click', this.closeMenu);
+      } else {
+        document.body.removeEventListener('click', this.closeMenu);
       }
-    });
-  }
+    }
 
-  public refreshSelectedTag(view) {
-    TagsViewModule.DelCachedView(view).then(() => {
-      const {fullPath} = view;
+    public mounted() {
+      this.addViewTags();
+    }
+
+    public generateTitle(title) {
+      const hasKey = this.$te('route.' + title);
+
+      if (hasKey) {
+        // $t :this method from vue-i18n, inject in @/lang/index.js
+        const translatedTitle = this.$t('route.' + title);
+
+        return translatedTitle;
+      }
+      return title;
+    }
+
+    public isActive(route) {
+      return route.path === this.$route.path;
+    }
+
+    public addViewTags() {
+      const {name} = this.$route;
+      if (name) {
+        TagsViewModule.AddView(this.$route);
+      }
+      return false;
+    }
+
+    public moveToCurrentTag() {
+      const tags = this.$refs.tag;
       this.$nextTick(() => {
-        this.$router.replace({
-          path: '/redirect' + fullPath
+        for (const tag of tags) {
+          if (tag.to.path === this.$route.path) {
+            this.$refs.scrollPane.moveToTarget(tag);
+
+            // when query is different then update
+            if (tag.to.fullPath !== this.$route.fullPath) {
+              TagsViewModule.UpdateVisitedView(this.$route);
+            }
+            break;
+          }
+        }
+      });
+    }
+
+    public refreshSelectedTag(view) {
+      TagsViewModule.DelCachedView(view).then(() => {
+        const {fullPath} = view;
+        this.$nextTick(() => {
+          this.$router.replace({
+            path: '/redirect' + fullPath
+          });
         });
       });
-    });
-  }
-
-  public closeSelectedTag(view) {
-    TagsViewModule.DelView(view).then(({visitedViews}) => {
-      if (this.isActive(view)) {
-        const latestView = visitedViews.slice(-1)[0];
-        if (latestView) {
-          this.$router.push(latestView);
-        } else {
-          this.$router.push('/');
-        }
-      }
-    });
-  }
-
-  public closeOthersTags() {
-    this.$router.push(this.selectedTag);
-    TagsViewModule.DelOthersViews(this.selectedTag).then(() => {
-      this.moveToCurrentTag();
-    });
-  }
-
-  public closeAllTags() {
-    TagsViewModule.DelAllViews();
-    this.$router.push('/');
-  }
-
-  public openMenu(tag, e) {
-    const menuMinWidth = 105;
-    const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
-    const offsetWidth = this.$el.offsetWidth; // container width
-    const maxLeft = offsetWidth - menuMinWidth; // left boundary
-    const left = e.clientX - offsetLeft + 15; // 15: margin right
-
-    if (left > maxLeft) {
-      this.left = maxLeft;
-    } else {
-      this.left = left;
     }
-    this.top = e.clientY;
 
-    this.visible = true;
-    this.selectedTag = tag;
+    public closeSelectedTag(view) {
+      TagsViewModule.DelView(view).then(({visitedViews}) => {
+        if (this.isActive(view)) {
+          const latestView = visitedViews.slice(-1)[0];
+          if (latestView) {
+            this.$router.push(latestView);
+          } else {
+            this.$router.push('/');
+          }
+        }
+      });
+    }
+
+    public closeOthersTags() {
+      this.$router.push(this.selectedTag);
+      TagsViewModule.DelOthersViews(this.selectedTag).then(() => {
+        this.moveToCurrentTag();
+      });
+    }
+
+    public closeAllTags() {
+      TagsViewModule.DelAllViews();
+      this.$router.push('/');
+    }
+
+    public openMenu(tag, e) {
+      const menuMinWidth = 105;
+      console.log('this.$el', this.$el);
+      const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
+      const offsetWidth = (this.$el as HTMLDivElement).offsetWidth; // container width
+      const maxLeft = offsetWidth - menuMinWidth; // left boundary
+      const left = e.clientX - offsetLeft + 15; // 15: margin right
+
+      if (left > maxLeft) {
+        this.left = maxLeft;
+      } else {
+        this.left = left;
+      }
+      this.top = e.clientY;
+
+      this.visible = true;
+      this.selectedTag = tag;
+    }
+
+    public closeMenu() {
+      this.visible = false;
+    }
+
   }
-
-  public closeMenu() {
-    this.visible = false;
-  }
-
-}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>
