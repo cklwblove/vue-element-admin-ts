@@ -25,14 +25,22 @@ export default class Breadcrumb extends Vue {
   }
 
   public generateTitle(title) {
-    generateTitle(title);
+    const hasKey = this.$te('route.' + title);
+
+    if (hasKey) {
+      // $t :this method from vue-i18n, inject in @/lang/index.js
+      const translatedTitle = this.$t('route.' + title);
+
+      return translatedTitle;
+    }
+    return title;
   }
 
   public getBreadcrumb() {
     let matched = this.$route.matched.filter((item) => item.name);
 
-    const first: RouteRecord = matched[0];
-    if (first && first.name.trim().toLocaleLowerCase() !== 'Dashboard'.toLocaleLowerCase()) {
+    const first = matched[0];
+    if (first && first.name!.trim().toLocaleLowerCase() !== 'Dashboard'.toLocaleLowerCase()) {
       matched = [{path: '/dashboard', meta: {title: 'dashboard'}} as RouteRecord].concat(matched);
     }
 
@@ -59,6 +67,7 @@ export default class Breadcrumb extends Vue {
   private onRouteChange() {
     this.getBreadcrumb();
   }
+
 }
 </script>
 

@@ -44,7 +44,8 @@
     public dialogTableVisible: boolean = false;
 
     get errorLogs() {
-      return this.$store.getters.errorLogs;
+      console.log(this.$store.getters);
+      return this.$store.getters.errorLog;
     }
   }
 </script>

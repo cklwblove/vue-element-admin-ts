@@ -17,148 +17,148 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
-import {ElSelect} from 'element-ui/types/select';
-import Fuse from 'fuse.js';
-import path from 'path';
-import i18n from '@/lang';
+  import { Component, Vue, Watch } from 'vue-property-decorator';
+  import { ElSelect } from 'element-ui/types/select';
+  import Fuse from 'fuse.js';
+  import path from 'path';
+  import i18n from '@/lang';
+  
+  @Component
+  export default class HeaderSearch extends Vue {
+    public search: string = '';
+    public options: any[] = [];
+    public searchPool: any[] = [];
+    public show: boolean = false;
+    public fuse: any = null;
 
-@Component
-export default class HeaderSearch extends Vue {
-  public search: string = '';
-  public options: any[] = [];
-  public searchPool: any[] = [];
-  public show: boolean = false;
-  public fuse: any = null;
-
-  get routers() {
-    return this.$store.getters.permission_routers;
-  }
-
-  get lang() {
-    return this.$store.getters.language;
-  }
-
-  @Watch('lang')
-  public onLangChange() {
-    this.searchPool = this.generateRouters(this.routers);
-  }
-
-  @Watch('routers')
-  public onRoutersChange() {
-    this.searchPool = this.generateRouters(this.routers);
-  }
-
-  @Watch('searchPool')
-  public onSearchPoolChange(list) {
-    this.initFuse(list);
-  }
-
-  @Watch('show')
-  public onShowChange(value) {
-    if (value) {
-      document.body.addEventListener('click', this.close);
-    } else {
-      document.body.removeEventListener('click', this.close);
+    get routers() {
+      return this.$store.getters.permission_routers;
     }
-  }
 
-  public mounted() {
-    this.searchPool = this.generateRouters(this.routers);
-  }
-
-  public click() {
-    this.show = !this.show;
-    if (this.show) {
-      const searchSelect = this.$refs.headerSearchSelect as ElSelect;
-      searchSelect && searchSelect.focus();
+    get lang() {
+      return this.$store.getters.language;
     }
-  }
 
-  public close() {
-    const searchSelect = this.$refs.headerSearchSelect as ElSelect;
-    searchSelect && searchSelect.blur();
-    this.options = [];
-    this.show = false;
-  }
+    @Watch('lang')
+    public onLangChange() {
+      this.searchPool = this.generateRouters(this.routers);
+    }
 
-  public change(val) {
-    this.$router.push(val.path);
-    this.search = '';
-    this.options = [];
-    this.$nextTick(() => {
-      this.show = false;
-    });
-  }
+    @Watch('routers')
+    public onRoutersChange() {
+      this.searchPool = this.generateRouters(this.routers);
+    }
 
-  public initFuse(list) {
-    const options: any = {
-      shouldSort: true,
-      threshold: 0.4,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      keys: [{
-        name: 'title',
-        weight: 0.7
-      }, {
-        name: 'path',
-        weight: 0.3
-      }]
-    };
+    @Watch('searchPool')
+    public onSearchPoolChange(list) {
+      this.initFuse(list);
+    }
 
-    this.fuse = new Fuse(list, options);
-  }
-
-  // Filter out the routes that can be displayed in the sidebar
-  // And generate the internationalized title
-  public generateRouters(routers, basePath = '/', prefixTitle: any[] = []) {
-    let res = [];
-
-    for (const router of routers) {
-      // skip hidden router
-      if (router.hidden) {
-        continue;
+    @Watch('show')
+    public onShowChange(value) {
+      if (value) {
+        document.body.addEventListener('click', this.close);
+      } else {
+        document.body.removeEventListener('click', this.close);
       }
+    }
 
-      const data = {
-        path: path.resolve(basePath, router.path),
-        title: [...prefixTitle]
+    public mounted() {
+      this.searchPool = this.generateRouters(this.routers);
+    }
+
+    public click() {
+      this.show = !this.show;
+      if (this.show) {
+        const searchSelect = this.$refs.headerSearchSelect as ElSelect;
+        searchSelect && searchSelect.focus();
+      }
+    }
+
+    public close() {
+      const searchSelect = this.$refs.headerSearchSelect as ElSelect;
+      searchSelect && searchSelect.blur();
+      this.options = [];
+      this.show = false;
+    }
+
+    public change(val) {
+      this.$router.push(val.path);
+      this.search = '';
+      this.options = [];
+      this.$nextTick(() => {
+        this.show = false;
+      });
+    }
+
+    public initFuse(list) {
+      const options: any = {
+        shouldSort: true,
+        threshold: 0.4,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: [{
+          name: 'title',
+          weight: 0.7
+        }, {
+          name: 'path',
+          weight: 0.3
+        }]
       };
 
-      if (router.meta && router.meta.title) {
-        // generate internationalized title
-        const i18nTitle = i18n.t(`route.${router.meta.title}`);
+      this.fuse = new Fuse(list, options);
+    }
 
-        data.title = [...data.title, i18nTitle];
+    // Filter out the routes that can be displayed in the sidebar
+    // And generate the internationalized title
+    public generateRouters(routers, basePath = '/', prefixTitle: any[] = []) {
+      let res: any[] = [];
 
-        if (router.redirect !== 'noredirect') {
-          // only push the routes with title
-          // special case: need to exclude parent router without redirect
-          res.push(data);
+      for (const router of routers) {
+        // skip hidden router
+        if (router.hidden) {
+          continue;
+        }
+
+        const data = {
+          path: path.resolve(basePath, router.path),
+          title: [...prefixTitle]
+        };
+
+        if (router.meta && router.meta.title) {
+          // generate internationalized title
+          const i18nTitle = i18n.t(`route.${router.meta.title}`);
+
+          data.title = [...data.title, i18nTitle];
+
+          if (router.redirect !== 'noredirect') {
+            // only push the routes with title
+            // special case: need to exclude parent router without redirect
+            res.push(data);
+          }
+        }
+
+        // recursive child routers
+        if (router.children) {
+          const tempRouters = this.generateRouters(router.children, data.path, data.title);
+          if (tempRouters.length >= 1) {
+            res = [...res, ...tempRouters];
+          }
         }
       }
+      return res;
+    }
 
-      // recursive child routers
-      if (router.children) {
-        const tempRouters = this.generateRouters(router.children, data.path, data.title);
-        if (tempRouters.length >= 1) {
-          res = [...res, ...tempRouters];
-        }
+    public querySearch(query) {
+      if (query !== '') {
+        this.options = this.fuse.search(query);
+      } else {
+        this.options = [];
       }
     }
-    return res;
   }
-
-  public querySearch(query) {
-    if (query !== '') {
-      this.options = this.fuse.search(query);
-    } else {
-      this.options = [];
-    }
-  }
-}
 </script>
 
 <style lang="less" scoped>

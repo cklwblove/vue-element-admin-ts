@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   menuText: '#bfcbd9',
   menuActiveText: '#409EFF',
   subMenuActiveText: '#f4f4f5',

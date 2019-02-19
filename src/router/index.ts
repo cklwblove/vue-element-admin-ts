@@ -6,7 +6,7 @@
  */
 
 import Vue, { AsyncComponent } from 'vue';
-import Router, {RouteConfig} from 'vue-router';
+import Router from 'vue-router';
 import Layout from '@/views/layout/Layout.vue';
 
 Vue.use(Router);

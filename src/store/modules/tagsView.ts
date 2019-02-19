@@ -2,13 +2,13 @@ import { getModule, Module, VuexModule, Mutation, Action } from 'vuex-module-dec
 import { Route } from 'vue-router';
 import store from '@/store';
 
-export interface ITagsView {
+export interface ITagsViewState {
   visitedViews: Route[];
   cachedViews: string[];
 }
 
 @Module({dynamic: true, store, name: 'tagsView'})
-class TagsView extends VuexModule implements ITagsView {
+class TagsView extends VuexModule implements ITagsViewState {
   public visitedViews: Route[] = [];
   public cachedViews: string[] = [];
 
@@ -29,87 +29,69 @@ class TagsView extends VuexModule implements ITagsView {
   }
 
   @Action
-  public DelView(view: Route) {
-    return new Promise((resolve) => {
-      store.dispatch('DelVisitedView', view);
-      store.dispatch('DelCachedView', view);
-      resolve({
-        visitedViews: [...this.visitedViews],
-        cachedViews: [...this.cachedViews]
-      });
-    });
+  public async DelView(view: Route) {
+    store.dispatch('DelVisitedView', view);
+    store.dispatch('DelCachedView', view);
+    return {
+      visitedViews: [...this.visitedViews],
+      cachedViews: [...this.cachedViews]
+    };
   }
 
   @Action
-  public DelVisitedView(view: Route) {
-    return new Promise((resolve) => {
-      store.commit('DEL_VISITED_VIEW', view);
-      resolve([...this.visitedViews]);
-    });
+  public async DelVisitedView(view: Route) {
+    store.commit('DEL_VISITED_VIEW', view);
+    return [...this.visitedViews];
   }
 
   @Action
-  public DelCachedView(view: Route) {
-    return new Promise((resolve) => {
-      store.commit('DEL_CACHED_VIEW', view);
-      resolve([...this.cachedViews]);
-    });
+  public async DelCachedView(view: Route) {
+    store.commit('DEL_CACHED_VIEW', view);
+    return [...this.cachedViews];
   }
 
   @Action
-  public DelOthersViews(view: Route) {
-    return new Promise((resolve) => {
-      store.dispatch('DelOthersVisitedViews', view);
-      store.dispatch('DelOthersCachedViews', view);
-      resolve({
-        visitedViews: [...this.visitedViews],
-        cachedViews: [...this.cachedViews]
-      });
-    });
+  public async DelOthersViews(view: Route) {
+    store.dispatch('DelOthersVisitedViews', view);
+    store.dispatch('DelOthersCachedViews', view);
+    return {
+      visitedViews: [...this.visitedViews],
+      cachedViews: [...this.cachedViews]
+    };
   }
 
   @Action
-  public DelOthersVisitedViews(view: Route) {
-    return new Promise((resolve) => {
-      store.commit('DEL_OTHERS_VISITED_VIEWS', view);
-      resolve([...this.visitedViews]);
-    });
+  public async DelOthersVisitedViews(view: Route) {
+    store.commit('DEL_OTHERS_VISITED_VIEWS', view);
+    return [...this.visitedViews];
   }
 
   @Action
-  public DelOthersCachedViews(view: Route) {
-    return new Promise((resolve) => {
-      store.commit('DEL_OTHERS_CACHED_VIEWS', view);
-      resolve([...this.cachedViews]);
-    });
+  public async DelOthersCachedViews(view: Route) {
+    store.commit('DEL_OTHERS_CACHED_VIEWS', view);
+    return [...this.cachedViews];
   }
 
   @Action
-  public DelAllViews(view?: Route) {
-    return new Promise((resolve) => {
-      store.dispatch('DelAllVisitedViews', view);
-      store.dispatch('DelAllCachedViews', view);
-      resolve({
-        visitedViews: [...this.visitedViews],
-        cachedViews: [...this.cachedViews]
-      });
-    });
+  public async DelAllViews(view?: Route) {
+    store.dispatch('DelAllVisitedViews', view);
+    store.dispatch('DelAllCachedViews', view);
+    return {
+      visitedViews: [...this.visitedViews],
+      cachedViews: [...this.cachedViews]
+    };
   }
 
   @Action
-  public DelAllVisitedViews(view: Route) {
-    return new Promise((resolve) => {
-      store.commit('DEL_ALL_VISITED_VIEWS', view);
-      resolve([...this.visitedViews]);
-    });
+  public async DelAllVisitedViews(view: Route) {
+    store.commit('DEL_ALL_VISITED_VIEWS', view);
+    return [...this.visitedViews];
   }
 
   @Action
-  public DelAllCachedViews(view: Route) {
-    return new Promise((resolve) => {
-      store.commit('DEL_ALL_CACHED_VIEWS', view);
-      resolve([...this.cachedViews]);
-    });
+  public async DelAllCachedViews(view: Route) {
+    store.commit('DEL_ALL_CACHED_VIEWS', view);
+    return [...this.cachedViews];
   }
 
   @Action({commit: 'UPDATE_VISITED_VIEW'})
