@@ -64,6 +64,21 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/auth-redirect',
+    component: () => import('@/views/login/authredirect.vue'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/errorPage/404.vue'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/errorPage/401.vue'),
+    hidden: true
+  },
+  {
     path: '*', redirect: '/404'
   }
 ];

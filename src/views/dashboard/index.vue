@@ -1,34 +1,25 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name:{{ name }}</div>
-    <div class="dashboard-text">roles:<span v-for="role in roles" :key="role">{{ role }}</span></div>
+    <component :is="currentRole"/>
   </div>
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import { UserModule } from '@/store/modules/user';
+import { Component, Vue } from 'vue-property-decorator';
 
-  @Component
-  export default class Dashboard extends Vue {
-    get name() {
-      return UserModule.name;
-    }
+@Component
+export default class Dashboard extends Vue {
+  public currentRole: string = 'adminDashboard';
 
-    get roles() {
-      return UserModule.roles;
+  get roles() {
+    return this.$store.getters.roles;
+  }
+
+  public created() {
+    if (!this.roles.includes('admin')) {
+      this.currentRole = 'editorDashboard';
     }
   }
+
+}
 </script>
-
-<style rel="stylesheet/less" lang="less" scoped>
-  .dashboard {
-    &-container {
-      margin: 30px;
-    }
-    &-text {
-      font-size: 30px;
-      line-height: 46px;
-    }
-  }
-</style>
