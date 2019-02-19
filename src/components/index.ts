@@ -7,3 +7,6 @@ export { default as ScreenFull } from './ScreenFull/index.vue';
 export { default as SizeSelect } from './SizeSelect/index.vue';
 export { default as ThemePicker } from './ThemePicker/index.vue';
 export { default as ScrollPane } from './ScrollPane/index.vue';
+export { default as PanThumb } from './PanThumb/index.vue';
+export { default as Mallki } from './TextHoverEffect/Mallki.vue';
+export { default as GithubCorner } from './GithubCorner/index.vue';
