@@ -3,8 +3,8 @@ import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-dec
 import store from '@/store';
 
 export enum DeviceType {
-  Mobile,
-  Desktop
+  Mobile = 'mobile',
+  Desktop = 'desktop'
 }
 
 export interface IAppState {
@@ -20,15 +20,15 @@ export interface IAppState {
 @Module({dynamic: true, store, name: 'app'})
 class App extends VuexModule implements IAppState {
   public sidebar = {
-    opened: getSidebarStatus() as any !== 'closed',
+    opened: getSidebarStatus() !== 'closed',
     withoutAnimation: false
   };
 
   public device = DeviceType.Desktop;
 
-  public language = getLanguage() as any || 'en';
+  public language = getLanguage() || 'en';
 
-  public size = getSize() as any || 'medium';
+  public size = getSize() || 'medium';
 
   @Action({commit: 'CLOSE_SIDEBAR'})
   public CloseSideBar(withoutAnimation) {

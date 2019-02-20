@@ -130,6 +130,6 @@ export default class TodoList extends Vue {
 }
 </script>
 
-<style rel="stylesheet/less" lang="less" scoped>
+<style rel="stylesheet/less" lang="less">
   @import "./style";
 </style>

@@ -16,8 +16,8 @@ const getters = {
   setting: (state: IRootState) => state.user.setting,
   permission_routers: (state: IRootState) => state.permission.routers,
   addRouters: (state: IRootState) => state.permission.addRouters,
-  errorLogs: (state: IRootState) => state.errorLog.logs
+  // TODO state 为啥没有 log
+  // log: (state: IRootState) => state.log.logs
 };
-
 
 export default getters;

@@ -7,20 +7,49 @@
 
 import Vue from 'vue';
 
-import {formatDate} from 'utils';
-/**
- * [formateTime description]
- * @param  {[type]} timeStamp [description]
- * @param  {[type]} fmt       [description]
- * @return {[type]}           [description]
- */
-export function formatTime(timeStamp: number, fmt?: string) {
-  return formatDate(timeStamp, fmt);
+import { formatDate } from 'utils';
+
+import {
+  parseTime,
+  formatTime
+} from '@/utils';
+
+function pluralize(time, label) {
+  if (time === 1) {
+    return time + label;
+  }
+  return time + label + 's';
+}
+
+/* 数字 格式化*/
+export function numberFormatter(num, digits) {
+  const si = [
+    {value: 1E18, symbol: 'E'},
+    {value: 1E15, symbol: 'P'},
+    {value: 1E12, symbol: 'T'},
+    {value: 1E9, symbol: 'G'},
+    {value: 1E6, symbol: 'M'},
+    {value: 1E3, symbol: 'k'}
+  ];
+  for (const s of si) {
+    if (num >= s.value) {
+      return (num / s.value + 0.1).toFixed(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + s.symbol;
+    }
+  }
+  return num.toString();
+}
+
+export function toThousandFilter(num) {
+  return (+num || 0).toString().replace(/^-?\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','));
 }
 
 // register global utility filters.
 const filters = {
-  formatDate
+  formatDate,
+  parseTime,
+  formatTime,
+  numberFormatter,
+  toThousandFilter
 };
 
 Object.keys(filters).forEach((key) => {

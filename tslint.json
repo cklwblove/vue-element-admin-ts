@@ -6,7 +6,8 @@
   "linterOptions": {
     "exclude": [
       "node_modules/**",
-      "build/**"
+      "build/**",
+      "package.json"
     ]
   },
   "rules": {

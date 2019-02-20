@@ -45,7 +45,7 @@
 
     get errorLogs() {
       console.log('this.$store.getters', this.$store.getters);
-      return this.$store.getters.errorLogs;
+      return this.$store.getters.log || [];
     }
   }
 </script>

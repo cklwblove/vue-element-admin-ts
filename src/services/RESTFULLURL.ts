@@ -1,8 +1,8 @@
 export default {
   loginByUsername: '/login/login',
   logout: '/login/logout',
-  getUserInfo: '/user/info',
-  transaction: '/transaction/list',
+  getUserInfo: '/user/info/',
+  getList: '/transaction/list',
   search: '/search/user',
   articleList: '/article/list',
   articleDetail: '/article/detail',

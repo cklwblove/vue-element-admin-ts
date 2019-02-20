@@ -7,6 +7,8 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
+    // JSON parse
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     // error TS7017: Index signature of object type implicitly has an 'any' type.
     "noImplicitAny": false,

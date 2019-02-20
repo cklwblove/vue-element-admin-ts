@@ -1,12 +1,12 @@
 import { getModule, Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import store from '@/store';
 
-export interface IErrorLogState {
+export interface ILogState {
   logs: any[];
 }
 
-@Module({dynamic: true, store, name: 'errorLog'})
-class ErrorLog extends VuexModule implements IErrorLogState {
+@Module({dynamic: true, store, name: 'Log'})
+class Log extends VuexModule implements ILogState {
   public logs: any[] = [];
 
   @Action({commit: 'ADD_ERROR_LOG'})
@@ -20,4 +20,4 @@ class ErrorLog extends VuexModule implements IErrorLogState {
   }
 }
 
-export const ErrorLogModule = getModule(ErrorLog);
+export const LogModule = getModule(Log);

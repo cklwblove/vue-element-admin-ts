@@ -10,10 +10,17 @@
 import Qs from 'qs';
 import axios from 'axios';
 import autoMatchBaseUrl from './autoMatchBaseUrl';
-import {TIMEOUT, HOME_PREFIX} from '../constant';
+import { TIMEOUT, HOME_PREFIX } from '../constant';
+import store from '@/store';
+import { getToken } from '@/utils/auth';
 
 // 添加一个请求拦截器 （于transformRequest之前处理）
-axios.interceptors.request.use( (config) => {
+axios.interceptors.request.use((config) => {
+  // Do something before request is sent
+  if (store.getters.token) {
+    // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+    config.headers['X-Token'] = getToken();
+  }
   return config;
 }, (error) => {
   // 当出现请求错误是做一些处理

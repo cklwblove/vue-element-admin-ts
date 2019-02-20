@@ -11,8 +11,8 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import { getToken } from '@/utils/auth';
 import { Route } from 'vue-router';
-import {UserModule} from '@/store/modules/user';
-import {PermissionModule} from '@/store/modules/permission';
+import { UserModule } from '@/store/modules/user';
+import { PermissionModule } from '@/store/modules/permission';
 
 NProgress.configure({showSpinner: false});
 
@@ -25,7 +25,7 @@ function hasPermission(roles, permissionRoles) {
 
 const whiteList = ['/login', '/auth-redirect']; // no redirect whitelist
 
-router.beforeEach((to: Route, from: Route, next: any) => {
+router.beforeEach(async (to: Route, from: Route, next: any) => {
   NProgress.start(); // start progress bar
   if (getToken()) { // determine if there has token
     /* has token*/
@@ -36,13 +36,8 @@ router.beforeEach((to: Route, from: Route, next: any) => {
     } else {
       console.log('store.getters.roles', store.getters);
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-        UserModule.GetUserInfo().then((res) => { // 拉取user_info
-          const roles = res.roles; // note: roles must be a array! such as: ['editor','develop']
-          PermissionModule.GenerateRoutes({roles}).then(() => { // 根据roles权限生成可访问的路由表
-            router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
-            // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-            next({...to, replace: true});
-          });
+        UserModule.GetUserInfo().then(() => { // 拉取user_info
+          next({...to, replace: true});
         }).catch((err) => {
           UserModule.FedLogOut().then(() => {
             Message.error(err);

@@ -1,43 +1,45 @@
-import localForage from 'localforage';
+import pkg from '../../package.json';
+import store from 'store';
 
-const TokenKey = 'Admin-Token';
-const LANGUAGE = 'language';
-const SIZE = 'size';
-const SIDEBAR_STATUS = 'sidebarStatus';
+const {name} = pkg;
 
-export async function getToken() {
-  return await localForage.getItem(TokenKey);
+const TokenKey = `${name}/Admin-Token`;
+const LANGUAGE = `${name}/language`;
+const SIZE = `${name}/size`;
+const SIDEBAR_STATUS = `${name}/sidebarStatus`;
+
+export function getToken() {
+  return store.get(TokenKey);
 }
 
 export function setToken(token: string) {
-  return localForage.setItem(TokenKey, token);
+  return store.set(TokenKey, token);
 }
 
 export function removeToken() {
-  return localForage.removeItem(TokenKey);
+  return store.remove(TokenKey);
 }
 
-export async function getLanguage() {
-  return await localForage.getItem(LANGUAGE);
+export function getLanguage() {
+  return store.get(LANGUAGE);
 }
 
 export function setLanguage(language: string) {
-  return localForage.setItem(LANGUAGE, language);
+  return store.set(LANGUAGE, language);
 }
 
-export async function getSize() {
-  return await localForage.getItem(SIZE);
+export function getSize() {
+  return store.get(SIZE);
 }
 
 export function setSize(size: string) {
-  return localForage.setItem(SIZE, size);
+  return store.set(SIZE, size);
 }
 
-export async function getSidebarStatus() {
-  return await localForage.getItem(SIDEBAR_STATUS);
+export function getSidebarStatus() {
+  return store.get(SIDEBAR_STATUS);
 }
 
 export function setSidebarStatus(sidebarStatus: string) {
-  return localForage.setItem(SIDEBAR_STATUS, sidebarStatus);
+  return store.set(SIDEBAR_STATUS, sidebarStatus);
 }
-

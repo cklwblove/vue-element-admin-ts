@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <el-color-picker
-      v-model="theme"
-      class="theme-picker"
-      popper-class="theme-picker-dropdown"/>
-  </div>
+  <el-color-picker
+    v-model="theme"
+    class="theme-picker"
+    popper-class="theme-picker-dropdown"/>
 </template>
 
 <script lang="ts">
@@ -133,3 +131,16 @@
     }
   }
 </script>
+
+<style>
+  .theme-picker .el-color-picker__trigger {
+    margin-top: 12px;
+    height: 26px!important;
+    width: 26px!important;
+    padding: 2px;
+  }
+
+  .theme-picker-dropdown .el-color-dropdown__link-btn {
+    display: none;
+  }
+</style>

@@ -85,7 +85,7 @@ class User extends VuexModule implements IUserState {
         password: userInfo.password
       }
     });
-    console.log('token', token);
+    console.log('LoginByUsername token', token);
     setToken(token);
     return token;
   }
@@ -93,9 +93,18 @@ class User extends VuexModule implements IUserState {
   // 获取用户信息
   @MutationAction({mutate: ['roles', 'name', 'avatar']})
   public async GetUserInfo() {
-    const {data} = await services.getUserInfo({method: 'get'});
-    const {roles, name, avatar} = data;
-    if (data.roles && data.roles.length) {
+    const {roles, name, avatar} = await services.getUserInfo({
+      method: 'get',
+      data: {
+        token: getToken()
+      }
+    });
+    if (roles && roles.length) {
+      // TODO 动态生成路由
+      PermissionModule.GenerateRoutes({roles}).then(() => { // 根据roles权限生成可访问的路由表
+        // router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
+        // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+      });
       return {
         roles,
         name,

@@ -44,8 +44,9 @@ export default class TransactionTable extends Vue {
   }
 
   public fetchData() {
-    this.$services.transaction({method: 'get'}).then((response) => {
-      this.list = response.data.items.slice(0, 8);
+    this.$services.getList({method: 'get'}).then((response) => {
+      console.log('fetchData response', response);
+      this.list = response.items.slice(0, 8);
     });
   }
 }
