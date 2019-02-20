@@ -31,7 +31,7 @@
     }
 
     public handleSetSize(size) {
-      // this.$ELEMENT.size = size;
+      // @LEMENT.size = size;
       AppModule.SetSize(size);
       this.refreshView();
       this.$message({
