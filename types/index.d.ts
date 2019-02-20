@@ -10,3 +10,5 @@ declare module 'utils';
 declare module '*.png';
 
 declare module '*.gif';
+
+declare module 'vue-count-to';

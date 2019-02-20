@@ -52,7 +52,9 @@ import { Component, Vue, Emit } from 'vue-property-decorator';
 import CountTo from 'vue-count-to';
 
 @Component({
-  CountTo
+  components: {
+    CountTo
+  }
 })
 export default class PanelGroup extends Vue {
   @Emit('handleSetLineChartData')

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Cookies from 'js-cookie';
+import {getSize} from '@/utils/auth';
 import SvgIcon from 'vue-svgicon';
 import App from './App.vue';
 import router from './router';
@@ -12,9 +12,11 @@ import store from './store';
 import './registerServiceWorker';
 import Element from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+// mock
+import './mock';
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium', // set element-ui default size
+  size: getSize() as any || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 });
 

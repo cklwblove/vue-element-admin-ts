@@ -23,11 +23,16 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
 
+interface ITodo {
+  text: string;
+  done: boolean;
+}
+
 @Component({
   directives: {
     focus(el, {value}, {context}) {
       if (value) {
-        context.$nextTick(() => {
+        context!.$nextTick(() => {
           el.focus();
         });
       }
@@ -35,7 +40,7 @@ import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
   }
 })
 export default class Todo extends Vue {
-  @Prop({default: any}) public todo!: any;
+  @Prop({default: {text: '', done: false}}) public todo!: ITodo;
 
   public editing: boolean = false;
 

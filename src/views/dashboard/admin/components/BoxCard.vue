@@ -48,7 +48,7 @@ import {
     }
   },
 })
-export default class BoxChart extends Vue {
+export default class BoxCard extends Vue {
   public articleCount: number = 1024;
   public pageViewsCount: number = 1024;
 

@@ -18,7 +18,12 @@ export default class LineChart extends Vue {
   @Prop({required: true}) public chartData!: any;
 
   public chart: any = null;
-  public sidebarElm: HTMLDivElement = null;
+  public sidebarElm: any = null;
+  public resizeHandler = debounce(() => {
+    if (this.chart) {
+      this.chart.resize();
+    }
+  }, 100);
 
   @Watch('chartData', {deep: true})
   public onChartDataChange(val) {
@@ -28,12 +33,7 @@ export default class LineChart extends Vue {
   public mounted() {
     this.initChart();
     if (this.autoResize) {
-      this.__resizeHandler = debounce(() => {
-        if (this.chart) {
-          this.chart.resize();
-        }
-      }, 100);
-      window.addEventListener('resize', this.__resizeHandler);
+      window.addEventListener('resize', this.resizeHandler);
     }
 
     // 监听侧边栏的变化
@@ -46,7 +46,7 @@ export default class LineChart extends Vue {
       return;
     }
     if (this.autoResize) {
-      window.removeEventListener('resize', this.__resizeHandler);
+      window.removeEventListener('resize', this.resizeHandler);
     }
 
     this.sidebarElm && this.sidebarElm.removeEventListener('transitionend', this.sidebarResizeHandler);
@@ -57,11 +57,11 @@ export default class LineChart extends Vue {
 
   public sidebarResizeHandler(e) {
     if (e.propertyName === 'width') {
-      this.__resizeHandler();
+      this.resizeHandler();
     }
   }
 
-  public setOptions({expectedData, actualData} = {}) {
+  public setOptions({expectedData = [], actualData = []} = {}) {
     this.chart.setOption({
       xAxis: {
         data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -132,7 +132,7 @@ export default class LineChart extends Vue {
   }
 
   public initChart() {
-    this.chart = echarts.init(this.$el, 'macarons');
+    this.chart = echarts.init(this.$el as any, 'macarons');
     this.setOptions(this.chartData);
   }
 }

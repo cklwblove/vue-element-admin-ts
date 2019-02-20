@@ -16,22 +16,23 @@ export default class PieChart extends Vue {
   @Prop({default: '300px'}) public height!: string;
 
   public chart: any = null;
+  public resizeHandler = debounce(() => {
+    if (this.chart) {
+      this.chart.resize();
+    }
+  }, 100);
 
   public mounted() {
     this.initChart();
-    this.__resizeHandler = debounce(() => {
-      if (this.chart) {
-        this.chart.resize();
-      }
-    }, 100);
-    window.addEventListener('resize', this.__resizeHandler);
+
+    window.addEventListener('resize', this.resizeHandler);
   }
 
   public beforeDestroy() {
     if (!this.chart) {
       return;
     }
-    window.removeEventListener('resize', this.__resizeHandler);
+    window.removeEventListener('resize', this.resizeHandler);
     this.chart.dispose();
     this.chart = null;
   }
