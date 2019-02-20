@@ -6,8 +6,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import adminDashboard from './admin/index.vue';
+import editorDashboard from './editor/index.vue';
 
-@Component
+@Component({
+  components: {
+    adminDashboard,
+    editorDashboard
+  }
+})
 export default class Dashboard extends Vue {
   public currentRole: string = 'adminDashboard';
 

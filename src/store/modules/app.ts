@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+import {getLanguage, setLanguage, getSidebarStatus, setSidebarStatus, getSize, setSize} from '@/utils/auth';
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators';
 import store from '@/store';
 
@@ -20,15 +20,15 @@ export interface IAppState {
 @Module({dynamic: true, store, name: 'app'})
 class App extends VuexModule implements IAppState {
   public sidebar = {
-    opened: Cookies.get('sidebarStatus') !== 'closed',
+    opened: getSidebarStatus() as any !== 'closed',
     withoutAnimation: false
   };
 
   public device = DeviceType.Desktop;
 
-  public language = Cookies.get('language') || 'en';
+  public language = getLanguage() as any || 'en';
 
-  public size = Cookies.get('size') || 'medium';
+  public size = getSize() as any || 'medium';
 
   @Action({commit: 'CLOSE_SIDEBAR'})
   public CloseSideBar(withoutAnimation) {
@@ -60,15 +60,15 @@ class App extends VuexModule implements IAppState {
     this.sidebar.opened = !this.sidebar.opened;
     this.sidebar.withoutAnimation = false;
     if (this.sidebar.opened) {
-      Cookies.set('sidebarStatus', 'closed');
+      setSidebarStatus('closed');
     } else {
-      Cookies.set('sidebarStatus', 'opened');
+      setSidebarStatus('opened');
     }
   }
 
   @Mutation
   private CLOSE_SIDEBAR(withoutAnimation: boolean) {
-    Cookies.set('sidebarStatus', 'closed');
+    setSidebarStatus('closed');
     this.sidebar.opened = false;
     this.sidebar.withoutAnimation = withoutAnimation;
   }
@@ -81,13 +81,13 @@ class App extends VuexModule implements IAppState {
   @Mutation
   private SET_LANGUAGE(language: string) {
     this.language = language;
-    Cookies.set('language', language);
+    setLanguage(language);
   }
 
   @Mutation
   private SET_SIZE(size: string) {
     this.size = size;
-    Cookies.set('size', size);
+    setSize(size);
   }
 }
 

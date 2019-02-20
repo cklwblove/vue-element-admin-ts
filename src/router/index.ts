@@ -64,6 +64,32 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/documentation',
+    component: Layout,
+    redirect: '/documentation/index',
+    children: [
+      {
+        path: 'index',
+        component: loadView('documentation'),
+        name: 'Documentation',
+        meta: { title: 'documentation', icon: 'documentation', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/guide',
+    component: Layout,
+    redirect: '/guide/index',
+    children: [
+      {
+        path: 'index',
+        component: loadView('guide'),
+        name: 'Guide',
+        meta: { title: 'guide', icon: 'guide', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/auth-redirect',
     component: () => import('@/views/login/authredirect.vue'),
     hidden: true

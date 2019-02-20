@@ -79,15 +79,21 @@ class User extends VuexModule implements IUserState {
   @Action({commit: 'SET_TOKEN'})
   public async LoginByUsername(userInfo: { username: string, password: string }) {
     const username = userInfo.username.trim();
-    const {data} = await services.login(username, userInfo.password);
-    setToken(data.token);
-    return data.token;
+    const {token} = await services.loginByUsername({
+      data: {
+        username,
+        password: userInfo.password
+      }
+    });
+    console.log('token', token);
+    setToken(token);
+    return token;
   }
 
   // 获取用户信息
   @MutationAction({mutate: ['roles', 'name', 'avatar']})
   public async GetUserInfo() {
-    const {data} = await services.userInfo({method: 'get'});
+    const {data} = await services.getUserInfo({method: 'get'});
     const {roles, name, avatar} = data;
     if (data.roles && data.roles.length) {
       return {

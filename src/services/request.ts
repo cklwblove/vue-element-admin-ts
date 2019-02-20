@@ -107,7 +107,7 @@ export default function request(url, {
     'Accept': 'application/json',
     'Content-Type': 'application/json; charset=UTF-8'
   } : {
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    'Content-Type': 'application/json; charset=UTF-8'
   }, headers);
 
   const defaultConfig = {

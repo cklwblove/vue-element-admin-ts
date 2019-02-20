@@ -17,6 +17,7 @@
     "ordered-imports": false,
     "no-var-requires": false,
     "object-literal-sort-keys": false,
+    "object-literal-key-quotes": false,
     "no-consecutive-blank-lines": false,
     "no-console": false,
     "completed-docs": false,

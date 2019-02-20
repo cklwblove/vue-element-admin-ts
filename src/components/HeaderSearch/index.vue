@@ -1,6 +1,6 @@
 <template>
   <div :class="{'show':show}" class="header-search">
-    <svg-icon class-name="search-icon" icon-class="search" @click="click"/>
+    <svg-icon name="search" icon-class="search" @click="click"/>
     <el-select
       ref="headerSearchSelect"
       v-model="search"
@@ -22,7 +22,7 @@
   import Fuse from 'fuse.js';
   import path from 'path';
   import i18n from '@/lang';
-  
+
   @Component
   export default class HeaderSearch extends Vue {
     public search: string = '';
