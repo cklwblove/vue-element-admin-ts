@@ -25,7 +25,7 @@
 
     private handleSetLanguage(lang): void {
       // TODO this 指向为 null?
-      console.log('this', this);
+      // console.log('this', this);
       // console.log('lang', lang);
       i18n.locale = lang;
       AppModule.SetLanguage(lang);

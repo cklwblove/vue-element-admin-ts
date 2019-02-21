@@ -10,18 +10,18 @@
 </template>
 
 <script lang="ts">
-import {Vue} from 'vue-property-decorator';
+  import { Vue } from 'vue-property-decorator';
 
-export default class SocialSignIn extends Vue {
+  export default class SocialSignIn extends Vue {
 
-  private wechatHandleClick(thirdpart) {
-    alert('ok');
+    private wechatHandleClick(thirdpart) {
+      alert('ok');
+    }
+
+    private tencentHandleClick(thirdpart) {
+      alert('ok');
+    }
   }
-
-  private tencentHandleClick(thirdpart) {
-    alert('ok');
-  }
-}
 </script>
 
 <style rel="stylesheet/less" scoped>

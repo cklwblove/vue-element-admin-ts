@@ -12,7 +12,6 @@ import 'nprogress/nprogress.css';
 import { getToken } from '@/utils/auth';
 import { Route } from 'vue-router';
 import { UserModule } from '@/store/modules/user';
-import { PermissionModule } from '@/store/modules/permission';
 
 NProgress.configure({showSpinner: false});
 

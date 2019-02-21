@@ -103,9 +103,6 @@ export const constantRouterMap = [
     path: '/401',
     component: () => import('@/views/errorPage/401.vue'),
     hidden: true
-  },
-  {
-    path: '*', redirect: '/404'
   }
 ];
 
