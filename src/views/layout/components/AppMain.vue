@@ -9,18 +9,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+  import { Component, Vue } from 'vue-property-decorator';
 
-@Component
-export default class AppMain extends Vue {
-  get cachedViews() {
-    return this.$store.getters.cachedViews;
-  }
+  @Component
+  export default class AppMain extends Vue {
+    get cachedViews() {
+      return this.$store.getters.cachedViews;
+    }
 
-  get key() {
-    return this.$route.fullPath;
+    get key() {
+      return this.$route.fullPath;
+    }
   }
-}
 </script>
 
 <style scoped>

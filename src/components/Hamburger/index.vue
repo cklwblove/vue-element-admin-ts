@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+  import { Component, Prop, Vue } from 'vue-property-decorator';
 
-@Component
-export default class Hamburger extends Vue {
-  @Prop({default: false}) public isActive!: boolean;
-  @Prop({default: null}) public toggleClick!: () => void;
-}
+  @Component
+  export default class Hamburger extends Vue {
+    @Prop({default: false}) public isActive!: boolean;
+    @Prop({default: null}) public toggleClick!: () => void;
+  }
 </script>
 
 <style scoped>

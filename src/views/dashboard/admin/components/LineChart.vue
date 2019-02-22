@@ -3,139 +3,139 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
-import echarts from 'echarts';
-import { debounce } from '@/utils';
-// echarts theme
-require('echarts/theme/macarons');
+  import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
+  import echarts from 'echarts';
+  import { debounce } from '@/utils';
+  // echarts theme
+  require('echarts/theme/macarons');
 
-@Component
-export default class LineChart extends Vue {
-  @Prop({default: 'chart'}) public className!: string;
-  @Prop({default: '100%'}) public width!: string;
-  @Prop({default: '350px'}) public height!: string;
-  @Prop({default: true}) public autoResize!: boolean;
-  @Prop({required: true}) public chartData!: any;
+  @Component
+  export default class LineChart extends Vue {
+    @Prop({default: 'chart'}) public className!: string;
+    @Prop({default: '100%'}) public width!: string;
+    @Prop({default: '350px'}) public height!: string;
+    @Prop({default: true}) public autoResize!: boolean;
+    @Prop({required: true}) public chartData!: any;
 
-  public chart: any = null;
-  public sidebarElm: any = null;
-  public resizeHandler = debounce(() => {
-    if (this.chart) {
-      this.chart.resize();
-    }
-  }, 100);
+    public chart: any = null;
+    public sidebarElm: any = null;
+    public resizeHandler = debounce(() => {
+      if (this.chart) {
+        this.chart.resize();
+      }
+    }, 100);
 
-  @Watch('chartData', {deep: true})
-  public onChartDataChange(val) {
-    this.setOptions(val);
-  }
-
-  public mounted() {
-    this.initChart();
-    if (this.autoResize) {
-      window.addEventListener('resize', this.resizeHandler);
+    @Watch('chartData', {deep: true})
+    public onChartDataChange(val) {
+      this.setOptions(val);
     }
 
-    // 监听侧边栏的变化
-    this.sidebarElm = document.getElementsByClassName('sidebar-container')[0] as HTMLDivElement;
-    this.sidebarElm && this.sidebarElm.addEventListener('transitionend', this.sidebarResizeHandler);
-  }
+    public mounted() {
+      this.initChart();
+      if (this.autoResize) {
+        window.addEventListener('resize', this.resizeHandler);
+      }
 
-  public beforeDestroy() {
-    if (!this.chart) {
-      return;
-    }
-    if (this.autoResize) {
-      window.removeEventListener('resize', this.resizeHandler);
+      // 监听侧边栏的变化
+      this.sidebarElm = document.getElementsByClassName('sidebar-container')[0] as HTMLDivElement;
+      this.sidebarElm && this.sidebarElm.addEventListener('transitionend', this.sidebarResizeHandler);
     }
 
-    this.sidebarElm && this.sidebarElm.removeEventListener('transitionend', this.sidebarResizeHandler);
+    public beforeDestroy() {
+      if (!this.chart) {
+        return;
+      }
+      if (this.autoResize) {
+        window.removeEventListener('resize', this.resizeHandler);
+      }
 
-    this.chart.dispose();
-    this.chart = null;
-  }
+      this.sidebarElm && this.sidebarElm.removeEventListener('transitionend', this.sidebarResizeHandler);
 
-  public sidebarResizeHandler(e) {
-    if (e.propertyName === 'width') {
-      this.resizeHandler();
+      this.chart.dispose();
+      this.chart = null;
     }
-  }
 
-  public setOptions({expectedData = [], actualData = []} = {}) {
-    this.chart.setOption({
-      xAxis: {
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        boundaryGap: false,
-        axisTick: {
-          show: false
-        }
-      },
-      grid: {
-        left: 10,
-        right: 10,
-        bottom: 20,
-        top: 30,
-        containLabel: true
-      },
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'cross'
-        },
-        padding: [5, 10]
-      },
-      yAxis: {
-        axisTick: {
-          show: false
-        }
-      },
-      legend: {
-        data: ['expected', 'actual']
-      },
-      series: [{
-        name: 'expected', itemStyle: {
-          normal: {
-            color: '#FF005A',
-            lineStyle: {
-              color: '#FF005A',
-              width: 2
-            }
+    public sidebarResizeHandler(e) {
+      if (e.propertyName === 'width') {
+        this.resizeHandler();
+      }
+    }
+
+    public setOptions({expectedData = [], actualData = []} = {}) {
+      this.chart.setOption({
+        xAxis: {
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          boundaryGap: false,
+          axisTick: {
+            show: false
           }
         },
-        smooth: true,
-        type: 'line',
-        data: expectedData,
-        animationDuration: 2800,
-        animationEasing: 'cubicInOut'
-      },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
+        grid: {
+          left: 10,
+          right: 10,
+          bottom: 20,
+          top: 30,
+          containLabel: true
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross'
+          },
+          padding: [5, 10]
+        },
+        yAxis: {
+          axisTick: {
+            show: false
+          }
+        },
+        legend: {
+          data: ['expected', 'actual']
+        },
+        series: [{
+          name: 'expected', itemStyle: {
             normal: {
-              color: '#3888fa',
+              color: '#FF005A',
               lineStyle: {
-                color: '#3888fa',
+                color: '#FF005A',
                 width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
               }
             }
           },
-          data: actualData,
+          smooth: true,
+          type: 'line',
+          data: expectedData,
           animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
-    });
-  }
+          animationEasing: 'cubicInOut'
+        },
+          {
+            name: 'actual',
+            smooth: true,
+            type: 'line',
+            itemStyle: {
+              normal: {
+                color: '#3888fa',
+                lineStyle: {
+                  color: '#3888fa',
+                  width: 2
+                },
+                areaStyle: {
+                  color: '#f3f8ff'
+                }
+              }
+            },
+            data: actualData,
+            animationDuration: 2800,
+            animationEasing: 'quadraticOut'
+          }]
+      });
+    }
 
-  public initChart() {
-    this.chart = echarts.init(this.$el as any, 'macarons');
-    this.setOptions(this.chartData);
+    public initChart() {
+      this.chart = echarts.init(this.$el as any, 'macarons');
+      this.setOptions(this.chartData);
+    }
   }
-}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

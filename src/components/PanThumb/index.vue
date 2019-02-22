@@ -10,15 +10,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+  import { Component, Vue, Prop } from 'vue-property-decorator';
 
-@Component
-export default class PanThumb extends Vue {
-  @Prop({required: true}) public image!: string;
-  @Prop({default: 1}) public zIndex!: number;
-  @Prop({default: '150px'}) public width!: string;
-  @Prop({default: '150px'}) public height!: string;
-}
+  @Component
+  export default class PanThumb extends Vue {
+    @Prop({required: true}) public image!: string;
+    @Prop({default: 1}) public zIndex!: number;
+    @Prop({default: '150px'}) public width!: string;
+    @Prop({default: '150px'}) public height!: string;
+  }
 </script>
 
 <style scoped>

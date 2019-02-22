@@ -6,28 +6,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-import { isExternal } from '@/utils';
+  import { Component, Vue, Prop } from 'vue-property-decorator';
+  import { isExternal } from '@/utils';
 
-@Component
-export default class Link extends Vue {
-  @Prop({required: true, default: ''}) public to!: string;
+  @Component
+  export default class Link extends Vue {
+    @Prop({required: true, default: ''}) public to!: string;
 
-  public linkProps(url) {
-    if (isExternal(url)) {
+    public linkProps(url) {
+      if (isExternal(url)) {
+        return {
+          is: 'a',
+          href: url,
+          target: '_blank',
+          rel: 'noopener'
+        };
+      }
       return {
-        is: 'a',
-        href: url,
-        target: '_blank',
-        rel: 'noopener'
+        is: 'router-link',
+        to: url
       };
     }
-    return {
-      is: 'router-link',
-      to: url
-    };
   }
-}
 </script>
 
 <style scoped>

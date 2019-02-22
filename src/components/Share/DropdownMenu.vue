@@ -11,19 +11,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+  import { Component, Vue, Prop } from 'vue-property-decorator';
 
-@Component
-export default class DropdownMenu extends Vue {
-  @Prop({default: () => []}) public items!: any;
-  @Prop({default: 'vue'}) public title!: string;
+  @Component
+  export default class DropdownMenu extends Vue {
+    @Prop({default: () => []}) public items!: any;
+    @Prop({default: 'vue'}) public title!: string;
 
-  public isActive: boolean = false;
+    public isActive: boolean = false;
 
-  public clickTitle() {
-    this.isActive = !this.isActive;
+    public clickTitle() {
+      this.isActive = !this.isActive;
+    }
   }
-}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

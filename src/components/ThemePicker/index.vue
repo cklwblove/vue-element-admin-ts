@@ -135,8 +135,8 @@
 <style>
   .theme-picker .el-color-picker__trigger {
     margin-top: 12px;
-    height: 26px!important;
-    width: 26px!important;
+    height: 26px !important;
+    width: 26px !important;
     padding: 2px;
   }
 

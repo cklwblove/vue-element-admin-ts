@@ -12,42 +12,42 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { Navbar, Sidebar, AppMain, TagsView } from './components';
-import { AppModule, DeviceType } from '@/store/modules/app';
-import ResizeMixin from './mixin/ResizeHandler';
+  import { Component, Vue } from 'vue-property-decorator';
+  import { Navbar, Sidebar, AppMain, TagsView } from './components';
+  import { AppModule, DeviceType } from '@/store/modules/app';
+  import ResizeMixin from './mixin/ResizeHandler';
 
-@Component({
-  components: {
-    Navbar,
-    Sidebar,
-    AppMain,
-    TagsView
-  },
-  mixins: [ResizeMixin]
-})
-export default class Layout extends Vue {
-  get sidebar() {
-    return this.$store.getters.sidebar;
-  }
+  @Component({
+    components: {
+      Navbar,
+      Sidebar,
+      AppMain,
+      TagsView
+    },
+    mixins: [ResizeMixin]
+  })
+  export default class Layout extends Vue {
+    get sidebar() {
+      return this.$store.getters.sidebar;
+    }
 
-  get device() {
-    return this.$store.getters.device;
-  }
+    get device() {
+      return this.$store.getters.device;
+    }
 
-  get classObj() {
-    return {
-      hideSidebar: !this.sidebar.opened,
-      openSidebar: this.sidebar.opened,
-      withoutAnimation: this.sidebar.withoutAnimation,
-      mobile: this.device === DeviceType.Mobile
-    };
-  }
+    get classObj() {
+      return {
+        hideSidebar: !this.sidebar.opened,
+        openSidebar: this.sidebar.opened,
+        withoutAnimation: this.sidebar.withoutAnimation,
+        mobile: this.device === DeviceType.Mobile
+      };
+    }
 
-  public handleClickOutside() {
-    AppModule.CloseSideBar(false);
+    public handleClickOutside() {
+      AppModule.CloseSideBar(false);
+    }
   }
-}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

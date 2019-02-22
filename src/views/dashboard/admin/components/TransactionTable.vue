@@ -19,37 +19,37 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+  import { Component, Vue } from 'vue-property-decorator';
 
-@Component({
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        success: 'success',
-        pending: 'danger'
-      };
-      return statusMap[status];
-    },
-    orderNoFilter(str) {
-      return str.substring(0, 30);
+  @Component({
+    filters: {
+      statusFilter(status) {
+        const statusMap = {
+          success: 'success',
+          pending: 'danger'
+        };
+        return statusMap[status];
+      },
+      orderNoFilter(str) {
+        return str.substring(0, 30);
+      }
+    }
+  })
+  export default class TransactionTable extends Vue {
+
+    public list: any = null;
+
+    public created() {
+      this.fetchData();
+    }
+
+    public fetchData() {
+      this.$services.getList({method: 'get'}).then((response) => {
+        console.log('fetchData response', response);
+        this.list = response.items.slice(0, 8);
+      });
     }
   }
-})
-export default class TransactionTable extends Vue {
-
-  public list: any = null;
-
-  public created() {
-    this.fetchData();
-  }
-
-  public fetchData() {
-    this.$services.getList({method: 'get'}).then((response) => {
-      console.log('fetchData response', response);
-      this.list = response.items.slice(0, 8);
-    });
-  }
-}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>
