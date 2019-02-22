@@ -50,8 +50,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { UserModule } from '@/store/modules/user';
-import { AppModule } from '@/store/modules/app';
+import {
+  Getter,
+  Action
+} from 'vuex-class';
+// import { UserModule } from '@/store/modules/user';
+// import { AppModule } from '@/store/modules/app';
 import {
   Breadcrumb,
   Hamburger,
@@ -76,35 +80,27 @@ import {
   }
 })
 export default class Navbar extends Vue {
-  // TODO
+  // 不支持
   // mapGetters([
   //   'sidebar',
   //   'name',
   //   'avatar',
   //   'device'
   // ])
-  get sidebar() {
-    return this.$store.getters.sidebar;
-  }
-
-  get name() {
-    return this.$store.getters.name;
-  }
-
-  get avatar() {
-    return this.$store.getters.avatar;
-  }
-
-  get device() {
-    return this.$store.getters.device;
-  }
+  @Getter public sidebar;
+  @Getter public name;
+  @Getter public avatar;
+  @Getter public device;
+  @Action('ToggleSideBar') public actionToggleSideBar;
+  @Action('LogOut') public actionLogOut;
 
   public toggleSideBar() {
-    AppModule.ToggleSideBar(false);
+    this.actionToggleSideBar(false);
+    // AppModule.ToggleSideBar(false);
   }
 
   public logout() {
-    UserModule.LogOut().then(() => {
+    this.actionLogOut().then(() => {
       // In order to re-instantiate the vue-router object to avoid bugs
       location.reload();
     });
