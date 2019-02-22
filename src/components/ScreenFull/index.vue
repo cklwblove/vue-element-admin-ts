@@ -1,28 +1,33 @@
 <template>
-  <svg-icon :name="isFullscreen?'exit-fullscreen':'fullscreen'" @click="click"/>
+  <div>
+    <svg-icon :name="isFullscreen?'exit-fullscreen':'fullscreen'" @click="click"/>
+  </div>
 </template>
 
 <script lang="ts">
-import screenfull from 'screenfull';
-import { Component, Vue } from 'vue-property-decorator';
+  import screenfull from 'screenfull';
+  import { Component, Vue } from 'vue-property-decorator';
 
-@Component
-export default class ScreenFull extends Vue {
-  public isFullscreen: boolean = false;
+  @Component
+  export default class ScreenFull extends Vue {
+    public isFullscreen: boolean = false;
 
-  public click() {
-    if (!screenfull.enabled) {
-      this.$message({
-        message: 'you browser can not work',
-        type: 'warning'
-      });
-      return false;
+    public click() {
+      if (screenfull) {
+        if (!screenfull.enabled) {
+          this.$message({
+            message: 'you browser can not work',
+            type: 'warning'
+          });
+          return false;
+        }
+        (screenfull as any).toggle().then(() => {
+          this.isFullscreen = (screenfull as any).isFullscreen;
+        });
+      }
+
     }
-    screenfull.toggle().then(() => {
-      this.isFullscreen = screenfull.isFullscreen;
-    });
   }
-}
 </script>
 
 <style scoped>

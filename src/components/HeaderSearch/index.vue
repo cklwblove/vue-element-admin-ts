@@ -1,5 +1,6 @@
 <template>
   <div :class="{'show':show}" class="header-search">
+    show {{show}}
     <svg-icon name="search" class="search-icon" @click="click"/>
     <el-select
       ref="headerSearchSelect"
@@ -23,7 +24,9 @@
   import path from 'path';
   import i18n from '@/lang';
 
-  @Component
+  @Component({
+    name: 'Search'
+  })
   export default class HeaderSearch extends Vue {
     public search: string = '';
     public options: any[] = [];
@@ -56,19 +59,22 @@
 
     @Watch('show')
     public onShowChange(value) {
-      if (value) {
-        document.body.addEventListener('click', this.close);
-      } else {
-        document.body.removeEventListener('click', this.close);
-      }
+      // TODO 这里 addEventListener 会被立刻执行，所以迁移到了created
+      console.log('onShowChange value', value);
+    }
+
+    public created() {
+      document.body.addEventListener('click', this.close);
     }
 
     public mounted() {
       this.searchPool = this.generateRouters(this.routers);
     }
 
-    public click() {
+    public click(e) {
+      e.stopPropagation();
       this.show = !this.show;
+      console.log('click', this.show);
       if (this.show) {
         const searchSelect = this.$refs.headerSearchSelect as ElSelect;
         searchSelect && searchSelect.focus();
@@ -76,10 +82,12 @@
     }
 
     public close() {
-      const searchSelect = this.$refs.headerSearchSelect as ElSelect;
-      searchSelect && searchSelect.blur();
-      this.options = [];
-      this.show = false;
+      if (this.show) {
+        const searchSelect = this.$refs.headerSearchSelect as ElSelect;
+        searchSelect && searchSelect.blur();
+        this.options = [];
+        this.show = false;
+      }
     }
 
     public change(val) {
@@ -157,6 +165,10 @@
       } else {
         this.options = [];
       }
+    }
+
+    public beforeDestroy() {
+      document.body.removeEventListener('click', this.close);
     }
   }
 </script>

@@ -5,5 +5,6 @@ declare module 'vue/types/vue' {
   // 来声明全局属性
   interface Vue {
     readonly $services: any;
+    readonly $ELEMENT: any;
   }
 }

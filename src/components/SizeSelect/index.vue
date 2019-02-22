@@ -31,6 +31,7 @@
     }
 
     public handleSetSize(size) {
+      // console.log('handleSetSize this', this);
       this.$ELEMENT.size = size;
       AppModule.SetSize(size);
       this.refreshView();

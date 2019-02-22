@@ -22,6 +22,7 @@
     "@types/mockjs": "^1.0.2",
     "@types/node": "^10.12.18",
     "@types/nprogress": "^0.0.29",
+    "@types/screenfull": "^3.3.2",
     "@types/store": "^2.0.1",
     "@types/webpack-env": "^1.13.6",
     "axios": "^0.18.0",
