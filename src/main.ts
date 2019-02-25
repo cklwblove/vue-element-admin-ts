@@ -11,6 +11,7 @@ import './errorLog';
 import './icons/components';
 import './router/router.interceptor';
 import './filters';
+import './directives';
 import './services';
 import './registerServiceWorker';
 // mock

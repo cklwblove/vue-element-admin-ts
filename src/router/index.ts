@@ -59,7 +59,7 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: loadView('dashboard'),
         name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+        meta: {title: 'dashboard', icon: 'dashboard', noCache: true}
       }
     ]
   },
@@ -72,7 +72,7 @@ export const constantRouterMap = [
         path: 'index',
         component: loadView('documentation'),
         name: 'Documentation',
-        meta: { title: 'documentation', icon: 'documentation', affix: true }
+        meta: {title: 'documentation', icon: 'documentation', affix: true}
       }
     ]
   },
@@ -85,7 +85,7 @@ export const constantRouterMap = [
         path: 'index',
         component: loadView('guide'),
         name: 'Guide',
-        meta: { title: 'guide', icon: 'guide', noCache: true }
+        meta: {title: 'guide', icon: 'guide', noCache: true}
       }
     ]
   },
@@ -106,7 +106,40 @@ export const constantRouterMap = [
   }
 ];
 
-export const asyncRouterMap = [];
+export const asyncRouterMap = [
+  {
+    path: '/permission',
+    component: Layout,
+    redirect: '/permission/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'permission',
+      icon: 'lock',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'page',
+        component: () => import('@/views/permission/page.vue'),
+        name: 'PagePermission',
+        meta: {
+          title: 'pagePermission',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'directive',
+        component: () => import('@/views/permission/directive.vue'),
+        name: 'DirectivePermission',
+        meta: {
+          title: 'directivePermission'
+          // if do not set roles, means: this page does not require permission
+        }
+      }
+    ]
+  },
+  { path: '*', redirect: '/404', hidden: true }
+];
 
 export default new Router({
   mode: 'hash',

@@ -3,6 +3,7 @@ import { setToken, getToken, removeToken } from '@/utils/auth';
 import services from '@/services';
 import store from '@/store';
 import { PermissionModule } from '@/store/modules/permission';
+import router from '@/router';
 
 const permissionModule = PermissionModule;
 
@@ -102,8 +103,7 @@ class User extends VuexModule implements IUserState {
     if (roles && roles.length) {
       // TODO 动态生成路由
       PermissionModule.GenerateRoutes({roles}).then(() => { // 根据roles权限生成可访问的路由表
-        // router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
-        // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+        router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
       });
       return {
         roles,
@@ -135,14 +135,21 @@ class User extends VuexModule implements IUserState {
   // 动态修改权限
   @MutationAction({mutate: ['token', 'roles', 'name', 'avatar', 'introduction']})
   public async ChangeRoles(role: string) {
-    const {data} = await services.userInfo({});
-    permissionModule.GenerateRoutes(data);
+    setToken(role);
+    const res = await services.getUserInfo({
+      method: 'get',
+      data: {
+        token: role
+      }
+    });
+    console.log('ChangeRoles res', res);
+    permissionModule.GenerateRoutes(res);
     return {
       token: role,
-      roles: data.roles,
-      name: data.name,
-      avatar: data.avatar,
-      introduction: data.introduction
+      roles: res.roles,
+      name: res.name,
+      avatar: res.avatar,
+      introduction: res.introduction
     };
   }
 }
