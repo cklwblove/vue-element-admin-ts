@@ -14,3 +14,5 @@ export { default as Keyboard } from './Charts/Keyboard.vue';
 export { default as LineMarker } from './Charts/LineMarker.vue';
 export { default as MixChart } from './Charts/MixChart.vue';
 export { default as DropdownMenu } from './Share/DropdownMenu.vue';
+export { default as Pagination } from './Pagination/index.vue';
+export { default as TreeTable } from './TreeTable/index.vue';

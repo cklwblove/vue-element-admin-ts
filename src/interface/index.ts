@@ -7,3 +7,8 @@ export interface IDataValues {
   year: string;
   value: number;
 }
+
+export interface IListQuery {
+  page: number;
+  limit: number;
+}

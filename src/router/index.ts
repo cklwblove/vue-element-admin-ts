@@ -12,7 +12,7 @@ import Layout from '@/views/layout/Layout.vue';
 /* Router Modules */
 // import componentsRouter from './modules/components';
 import chartsRouter from './modules/charts';
-// import tableRouter from './modules/table';
+import tableRouter from './modules/table';
 // import nestedRouter from './modules/nested';
 
 Vue.use(Router);
@@ -160,7 +160,7 @@ export const asyncRouterMap = [
   // componentsRouter,
   chartsRouter,
   // nestedRouter,
-  // tableRouter,
+  tableRouter,
   {
     path: '/error',
     component: Layout,
