@@ -5,63 +5,63 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
-  const tagAndTagSpacing = 4;
+const tagAndTagSpacing = 4;
 
-  @Component
-  export default class ScrollPane extends Vue {
-    public left: number = 0;
+@Component
+export default class ScrollPane extends Vue {
+  left: number = 0;
 
-    public $refs!: {
-      scrollContainer: any
-      tag: any
-    };
+  $refs!: {
+    scrollContainer: any
+    tag: any
+  };
 
-    public handleScroll(e) {
-      const eventDelta = e.wheelDelta || -e.deltaY * 40;
-      const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap;
-      $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4;
+  handleScroll(e) {
+    const eventDelta = e.wheelDelta || -e.deltaY * 40;
+    const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap;
+    $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4;
+  }
+
+  moveToTarget(currentTag) {
+    const $container = this.$refs.scrollContainer.$el;
+    const $containerWidth = $container.offsetWidth;
+    const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap;
+    const tagList = this.$parent.$refs.tag as any;
+
+    let firstTag = null;
+    let lastTag = null;
+
+    // find first tag and last tag
+    if (tagList.length > 0) {
+      firstTag = tagList[0];
+      lastTag = tagList[tagList.length - 1];
     }
 
-    public moveToTarget(currentTag) {
-      const $container = this.$refs.scrollContainer.$el;
-      const $containerWidth = $container.offsetWidth;
-      const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap;
-      const tagList = this.$parent.$refs.tag as any;
+    if (firstTag === currentTag) {
+      $scrollWrapper.scrollLeft = 0;
+    } else if (lastTag === currentTag) {
+      $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth;
+    } else {
+      // find preTag and nextTag
+      const currentIndex = tagList.findIndex((item) => item === currentTag);
+      const prevTag = tagList[currentIndex - 1];
+      const nextTag = tagList[currentIndex + 1];
+      // the tag's offsetLeft after of nextTag
+      const afterNextTagOffsetLeft = nextTag.$el.offsetLeft + nextTag.$el.offsetWidth + tagAndTagSpacing;
 
-      let firstTag = null;
-      let lastTag = null;
+      // the tag's offsetLeft before of prevTag
+      const beforePrevTagOffsetLeft = prevTag.$el.offsetLeft - tagAndTagSpacing;
 
-      // find first tag and last tag
-      if (tagList.length > 0) {
-        firstTag = tagList[0];
-        lastTag = tagList[tagList.length - 1];
-      }
-
-      if (firstTag === currentTag) {
-        $scrollWrapper.scrollLeft = 0;
-      } else if (lastTag === currentTag) {
-        $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth;
-      } else {
-        // find preTag and nextTag
-        const currentIndex = tagList.findIndex((item) => item === currentTag);
-        const prevTag = tagList[currentIndex - 1];
-        const nextTag = tagList[currentIndex + 1];
-        // the tag's offsetLeft after of nextTag
-        const afterNextTagOffsetLeft = nextTag.$el.offsetLeft + nextTag.$el.offsetWidth + tagAndTagSpacing;
-
-        // the tag's offsetLeft before of prevTag
-        const beforePrevTagOffsetLeft = prevTag.$el.offsetLeft - tagAndTagSpacing;
-
-        if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
-          $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth;
-        } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
-          $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft;
-        }
+      if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
+        $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth;
+      } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
+        $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft;
       }
     }
   }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

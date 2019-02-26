@@ -6,13 +6,13 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
-  @Component({
-    name: 'MenuItem'
-  })
-  export default class MenuItem extends Vue {
-    @Prop({default: ''}) public icon!: string;
-    @Prop({default: ''}) public title!: string;
-  }
+@Component({
+  name: 'MenuItem'
+})
+export default class MenuItem extends Vue {
+  @Prop({default: ''}) icon!: string;
+  @Prop({default: ''}) title!: string;
+}
 </script>

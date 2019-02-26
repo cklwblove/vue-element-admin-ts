@@ -48,20 +48,20 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue, Emit } from 'vue-property-decorator';
-  import CountTo from 'vue-count-to';
+import { Component, Vue, Emit } from 'vue-property-decorator';
+import CountTo from 'vue-count-to';
 
-  @Component({
-    components: {
-      CountTo
-    }
-  })
-  export default class PanelGroup extends Vue {
-    @Emit('handleSetLineChartData')
-    public handleSetLineChartData(type) {
-      return type;
-    }
+@Component({
+  components: {
+    CountTo
   }
+})
+export default class PanelGroup extends Vue {
+  @Emit('handleSetLineChartData')
+  handleSetLineChartData(type) {
+    return type;
+  }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

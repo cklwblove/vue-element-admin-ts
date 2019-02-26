@@ -10,24 +10,24 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import Driver from 'driver.js';
-  import 'driver.js/dist/driver.min.css';
-  import steps from './defineSteps';
+import { Component, Vue } from 'vue-property-decorator';
+import Driver from 'driver.js';
+import 'driver.js/dist/driver.min.css';
+import steps from './defineSteps';
 
-  @Component
-  export default class Guide extends Vue {
-    public driver: any = null;
+@Component
+export default class Guide extends Vue {
+  driver: any = null;
 
-    public mounted() {
-      this.driver = new Driver();
-    }
-
-    public guide() {
-      this.driver.defineSteps(steps);
-      this.driver.start();
-    }
+  mounted() {
+    this.driver = new Driver();
   }
+
+  guide() {
+    this.driver.defineSteps(steps);
+    this.driver.start();
+  }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

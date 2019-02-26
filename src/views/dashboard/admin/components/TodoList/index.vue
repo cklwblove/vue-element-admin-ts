@@ -69,9 +69,9 @@ const defalutList = [
   }
 })
 export default class TodoList extends Vue {
-  public visibility: string = 'all';
-  public filters = filters;
-  public todos = defalutList;
+  visibility: string = 'all';
+  filters = filters;
+  todos = defalutList;
 
   get allChecked() {
     return this.todos.every((todo) => todo.done);
@@ -85,11 +85,11 @@ export default class TodoList extends Vue {
     return this.todos.filter((todo) => !todo.done).length;
   }
 
-  public setLocalStorage() {
+  setLocalStorage() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos));
   }
 
-  public addTodo(e) {
+  addTodo(e) {
     const text = e.target.value;
     if (text.trim()) {
       this.todos.push({
@@ -101,27 +101,27 @@ export default class TodoList extends Vue {
     e.target.value = '';
   }
 
-  public toggleTodo(val) {
+  toggleTodo(val) {
     val.done = !val.done;
     this.setLocalStorage();
   }
 
-  public deleteTodo(todo) {
+  deleteTodo(todo) {
     this.todos.splice(this.todos.indexOf(todo), 1);
     this.setLocalStorage();
   }
 
-  public editTodo({todo, value}) {
+  editTodo({todo, value}) {
     todo.text = value;
     this.setLocalStorage();
   }
 
-  public clearCompleted() {
+  clearCompleted() {
     this.todos = this.todos.filter((todo) => !todo.done);
     this.setLocalStorage();
   }
 
-  public toggleAll({done}) {
+  toggleAll({done}) {
     this.todos.forEach((todo) => {
       todo.done = done;
       this.setLocalStorage();

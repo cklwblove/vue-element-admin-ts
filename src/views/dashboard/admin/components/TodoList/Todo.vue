@@ -40,26 +40,26 @@ interface ITodo {
   }
 })
 export default class Todo extends Vue {
-  @Prop({default: {text: '', done: false}}) public todo!: ITodo;
+  @Prop({default: {text: '', done: false}}) todo!: ITodo;
 
-  public editing: boolean = false;
+  editing: boolean = false;
 
   @Emit('deleteTodo')
-  public deleteTodo(todo) {
+  deleteTodo(todo) {
     return todo;
   }
 
   @Emit('editTodo')
-  public editTodo({todo, value}) {
+  editTodo({todo, value}) {
     return {todo, value};
   }
 
   @Emit('toggleTodo')
-  public toggleTodo(todo) {
+  toggleTodo(todo) {
     return todo;
   }
 
-  public doneEdit(e) {
+  doneEdit(e) {
     const value = e.target.value.trim();
     const {todo} = this;
     if (!value) {
@@ -75,7 +75,7 @@ export default class Todo extends Vue {
     }
   }
 
-  public cancelEdit(e) {
+  cancelEdit(e) {
     e.target.value = this.todo.text;
     this.editing = false;
   }

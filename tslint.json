@@ -30,6 +30,7 @@
     "no-redundant-jsdoc": false,
     "max-line-length": [true, 500],
     "no-unused-expression": false,
-    "no-shadowed-variable": false
+    "no-shadowed-variable": false,
+    "member-access": [true, "no-public"]
   }
 }

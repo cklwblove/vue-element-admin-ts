@@ -6,13 +6,13 @@ export default class FixiOSBugMixin extends Vue {
     return this.$store.getters.device;
   }
 
-  public mounted() {
+  mounted() {
     // In order to fix the click on menu on the ios device will trigger the mouseeleave bug
     // https://github.com/PanJiaChen/vue-element-admin/issues/1135
     this.fixBugIniOS();
   }
 
-  public fixBugIniOS() {
+  fixBugIniOS() {
     const $submenu = this.$refs.submenu;
     if ($submenu) {
       // @ts-ignore

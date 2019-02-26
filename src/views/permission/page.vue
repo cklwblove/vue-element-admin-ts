@@ -5,17 +5,17 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import SwitchRoles from './components/SwitchRoles.vue';
+import { Component, Vue } from 'vue-property-decorator';
+import SwitchRoles from './components/SwitchRoles.vue';
 
-  @Component({
-    components: {
-      SwitchRoles
-    }
-  })
-  export default class PagePermission extends Vue {
-    public handleRolesChange() {
-      this.$router.push({path: '/permission/index?' + +new Date()});
-    }
+@Component({
+  components: {
+    SwitchRoles
   }
+})
+export default class PagePermission extends Vue {
+  handleRolesChange() {
+    this.$router.push({path: '/permission/index?' + +new Date()});
+  }
+}
 </script>

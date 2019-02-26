@@ -56,26 +56,26 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import checkPermission from '@/utils/permission';
-  import SwitchRoles from './components/SwitchRoles.vue';
+import { Component, Vue } from 'vue-property-decorator';
+import checkPermission from '@/utils/permission';
+import SwitchRoles from './components/SwitchRoles.vue';
 
-  @Component({
-    components: {
-      SwitchRoles
-    }
-  })
-  export default class DirectivePermission extends Vue {
-    public key: number = 1;
-
-    public checkPermission(val) {
-      return checkPermission(val);
-    }
-
-    public handleRolesChange() {
-      this.key++;
-    }
+@Component({
+  components: {
+    SwitchRoles
   }
+})
+export default class DirectivePermission extends Vue {
+  key: number = 1;
+
+  checkPermission(val) {
+    return checkPermission(val);
+  }
+
+  handleRolesChange() {
+    this.key++;
+  }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

@@ -17,33 +17,33 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import {
+import { Component, Vue } from 'vue-property-decorator';
+import {
+  GithubCorner,
+  PanThumb
+} from '@/components';
+
+@Component({
+  components: {
     GithubCorner,
     PanThumb
-  } from '@/components';
-
-  @Component({
-    components: {
-      GithubCorner,
-      PanThumb
-    }
-  })
-  export default class Editor extends Vue {
-    public emptyGif: string = 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3';
-
-    get name() {
-      return this.$store.getters.name;
-    }
-
-    get avatar() {
-      return this.$store.getters.avatar;
-    }
-
-    get roles() {
-      return this.$store.getters.roles;
-    }
   }
+})
+export default class Editor extends Vue {
+  emptyGif: string = 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3';
+
+  get name() {
+    return this.$store.getters.name;
+  }
+
+  get avatar() {
+    return this.$store.getters.avatar;
+  }
+
+  get roles() {
+    return this.$store.getters.roles;
+  }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

@@ -3,15 +3,15 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
-  @Component
-  export default class ErrorTestB extends Vue {
-    public created() {
-      // @ts-ignore
-      this.b = b; // eslint-disable-line
-    }
+@Component
+export default class ErrorTestB extends Vue {
+  created() {
+    // @ts-ignore
+    this.b = b; // eslint-disable-line
   }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

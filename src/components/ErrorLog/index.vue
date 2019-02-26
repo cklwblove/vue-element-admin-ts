@@ -37,17 +37,17 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
-  @Component
-  export default class ErrorLog extends Vue {
-    public dialogTableVisible: boolean = false;
+@Component
+export default class ErrorLog extends Vue {
+  dialogTableVisible: boolean = false;
 
-    get errorLogs() {
-      console.log('this.$store.getters', this.$store.getters);
-      return this.$store.getters.log || [];
-    }
+  get errorLogs() {
+    console.log('this.$store.getters', this.$store.getters);
+    return this.$store.getters.log || [];
   }
+}
 </script>
 
 <style scoped>

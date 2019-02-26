@@ -9,6 +9,12 @@ import Vue, { AsyncComponent } from 'vue';
 import Router from 'vue-router';
 import Layout from '@/views/layout/Layout.vue';
 
+/* Router Modules */
+// import componentsRouter from './modules/components';
+import chartsRouter from './modules/charts';
+// import tableRouter from './modules/table';
+// import nestedRouter from './modules/nested';
+
 Vue.use(Router);
 
 const loadView = (view: string): AsyncComponent => (): any => import(`@views/${view}/index.vue`);
@@ -146,10 +152,15 @@ export const asyncRouterMap = [
         path: 'index',
         component: loadView('svgIcons'),
         name: 'Icons',
-        meta: { title: 'icons', icon: 'icon', noCache: true }
+        meta: {title: 'icons', icon: 'icon', noCache: true}
       }
     ]
   },
+  /** When your routing table is too long, you can split it into small modules**/
+  // componentsRouter,
+  chartsRouter,
+  // nestedRouter,
+  // tableRouter,
   {
     path: '/error',
     component: Layout,
@@ -164,13 +175,13 @@ export const asyncRouterMap = [
         path: '401',
         component: () => import('@/views/errorPage/401.vue'),
         name: 'Page401',
-        meta: { title: 'page401', noCache: true }
+        meta: {title: 'page401', noCache: true}
       },
       {
         path: '404',
         component: () => import('@/views/errorPage/404.vue'),
         name: 'Page404',
-        meta: { title: 'page404', noCache: true }
+        meta: {title: 'page404', noCache: true}
       }
     ]
   },
@@ -183,11 +194,11 @@ export const asyncRouterMap = [
         path: 'log',
         component: loadView('errorLog'),
         name: 'ErrorLog',
-        meta: { title: 'errorLog', icon: 'bug' }
+        meta: {title: 'errorLog', icon: 'bug'}
       }
     ]
   },
-  { path: '*', redirect: '/404', hidden: true }
+  {path: '*', redirect: '/404', hidden: true}
 ];
 
 export default new Router({

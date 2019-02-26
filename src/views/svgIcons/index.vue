@@ -21,26 +21,26 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import clipboard from '@/utils/clipboard';
-  import icons from './requireIcons';
+import { Component, Vue } from 'vue-property-decorator';
+import clipboard from '@/utils/clipboard';
+import icons from './requireIcons';
 
-  @Component
-  export default class SvgIcons extends Vue {
-    public iconsMap = icons;
+@Component
+export default class SvgIcons extends Vue {
+  iconsMap = icons;
 
-    public created() {
-      console.log('iconsMap', icons);
-    }
-
-    public generateIconCode(symbol) {
-      return `<svg-icon name="${symbol}" />`;
-    }
-
-    public handleClipboard(text, event) {
-      clipboard(text, event);
-    }
+  created() {
+    console.log('iconsMap', icons);
   }
+
+  generateIconCode(symbol) {
+    return `<svg-icon name="${symbol}" />`;
+  }
+
+  handleClipboard(text, event) {
+    clipboard(text, event);
+  }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

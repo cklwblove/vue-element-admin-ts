@@ -49,14 +49,26 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import {
-    Getter,
-    Action
-  } from 'vuex-class';
-  // import { UserModule } from '@/store/modules/user';
-  // import { AppModule } from '@/store/modules/app';
-  import {
+import { Component, Vue } from 'vue-property-decorator';
+import {
+  Getter,
+  Action
+} from 'vuex-class';
+// import { UserModule } from '@/store/modules/user';
+// import { AppModule } from '@/store/modules/app';
+import {
+  Breadcrumb,
+  Hamburger,
+  ErrorLog,
+  ScreenFull,
+  SizeSelect,
+  LangSelect,
+  ThemePicker,
+  Search
+} from '@/components';
+
+@Component({
+  components: {
     Breadcrumb,
     Hamburger,
     ErrorLog,
@@ -65,47 +77,35 @@
     LangSelect,
     ThemePicker,
     Search
-  } from '@/components';
-
-  @Component({
-    components: {
-      Breadcrumb,
-      Hamburger,
-      ErrorLog,
-      ScreenFull,
-      SizeSelect,
-      LangSelect,
-      ThemePicker,
-      Search
-    }
-  })
-  export default class Navbar extends Vue {
-    // 不支持
-    // mapGetters([
-    //   'sidebar',
-    //   'name',
-    //   'avatar',
-    //   'device'
-    // ])
-    @Getter public sidebar;
-    @Getter public name;
-    @Getter public avatar;
-    @Getter public device;
-    @Action('ToggleSideBar') public actionToggleSideBar;
-    @Action('LogOut') public actionLogOut;
-
-    public toggleSideBar() {
-      this.actionToggleSideBar(false);
-      // AppModule.ToggleSideBar(false);
-    }
-
-    public logout() {
-      this.actionLogOut().then(() => {
-        // In order to re-instantiate the vue-router object to avoid bugs
-        location.reload();
-      });
-    }
   }
+})
+export default class Navbar extends Vue {
+  // 不支持
+  // mapGetters([
+  //   'sidebar',
+  //   'name',
+  //   'avatar',
+  //   'device'
+  // ])
+  @Getter sidebar;
+  @Getter name;
+  @Getter avatar;
+  @Getter device;
+  @Action('ToggleSideBar') actionToggleSideBar;
+  @Action('LogOut') actionLogOut;
+
+  toggleSideBar() {
+    this.actionToggleSideBar(false);
+    // AppModule.ToggleSideBar(false);
+  }
+
+  logout() {
+    this.actionLogOut().then(() => {
+      // In order to re-instantiate the vue-router object to avoid bugs
+      location.reload();
+    });
+  }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>

@@ -23,62 +23,62 @@ export interface IUserState {
 
 @Module({dynamic: true, store, name: 'user'})
 class User extends VuexModule implements IUserState {
-  public user = '';
-  public status = '';
-  public code = '';
-  public token = getToken();
-  public name = '';
-  public avatar = '';
-  public introduction = '';
-  public roles = [];
-  public setting = {
+  user = '';
+  status = '';
+  code = '';
+  token = getToken();
+  name = '';
+  avatar = '';
+  introduction = '';
+  roles = [];
+  setting = {
     articlePlatform: []
   };
 
   @Mutation
-  public SET_CODE(code) {
+  SET_CODE(code) {
     this.code = code;
   }
 
   @Mutation
-  public SET_TOKEN(token) {
+  SET_TOKEN(token) {
     this.token = token;
   }
 
   @Mutation
-  public SET_INTRODUCTION(introduction) {
+  SET_INTRODUCTION(introduction) {
     this.introduction = introduction;
   }
 
   @Mutation
-  public SET_SETTING(setting) {
+  SET_SETTING(setting) {
     this.setting = setting;
   }
 
   @Mutation
-  public SET_STATUS(status) {
+  SET_STATUS(status) {
     this.status = status;
   }
 
   @Mutation
-  public SET_NAME(name) {
+  SET_NAME(name) {
     this.name = name;
   }
 
   @Mutation
-  public SET_AVATAR(avatar) {
+  SET_AVATAR(avatar) {
     this.avatar = avatar;
   }
 
   @Mutation
-  public SET_ROLES(roles) {
+  SET_ROLES(roles) {
     this.roles = roles;
   }
 
   // action
   // 用户名登录
   @Action({commit: 'SET_TOKEN'})
-  public async LoginByUsername(userInfo: { username: string, password: string }) {
+  async LoginByUsername(userInfo: { username: string, password: string }) {
     const username = userInfo.username.trim();
     const {token} = await services.loginByUsername({
       data: {
@@ -93,7 +93,7 @@ class User extends VuexModule implements IUserState {
 
   // 获取用户信息
   @MutationAction({mutate: ['roles', 'name', 'avatar']})
-  public async GetUserInfo() {
+  async GetUserInfo() {
     const {roles, name, avatar} = await services.getUserInfo({
       method: 'get',
       data: {
@@ -117,7 +117,7 @@ class User extends VuexModule implements IUserState {
 
   // 登出
   @MutationAction({mutate: ['token', 'roles']})
-  public async LogOut() {
+  async LogOut() {
     await services.logout({});
     removeToken();
     return {
@@ -127,14 +127,14 @@ class User extends VuexModule implements IUserState {
   }
 
   @Action({commit: 'SET_TOKEN'})
-  public async FedLogOut() {
+  async FedLogOut() {
     removeToken();
     return '';
   }
 
   // 动态修改权限
   @MutationAction({mutate: ['token', 'roles', 'name', 'avatar', 'introduction']})
-  public async ChangeRoles(role: string) {
+  async ChangeRoles(role: string) {
     setToken(role);
     const res = await services.getUserInfo({
       method: 'get',

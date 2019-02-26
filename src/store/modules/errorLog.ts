@@ -7,15 +7,15 @@ export interface IErrorLogState {
 
 @Module({dynamic: true, store, name: 'errorLog'})
 class ErrorLog extends VuexModule implements IErrorLogState {
-  public logs: any[] = [];
+  logs: any[] = [];
 
   @Action({commit: 'ADD_ERROR_LOG'})
-  public AddErrorLog(log) {
+  AddErrorLog(log) {
     return log;
   }
 
   @Mutation
-  public ADD_ERROR_LOG(log) {
+  ADD_ERROR_LOG(log) {
     console.log('ADD_ERROR_LOG', this.logs);
     this.logs.push(log);
   }

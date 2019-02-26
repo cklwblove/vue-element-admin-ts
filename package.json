@@ -8,7 +8,6 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lint:fix": "vue-cli-service lint --fix",
     "deploy": "npm run build && node build/zip.ts",
     "analyz": "vue-cli-service build --mode analyz",
     "report": "npm_config_generate_report=true npm run build",

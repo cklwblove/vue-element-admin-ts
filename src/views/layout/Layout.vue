@@ -44,7 +44,7 @@
       };
     }
 
-    public handleClickOutside() {
+    handleClickOutside() {
       AppModule.CloseSideBar(false);
     }
   }

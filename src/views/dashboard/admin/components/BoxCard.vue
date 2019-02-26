@@ -27,43 +27,43 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import {
+import { Component, Vue } from 'vue-property-decorator';
+import {
+  PanThumb,
+  Mallki
+} from '@/components';
+
+@Component({
+  components: {
     PanThumb,
     Mallki
-  } from '@/components';
-
-  @Component({
-    components: {
-      PanThumb,
-      Mallki
-    },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          success: 'success',
-          pending: 'danger'
-        };
-        return statusMap[status];
-      }
-    }
-  })
-  export default class BoxCard extends Vue {
-    public articleCount: number = 1024;
-    public pageViewsCount: number = 1024;
-
-    get name() {
-      return this.$store.getters.name;
-    }
-
-    get avatar() {
-      return this.$store.getters.avatar;
-    }
-
-    get roles() {
-      return this.$store.getters.roles;
+  },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        success: 'success',
+        pending: 'danger'
+      };
+      return statusMap[status];
     }
   }
+})
+export default class BoxCard extends Vue {
+  articleCount: number = 1024;
+  pageViewsCount: number = 1024;
+
+  get name() {
+    return this.$store.getters.name;
+  }
+
+  get avatar() {
+    return this.$store.getters.avatar;
+  }
+
+  get roles() {
+    return this.$store.getters.roles;
+  }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less">

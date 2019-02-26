@@ -10,28 +10,28 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue, Emit } from 'vue-property-decorator';
-  import { Getter, Action } from 'vuex-class';
+import { Component, Vue, Emit } from 'vue-property-decorator';
+import { Getter, Action } from 'vuex-class';
 
-  @Component
-  export default class SwitchRoles extends Vue {
-    @Getter public roles;
-    @Action('ChangeRoles') public actionChangeRoles;
+@Component
+export default class SwitchRoles extends Vue {
+  @Getter roles;
+  @Action('ChangeRoles') actionChangeRoles;
 
-    get switchRoles() {
-      return this.roles[0];
-    }
-
-    set switchRoles(val) {
-      this.actionChangeRoles(val).then(() => {
-         this.handleChange(val);
-      });
-    }
-
-    @Emit('change')
-    public handleChange(val) {
-      return val;
-    }
-
+  get switchRoles() {
+    return this.roles[0];
   }
+
+  set switchRoles(val) {
+    this.actionChangeRoles(val).then(() => {
+       this.handleChange(val);
+    });
+  }
+
+  @Emit('change')
+  handleChange(val) {
+    return val;
+  }
+
+}
 </script>

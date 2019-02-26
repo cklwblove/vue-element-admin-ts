@@ -44,11 +44,11 @@ export interface IPermissionState {
 
 @Module({dynamic: true, store, name: 'permission'})
 class Permission extends VuexModule implements IPermissionState {
-  public routers = [];
-  public addRouters = [];
+  routers = [];
+  addRouters = [];
 
   @Action({commit: 'SET_ROUTERS'})
-  public GenerateRoutes(data) {
+  GenerateRoutes(data) {
     const {roles} = data;
     console.log('GenerateRoutes', roles);
     let accessedRouters;

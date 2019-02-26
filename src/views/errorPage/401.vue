@@ -27,23 +27,23 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import errGif from '@/assets/img/401_images/401.gif';
+import { Component, Vue } from 'vue-property-decorator';
+import errGif from '@/assets/img/401_images/401.gif';
 
-  @Component
-  export default class ErrorPage404 extends Vue {
-    public errGif: string = errGif + '?' + +new Date();
-    public ewizardClap: string = 'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646';
-    public dialogVisible: boolean = false;
+@Component
+export default class ErrorPage404 extends Vue {
+  errGif: string = errGif + '?' + +new Date();
+  ewizardClap: string = 'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646';
+  dialogVisible: boolean = false;
 
-    public back() {
-      if (this.$route.query!.noGoBack) {
-        this.$router.push({path: '/dashboard'});
-      } else {
-        this.$router.go(-1);
-      }
+  back() {
+    if (this.$route.query!.noGoBack) {
+      this.$router.push({path: '/dashboard'});
+    } else {
+      this.$router.go(-1);
     }
   }
+}
 </script>
 
 <style rel="stylesheet/less" lang="less" scoped>
