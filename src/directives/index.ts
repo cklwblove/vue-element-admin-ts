@@ -1,9 +1,11 @@
 import Vue from 'vue';
 
 import permission from './permission';
+import waves from './waves';
 
 const directives = {
-  permission
+  permission,
+  waves
 };
 
 Object.keys(directives).forEach((key) => {

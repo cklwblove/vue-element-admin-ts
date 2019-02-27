@@ -28,7 +28,6 @@
         $t('table.reviewer') }}
       </el-checkbox>
     </div>
-
     <el-table
       v-loading="listLoading"
       :key="tableKey"
@@ -150,259 +149,275 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { ElForm } from 'element-ui/types/form';
-import { parseTime } from '@/utils';
-import { IListQuery } from '@/interface';
-import {
-  Pagination
-} from '@/components';
-
-interface IListQuery1 extends IListQuery {
-  importance: undefined;
-  title: undefined;
-  type: undefined;
-  sort: string;
-}
-
-const calendarTypeOptions = [
-  {key: 'CN', display_name: 'China'},
-  {key: 'US', display_name: 'USA'},
-  {key: 'JP', display_name: 'Japan'},
-  {key: 'EU', display_name: 'Eurozone'}
-];
-
-// arr to obj ,such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name;
-  return acc;
-}, {});
-
-@Component({
-  components: {
+  import { Component, Vue } from 'vue-property-decorator';
+  import { ElForm } from 'element-ui/types/form';
+  import { parseTime } from '@/utils';
+  import { IListQuery } from '@/interface';
+  import {
     Pagination
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      };
-      return statusMap[status];
+  } from '@/components';
+
+  interface IListQuery1 extends IListQuery {
+    importance: undefined;
+    title: undefined;
+    type: undefined;
+    sort: string;
+  }
+
+  interface ITemp {
+    id: number;
+    importance: number;
+    remark: string;
+    timestamp: Date;
+    title: string;
+    type: string;
+    status: string;
+    author: string;
+  }
+
+  const calendarTypeOptions = [
+    {key: 'CN', display_name: 'China'},
+    {key: 'US', display_name: 'USA'},
+    {key: 'JP', display_name: 'Japan'},
+    {key: 'EU', display_name: 'Eurozone'}
+  ];
+
+  // arr to obj ,such as { CN : "China", US : "USA" }
+  const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name;
+    return acc;
+  }, {});
+
+  @Component({
+    components: {
+      Pagination
     },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type];
+    filters: {
+      statusFilter(status) {
+        const statusMap = {
+          published: 'success',
+          draft: 'info',
+          deleted: 'danger'
+        };
+        return statusMap[status];
+      },
+      typeFilter(type) {
+        return calendarTypeKeyValue[type];
+      }
     }
-  }
-})
-export default class ComplexTable extends Vue {
-  list: any[] = [];
-  total: number = 0;
-  listLoading: boolean = true;
-  listQuery: IListQuery1 = {
-    page: 1,
-    limit: 20,
-    importance: undefined,
-    title: undefined,
-    type: undefined,
-    sort: '+id'
-  };
-  importanceOptions: number[] = [1, 2, 3];
-  calendarTypeOptions = calendarTypeOptions;
-  sortOptions: any[] = [{label: 'ID Ascending', key: '+id'}, {label: 'ID Descending', key: '-id'}];
-  statusOptions: string[] = ['published', 'draft', 'deleted'];
-  showReviewer: boolean = false;
-  temp: any = {
-    id: undefined,
-    importance: 1,
-    remark: '',
-    timestamp: new Date(),
-    title: '',
-    type: '',
-    status: 'published'
-  };
-  dialogFormVisible: boolean = false;
-  dialogStatus: string = '';
-  textMap: object = {
-    update: 'Edit',
-    create: 'Create'
-  };
-  dialogPvVisible: boolean = false;
-  pvData: any[] = [];
-  rules: object = {
-    type: [{required: true, message: 'type is required', trigger: 'change'}],
-    timestamp: [{type: 'date', required: true, message: 'timestamp is required', trigger: 'change'}],
-    title: [{required: true, message: 'title is required', trigger: 'blur'}]
-  };
-  downloadLoading: boolean = false;
-
-  $refs!: {
-    dataForm: ElForm
-  };
-
-  created() {
-    this.getList();
-  }
-
-  getList() {
-    this.listLoading = true;
-    this.$services.getList({method: 'get', data: this.listQuery}).then((response) => {
-      this.list = response.data.items;
-      this.total = response.data.total;
-
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    });
-  }
-
-  handleFilter() {
-    this.listQuery.page = 1;
-    this.getList();
-  }
-
-  handleModifyStatus(row, status) {
-    this.$message({
-      message: '操作成功',
-      type: 'success'
-    });
-    row.status = status;
-  }
-
-  sortChange(data) {
-    const {prop, order} = data;
-    if (prop === 'id') {
-      this.sortByID(order);
-    }
-  }
-
-  sortByID(order) {
-    if (order === 'ascending') {
-      this.listQuery.sort = '+id';
-    } else {
-      this.listQuery.sort = '-id';
-    }
-    this.handleFilter();
-  }
-
-  resetTemp() {
-    this.temp = {
-      id: undefined,
+  })
+  export default class ComplexTable extends Vue {
+    tableKey: number = 0;
+    list: any[] = [];
+    total: number = 0;
+    listLoading: boolean = true;
+    listQuery: IListQuery1 = {
+      page: 1,
+      limit: 20,
+      importance: undefined,
+      title: undefined,
+      type: undefined,
+      sort: '+id'
+    };
+    importanceOptions: number[] = [1, 2, 3];
+    calendarTypeOptions = calendarTypeOptions;
+    sortOptions: any[] = [{label: 'ID Ascending', key: '+id'}, {label: 'ID Descending', key: '-id'}];
+    statusOptions: string[] = ['published', 'draft', 'deleted'];
+    showReviewer: boolean = false;
+    temp: ITemp = {
+      id: 0,
       importance: 1,
       remark: '',
       timestamp: new Date(),
       title: '',
+      type: '',
       status: 'published',
-      type: ''
+      author: ''
     };
-  }
+    dialogFormVisible: boolean = false;
+    dialogStatus: string = '';
+    textMap: object = {
+      update: 'Edit',
+      create: 'Create'
+    };
+    dialogPvVisible: boolean = false;
+    pvData: any[] = [];
+    rules: object = {
+      type: [{required: true, message: 'type is required', trigger: 'change'}],
+      timestamp: [{type: 'date', required: true, message: 'timestamp is required', trigger: 'change'}],
+      title: [{required: true, message: 'title is required', trigger: 'blur'}]
+    };
+    downloadLoading: boolean = false;
 
-  handleCreate() {
-    this.resetTemp();
-    this.dialogStatus = 'create';
-    this.dialogFormVisible = true;
-    this.$nextTick(() => {
-      this.$refs.dataForm.clearValidate();
-    });
-  }
+    $refs!: {
+      dataForm: ElForm
+    };
 
-  createData() {
-    this.$refs.dataForm.validate((valid) => {
-      if (valid) {
-        this.temp.id = parseInt(Math.random() * 100, 10) + 1024; // mock a id
-        this.temp.author = 'vue-element-admin';
-        this.$services.createArticle({data: this.temp}).then(() => {
-          this.list.unshift(this.temp);
-          this.dialogFormVisible = false;
-          this.$notify({
-            title: '成功',
-            message: '创建成功',
-            type: 'success',
-            duration: 2000
-          });
-        });
-      }
-    });
-  }
+    created() {
+      this.getList();
+    }
 
-  handleUpdate(row) {
-    this.temp = Object.assign({}, row); // copy obj
-    this.temp.timestamp = new Date(this.temp.timestamp);
-    this.dialogStatus = 'update';
-    this.dialogFormVisible = true;
-    this.$nextTick(() => {
-      this.$refs.dataForm.clearValidate();
-    });
-  }
+    getList() {
+      this.listLoading = true;
+      this.$services.articleList({method: 'get', data: this.listQuery}).then((response) => {
+        console.log('response', response);
+        this.list = response.items;
+        this.total = response.total;
 
-  updateData() {
-    this.$refs.dataForm.validate((valid) => {
-      if (valid) {
-        const tempData = Object.assign({}, this.temp);
-        tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-        this.$services.updateArticle({data: tempData}).then(() => {
-          for (const v of this.list) {
-            if (v.id === this.temp.id) {
-              const index = this.list.indexOf(v);
-              this.list.splice(index, 1, this.temp);
-              break;
-            }
-          }
-          this.dialogFormVisible = false;
-          this.$notify({
-            title: '成功',
-            message: '更新成功',
-            type: 'success',
-            duration: 2000
-          });
-        });
-      }
-    });
-  }
-
-  handleDelete(row) {
-    this.$notify({
-      title: '成功',
-      message: '删除成功',
-      type: 'success',
-      duration: 2000
-    });
-    const index = this.list.indexOf(row);
-    this.list.splice(index, 1);
-  }
-
-  handleFetchPv(pv) {
-    this.$services.getPv({data: pv}).then((response) => {
-      this.pvData = response.data.pvData;
-      this.dialogPvVisible = true;
-    });
-  }
-
-  handleDownload() {
-    this.downloadLoading = true;
-    import('@/assets/js/export2Excel').then((excel) => {
-      const tHeader = ['timestamp', 'title', 'type', 'importance', 'status'];
-      const filterVal = ['timestamp', 'title', 'type', 'importance', 'status'];
-      const data = this.formatJson(filterVal, this.list);
-      excel.export_json_to_excel({
-        header: tHeader,
-        data,
-        filename: 'table-list'
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false;
+        }, 1.5 * 1000);
       });
-      this.downloadLoading = false;
-    });
-  }
+    }
 
-  formatJson(filterVal, jsonData) {
-    return jsonData.map((v) => filterVal.map((j) => {
-      if (j === 'timestamp') {
-        return parseTime(v[j]);
-      } else {
-        return v[j];
+    handleFilter() {
+      this.listQuery.page = 1;
+      this.getList();
+    }
+
+    handleModifyStatus(row, status) {
+      this.$message({
+        message: '操作成功',
+        type: 'success'
+      });
+      row.status = status;
+    }
+
+    sortChange(data) {
+      const {prop, order} = data;
+      if (prop === 'id') {
+        this.sortByID(order);
       }
-    }));
+    }
+
+    sortByID(order) {
+      if (order === 'ascending') {
+        this.listQuery.sort = '+id';
+      } else {
+        this.listQuery.sort = '-id';
+      }
+      this.handleFilter();
+    }
+
+    resetTemp() {
+      this.temp = {
+        id: 0,
+        importance: 1,
+        remark: '',
+        timestamp: new Date(),
+        title: '',
+        status: 'published',
+        type: '',
+        author: ''
+      };
+    }
+
+    handleCreate() {
+      this.resetTemp();
+      this.dialogStatus = 'create';
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate();
+      });
+    }
+
+    createData() {
+      this.$refs.dataForm.validate((valid) => {
+        if (valid) {
+          this.temp.id = Math.round(Math.random() * 100) + 1024;
+          this.temp.author = 'vue-element-admin';
+          this.$services.articleCreate({data: this.temp}).then(() => {
+            this.list.unshift(this.temp);
+            this.dialogFormVisible = false;
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            });
+          });
+        }
+      });
+    }
+
+    handleUpdate(row) {
+      this.temp = Object.assign({}, row); // copy obj
+      this.temp.timestamp = new Date(this.temp.timestamp);
+      this.dialogStatus = 'update';
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs.dataForm.clearValidate();
+      });
+    }
+
+    updateData() {
+      this.$refs.dataForm.validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp);
+          // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.timestamp = new Date(tempData.timestamp);
+          this.$services.articleUpdate({data: tempData}).then(() => {
+            for (const v of this.list) {
+              if (v.id === this.temp.id) {
+                const index = this.list.indexOf(v);
+                this.list.splice(index, 1, this.temp);
+                break;
+              }
+            }
+            this.dialogFormVisible = false;
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            });
+          });
+        }
+      });
+    }
+
+    handleDelete(row) {
+      this.$notify({
+        title: '成功',
+        message: '删除成功',
+        type: 'success',
+        duration: 2000
+      });
+      const index = this.list.indexOf(row);
+      this.list.splice(index, 1);
+    }
+
+    handleFetchPv(pv) {
+      this.$services.articlePv({data: pv}).then((response) => {
+        this.pvData = response.data.pvData;
+        this.dialogPvVisible = true;
+      });
+    }
+
+    handleDownload() {
+      this.downloadLoading = true;
+      import('@/assets/js/export2Excel.js').then((excel) => {
+        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status'];
+        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status'];
+        const data = this.formatJson(filterVal, this.list);
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: 'table-list'
+        });
+        this.downloadLoading = false;
+      });
+    }
+
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) => filterVal.map((j) => {
+        if (j === 'timestamp') {
+          return parseTime(v[j], null);
+        } else {
+          return v[j];
+        }
+      }));
+    }
   }
-}
 </script>

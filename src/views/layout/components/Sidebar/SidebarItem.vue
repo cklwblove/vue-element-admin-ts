@@ -100,7 +100,7 @@ export default class SidebarItem extends Vue {
 
   generateTitle(title) {
     const hasKey = this.$te('route.' + title);
-    console.log('generateTitle', title);
+    // console.log('generateTitle', title);
     if (hasKey) {
       // $t :this method from vue-i18n, inject in @/lang/index.js
       const translatedTitle = this.$t('route.' + title);

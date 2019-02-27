@@ -32,5 +32,8 @@
     "no-unused-expression": false,
     "no-shadowed-variable": false,
     "member-access": [true, "no-public"]
+  },
+  "jsRules": {
+
   }
 }

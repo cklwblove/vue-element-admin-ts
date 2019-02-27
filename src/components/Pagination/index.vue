@@ -14,15 +14,15 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
-  import { scrollTo } from '@/utils/scrollTo';
+  import { Component, Vue, Prop } from 'vue-property-decorator';
+  import { scrollTo } from '@/utils/scrollTo.js';
 
   @Component
   export default class Pagination extends Vue {
     @Prop({required: true}) total!: number;
     @Prop({default: 1}) page!: number;
     @Prop({default: 20}) limit!: number;
-    @Prop({default: [10, 20, 30, 50]}) pageSizes!: number[];
+    @Prop({default: () => [10, 20, 30, 50]}) pageSizes!: number[];
     @Prop({default: 'total, sizes, prev, pager, next, jumper'}) layout!: string;
     @Prop({default: true}) background!: boolean;
     @Prop({default: true}) autoScroll!: boolean;
@@ -32,18 +32,16 @@
       return this.page;
     }
 
-    @Emit('update:page')
     set currentPage(val) {
-      this.page = val;
+      this.$emit('update:page', val);
     }
 
     get pageSize() {
       return this.limit;
     }
 
-    @Emit('update:limit')
     set pageSize(val) {
-      this.limit = val;
+      this.$emit('update:limit', val);
     }
 
     handleSizeChange(val) {
@@ -54,6 +52,7 @@
     }
 
     handleCurrentChange(val) {
+      console.log('handleCurrentChange val', val);
       this.$emit('pagination', {page: val, limit: this.pageSize});
       if (this.autoScroll) {
         scrollTo(0, 800);

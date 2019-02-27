@@ -23,9 +23,9 @@
 
       <el-table-column width="100px" label="Importance">
         <template slot-scope="scope">
-          <svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" class="meta-item__icon"/>
+          <svg-icon v-for="n in +scope.row.importance" :key="n" name="star" class="meta-item__icon"/>
         </template>
-      </el-table-column>
+      </el-table-column>`
 
       <el-table-column class-name="status-col" label="Status" width="110">
         <template slot-scope="scope">
@@ -61,71 +61,72 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import {IListQuery} from '@/interface';
+  import { Component, Vue } from 'vue-property-decorator';
+  import { IListQuery } from '@/interface';
 
-@Component({
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      };
-      return statusMap[status];
+  @Component({
+    filters: {
+      statusFilter(status) {
+        const statusMap = {
+          published: 'success',
+          draft: 'info',
+          deleted: 'danger'
+        };
+        return statusMap[status];
+      }
     }
-  }
-})
-export default class InlineEditTable extends Vue {
-  list: string[] | number[] = [];
-  listLoading: boolean = true;
-  listQuery: IListQuery = {
-    page: 1,
-    limit: 10
-  };
+  })
+  export default class InlineEditTable extends Vue {
+    list: string[] | number[] = [];
+    listLoading: boolean = true;
+    listQuery: IListQuery = {
+      page: 1,
+      limit: 10
+    };
 
-  created() {
-    this.getList();
-  }
+    created() {
+      this.getList();
+    }
 
-  getList() {
-    this.listLoading = true;
-    this.$services.getList({method: 'get'}).then((response) => {
-      const items = response.data.items;
-      this.list = items.map((v) => {
-        this.$set(v, 'edit', false); // https://vuejs.org/v2/guide/reactivity.html
-        v.originalTitle = v.title; //  will be used when user click the cancel botton
-        return v;
+    getList() {
+      this.listLoading = true;
+      this.$services.articleList({method: 'get'}).then((response) => {
+        const items = response.items;
+        this.list = items.map((v) => {
+          this.$set(v, 'edit', false); // https://vuejs.org/v2/guide/reactivity.html
+          v.originalTitle = v.title; //  will be used when user click the cancel botton
+          return v;
+        });
+        this.listLoading = false;
       });
-      this.listLoading = false;
-    });
-  }
+    }
 
-  cancelEdit(row) {
-    row.title = row.originalTitle;
-    row.edit = false;
-    this.$message({
-      message: 'The title has been restored to the original value',
-      type: 'warning'
-    });
-  }
+    cancelEdit(row) {
+      row.title = row.originalTitle;
+      row.edit = false;
+      this.$message({
+        message: 'The title has been restored to the original value',
+        type: 'warning'
+      });
+    }
 
-  confirmEdit(row) {
-    row.edit = false;
-    row.originalTitle = row.title;
-    this.$message({
-      message: 'The title has been edited',
-      type: 'success'
-    });
-  }
+    confirmEdit(row) {
+      row.edit = false;
+      row.originalTitle = row.title;
+      this.$message({
+        message: 'The title has been edited',
+        type: 'success'
+      });
+    }
 
-}
+  }
 </script>
 
 <style scoped>
   .edit-input {
     padding-right: 100px;
   }
+
   .cancel-btn {
     position: absolute;
     right: 15px;

@@ -94,9 +94,9 @@ export default class DragTable extends Vue {
 
   getList() {
     this.listLoading = true;
-    this.$services.getList({method: 'get', data: this.listQuery}).then((response) => {
-      this.list = response.data.items;
-      this.total = response.data.total;
+    this.$services.articleList({method: 'get', data: this.listQuery}).then((response) => {
+      this.list = response.items;
+      this.total = response.total;
       this.listLoading = false;
       this.oldList = this.list.map((v) => v.id);
       this.newList = this.oldList.slice();
@@ -115,7 +115,7 @@ export default class DragTable extends Vue {
         // to avoid Firefox bug
         // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       },
-      onEnd: (evt) => {
+      onEnd: (evt: any) => {
         const targetRow = this.list.splice(evt.oldIndex, 1)[0];
         this.list.splice(evt.newIndex, 0, targetRow);
 
