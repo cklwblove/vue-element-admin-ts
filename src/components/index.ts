@@ -16,3 +16,4 @@ export { default as MixChart } from './Charts/MixChart.vue';
 export { default as DropdownMenu } from './Share/DropdownMenu.vue';
 export { default as Pagination } from './Pagination/index.vue';
 export { default as TreeTable } from './TreeTable/index.vue';
+export { default as ImageCropper } from './ImageCropper/index.vue';
