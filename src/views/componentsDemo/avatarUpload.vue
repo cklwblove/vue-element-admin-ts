@@ -30,7 +30,12 @@
     PanThumb
   } from '@/components';
 
-  @Component
+  @Component({
+    components: {
+      ImageCropper,
+      PanThumb
+    }
+  })
   export default class AvatarUpload extends Vue {
     imagecropperShow: boolean = false;
     imagecropperKey: number = 0;

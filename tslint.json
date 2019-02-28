@@ -31,7 +31,8 @@
     "max-line-length": [true, 500],
     "no-unused-expression": false,
     "no-shadowed-variable": false,
-    "member-access": [true, "no-public"]
+    "member-access": [true, "no-public"],
+    "no-string-literal": false
   },
   "jsRules": {
 

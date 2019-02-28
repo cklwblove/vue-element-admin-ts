@@ -108,21 +108,722 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { dataURLToBlob } from 'utils';
+  import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+  import axios from 'axios';
+  import { dataURLToBlob } from 'utils';
+  import language from './utils/language';
+  import mimes from './utils/mimes';
+  import effectRipple from './utils/effectRipple';
 
-@Component
-export default class ImageCropper extends Vue {
+  const allowImgFormat = [
+    'jpg',
+    'png'
+  ];
 
-  created() {
-    // 绑定按键esc隐藏此插件事件
-    document.addEventListener('keyup', (e) => {
-      if (this.value && (e.key === 'Escape' || e.keyCode === 27)) {
+  @Component
+  export default class ImageCropper extends Vue {
+    // 域，上传文件name，触发事件会带上（如果一个页面多个图片上传控件，可以做区分
+    @Prop({default: 'avatar'}) field!: string;
+    // 原名key，类似于id，触发事件会带上（如果一个页面多个图片上传控件，可以做区分
+    @Prop({default: 0}) ki!: number;
+    // 显示该控件与否
+    @Prop({default: true}) value!: boolean;
+    // 上传地址
+    @Prop({default: ''}) url!: string;
+    // 其他要上传文件附带的数据，对象格式
+    @Prop({default: () => null}) params!: object;
+    // Add custom headers
+    @Prop({default: () => null}) headers!: object;
+    // 剪裁图片的宽
+    @Prop({default: 200}) width!: number;
+    // 剪裁图片的高
+    @Prop({default: 200}) height!: number;
+    // 不显示旋转功能
+    @Prop({default: true}) noRotate!: boolean;
+    // 不预览圆形图片
+    @Prop({default: false}) noCircle!: boolean;
+    // 不预览方形图片
+    @Prop({default: false}) noSquare!: boolean;
+    // 单文件大小限制
+    @Prop({default: 10240}) maxSize!: number;
+    // 语言类型
+    @Prop({default: 'zh'}) langType!: string;
+    // 语言包
+    @Prop({default: () => null}) langExt!: object;
+    // 图片上传格式
+    @Prop({default: 'png'}) imgFormat!: string;
+    // 是否支持跨域
+    @Prop({default: false}) withCredentials!: boolean;
+
+    // 图片的mime
+    mime: string = '';
+    // 语言包
+    lang: any = language[this.langType] ? language[this.langType] : language['en'];
+    // 浏览器是否支持该控件
+    isSupported: boolean = (typeof FormData === 'function') || false;
+    // 浏览器是否支持触屏事件
+    isSupportTouch: boolean = document.hasOwnProperty('ontouchstart');
+    // 步骤
+    // 1选择文件 2剪裁 3上传
+    step: number = 1;
+    // 上传状态及进度
+    // 0未开始 1正在 2成功 3错误
+    loading: number = 0;
+    progress: number = 0;
+    // 是否有错误及错误信息
+    hasError: boolean = false;
+    errorMsg: string = '';
+    // 需求图宽高比
+    ratio: number = this.width / this.height;
+    // 原图地址、生成图片地址
+    sourceImg: any = null;
+    sourceImgUrl: string = '';
+    createImgUrl: string = '';
+    // 原图片拖动事件初始值
+    sourceImgMouseDown: any = {
+      on: false,
+      mX: 0, // 鼠标按下的坐标
+      mY: 0,
+      x: 0, // scale原图坐标
+      y: 0
+    };
+    // 生成图片预览的容器大小
+    previewContainer: any = {
+      width: 100,
+      height: 100
+    };
+    // 原图容器宽高
+    sourceImgContainer: any = { // sic
+      width: 240,
+      height: 184 // 如果生成图比例与此一致会出现bug，先改成特殊的格式吧，哈哈哈
+    };
+    // 原图展示属性
+    scale: any = {
+      zoomAddOn: false, // 按钮缩放事件开启
+      zoomSubOn: false, // 按钮缩放事件开启
+      range: 1, // 最大100
+      rotateLeft: false, // 按钮向左旋转事件开启
+      rotateRight: false, // 按钮向右旋转事件开启
+      degree: 0, // 旋转度数
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      maxWidth: 0,
+      maxHeight: 0,
+      minWidth: 0, // 最宽
+      minHeight: 0,
+      naturalWidth: 0, // 原宽
+      naturalHeight: 0
+    };
+
+    $refs!: {
+      fileinput: HTMLInputElement;
+      canvas: HTMLCanvasElement;
+    };
+
+    // 进度条样式
+    get progressStyle() {
+      const {
+        progress
+      } = this;
+      return {
+        width: progress + '%'
+      };
+    }
+
+    // 原图样式
+    get sourceImgStyle() {
+      const {
+        scale,
+        sourceImgMasking
+      } = this;
+      const top = scale.y + sourceImgMasking.y + 'px';
+      const left = scale.x + sourceImgMasking.x + 'px';
+      return {
+        top,
+        left,
+        width: scale.width + 'px',
+        height: scale.height + 'px',
+        transform: 'rotate(' + scale.degree + 'deg)', // 旋转时 左侧原始图旋转样式
+        '-ms-transform': 'rotate(' + scale.degree + 'deg)', // 兼容IE9
+        '-moz-transform': 'rotate(' + scale.degree + 'deg)', // 兼容FireFox
+        '-webkit-transform': 'rotate(' + scale.degree + 'deg)', // 兼容Safari 和 chrome
+        '-o-transform': 'rotate(' + scale.degree + 'deg)' // 兼容 Opera
+      };
+    }
+
+    // 原图蒙版属性
+    get sourceImgMasking() {
+      const {
+        width,
+        height,
+        ratio,
+        sourceImgContainer
+      } = this;
+      const sic = sourceImgContainer;
+      const sicRatio = sic.width / sic.height; // 原图容器宽高比
+      let x = 0;
+      let y = 0;
+      let w = sic.width;
+      let h = sic.height;
+      let scale = 1;
+      if (ratio < sicRatio) {
+        scale = sic.height / height;
+        w = sic.height * ratio;
+        x = (sic.width - w) / 2;
+      }
+      if (ratio > sicRatio) {
+        scale = sic.width / width;
+        h = sic.width / ratio;
+        y = (sic.height - h) / 2;
+      }
+      return {
+        scale, // 蒙版相对需求宽高的缩放
+        x,
+        y,
+        width: w,
+        height: h
+      };
+    }
+
+    // 原图遮罩样式
+    get sourceImgShadeStyle() {
+      const {
+        sourceImgMasking,
+        sourceImgContainer
+      } = this;
+      const sic = sourceImgContainer;
+      const sim = sourceImgMasking;
+      const w = sim.width === sic.width ? sim.width : (sic.width - sim.width) / 2;
+      const h = sim.height === sic.height ? sim.height : (sic.height - sim.height) / 2;
+      return {
+        width: w + 'px',
+        height: h + 'px'
+      };
+    }
+
+    get previewStyle() {
+      const {
+        width,
+        height,
+        ratio,
+        previewContainer
+      } = this;
+      const pc = previewContainer;
+      let w = pc.width;
+      let h = pc.height;
+      const pcRatio = w / h;
+      if (ratio < pcRatio) {
+        w = pc.height * ratio;
+      }
+      if (ratio > pcRatio) {
+        h = pc.width / ratio;
+      }
+      return {
+        width: w + 'px',
+        height: h + 'px'
+      };
+    }
+
+    @Watch('value')
+    onChangeValue(newValue) {
+      if (newValue && this.loading !== 1) {
+        this.reset();
+      }
+    }
+
+    created() {
+      const tempImgFormat: string = allowImgFormat.indexOf(this.imgFormat) === -1 ? 'jpg' : this.imgFormat;
+      this.mime = mimes[tempImgFormat];
+      // 规范图片格式
+      this.imgFormat = tempImgFormat;
+      if (this.langExt) {
+        Object.assign(this.lang, this.langExt);
+      }
+      // 绑定按键esc隐藏此插件事件
+      document.addEventListener('keyup', (e) => {
+        if (this.value && (e.key === 'Escape' || e.keyCode === 27)) {
+          this.off();
+        }
+      });
+    }
+
+    // 点击波纹效果
+    ripple(e) {
+      effectRipple(e);
+    }
+
+    // 关闭控件
+    off() {
+      setTimeout(() => {
+        this.$emit('input', false);
+        this.$emit('close');
+        if (this.step === 3 && this.loading === 2) {
+          this.setStep(1);
+        }
+      }, 200);
+    }
+
+    // 设置步骤
+    setStep(no) {
+      // 延时是为了显示动画效果呢，哈哈哈
+      setTimeout(() => {
+        this.step = no;
+      }, 200);
+    }
+
+    /* 图片选择区域函数绑定
+     ---------------------------------------------------------------*/
+    preventDefault(e) {
+      e.preventDefault();
+      return false;
+    }
+
+    handleClick(e) {
+      if (this.loading !== 1) {
+        if (e.target !== this.$refs.fileinput) {
+          e.preventDefault();
+          this.$refs.fileinput.click();
+        }
+      }
+    }
+
+    handleChange(e) {
+      e.preventDefault();
+      if (this.loading !== 1) {
+        const files = e.target.files || e.dataTransfer.files;
+        this.reset();
+        if (this.checkFile(files[0])) {
+          this.setSourceImg(files[0]);
+        }
+      }
+    }
+
+    /* ---------------------------------------------------------------*/
+
+    // 检测选择的文件是否合适
+    checkFile(file) {
+      const that = this;
+      const {
+        lang,
+        maxSize
+      } = that;
+      // 仅限图片
+      if (file.type.indexOf('image') === -1) {
+        that.hasError = true;
+        that.errorMsg = lang.error.onlyImg;
+        return false;
+      }
+      // 超出大小
+      if (file.size / 1024 > maxSize) {
+        that.hasError = true;
+        that.errorMsg = lang.error.outOfSize + maxSize + 'kb';
+        return false;
+      }
+      return true;
+    }
+
+    // 重置控件
+    reset() {
+      const that = this;
+      that.loading = 0;
+      that.hasError = false;
+      that.errorMsg = '';
+      that.progress = 0;
+    }
+
+    // 设置图片源
+    setSourceImg(file) {
+      const fr = new FileReader();
+      fr.onload = () => {
+        this.sourceImgUrl = fr.result as string;
+        this.startCrop();
+      };
+      fr.readAsDataURL(file);
+    }
+
+    // 剪裁前准备工作
+    startCrop() {
+      const that = this;
+      const {
+        width,
+        height,
+        ratio,
+        scale,
+        sourceImgUrl,
+        sourceImgMasking,
+        lang
+      } = that;
+      const sim = sourceImgMasking;
+      const img = new Image();
+      img.src = sourceImgUrl;
+      img.onload = () => {
+        const nWidth = img.naturalWidth;
+        const nHeight = img.naturalHeight;
+        const nRatio = nWidth / nHeight;
+        let w = sim.width;
+        let h = sim.height;
+        let x = 0;
+        let y = 0;
+        // 图片像素不达标
+        if (nWidth < width || nHeight < height) {
+          that.hasError = true;
+          that.errorMsg = lang.error.lowestPx + width + '*' + height;
+          return false;
+        }
+        if (ratio > nRatio) {
+          h = w / nRatio;
+          y = (sim.height - h) / 2;
+        }
+        if (ratio < nRatio) {
+          w = h * nRatio;
+          x = (sim.width - w) / 2;
+        }
+        scale.range = 0;
+        scale.x = x;
+        scale.y = y;
+        scale.width = w;
+        scale.height = h;
+        scale.degree = 0;
+        scale.minWidth = w;
+        scale.minHeight = h;
+        scale.maxWidth = nWidth * sim.scale;
+        scale.maxHeight = nHeight * sim.scale;
+        scale.naturalWidth = nWidth;
+        scale.naturalHeight = nHeight;
+        that.sourceImg = img;
+        that.createImg();
+        that.setStep(2);
+      };
+    }
+
+    // 鼠标按下图片准备移动
+    imgStartMove(e) {
+      e.preventDefault();
+      // 支持触摸事件，则鼠标事件无效
+      if (this.isSupportTouch && !e.targetTouches) {
+        return false;
+      }
+      const et = e.targetTouches ? e.targetTouches[0] : e;
+      const {
+        sourceImgMouseDown,
+        scale
+      } = this;
+      const simd = sourceImgMouseDown;
+      simd.mX = et.screenX;
+      simd.mY = et.screenY;
+      simd.x = scale.x;
+      simd.y = scale.y;
+      simd.on = true;
+    }
+
+    // 鼠标按下状态下移动，图片移动
+    imgMove(e) {
+      e.preventDefault();
+      // 支持触摸事件，则鼠标事件无效
+      if (this.isSupportTouch && !e.targetTouches) {
+        return false;
+      }
+      const et = e.targetTouches ? e.targetTouches[0] : e;
+      const {
+        sourceImgMouseDown: {
+          on,
+          mX,
+          mY,
+          x,
+          y
+        },
+        scale,
+        sourceImgMasking
+      } = this;
+      const sim = sourceImgMasking;
+      const nX = et.screenX;
+      const nY = et.screenY;
+      const dX = nX - mX;
+      const dY = nY - mY;
+      let rX = x + dX;
+      let rY = y + dY;
+      if (!on) return;
+      if (rX > 0) {
+        rX = 0;
+      }
+      if (rY > 0) {
+        rY = 0;
+      }
+      if (rX < sim.width - scale.width) {
+        rX = sim.width - scale.width;
+      }
+      if (rY < sim.height - scale.height) {
+        rY = sim.height - scale.height;
+      }
+      scale.x = rX;
+      scale.y = rY;
+    }
+
+    // 按钮按下开始向右旋转
+    startRotateRight() {
+      const that = this;
+      const {
+        scale
+      } = that;
+      scale.rotateRight = true;
+
+      function rotate() {
+        if (scale.rotateRight) {
+          const degree = ++scale.degree;
+          that.createImg(degree);
+          setTimeout(() => {
+            rotate();
+          }, 60);
+        }
+      }
+
+      rotate();
+    }
+
+    // 按钮按下开始向右旋转
+    startRotateLeft() {
+      const that = this;
+      const {
+        scale
+      } = that;
+      scale.rotateLeft = true;
+
+      function rotate() {
+        if (scale.rotateLeft) {
+          const degree = --scale.degree;
+          that.createImg(degree);
+          setTimeout(() => {
+            rotate();
+          }, 60);
+        }
+      }
+
+      rotate();
+    }
+
+    // 停止旋转
+    endRotate() {
+      const {
+        scale
+      } = this;
+      scale.rotateLeft = false;
+      scale.rotateRight = false;
+    }
+
+    // 按钮按下开始放大
+    startZoomAdd(e) {
+      const that = this;
+      const {
+        scale
+      } = that;
+      scale.zoomAddOn = true;
+
+      function zoom() {
+        if (scale.zoomAddOn) {
+          const range = scale.range >= 100 ? 100 : ++scale.range;
+          that.zoomImg(range);
+          setTimeout(() => {
+            zoom();
+          }, 60);
+        }
+      }
+
+      zoom();
+    }
+
+    // 按钮松开或移开取消放大
+    endZoomAdd() {
+      this.scale.zoomAddOn = false;
+    }
+
+    // 按钮按下开始缩小
+    startZoomSub() {
+      const that = this;
+      const {
+        scale
+      } = that;
+      scale.zoomSubOn = true;
+
+      function zoom() {
+        if (scale.zoomSubOn) {
+          const range = scale.range <= 0 ? 0 : --scale.range;
+          that.zoomImg(range);
+          setTimeout(() => {
+            zoom();
+          }, 60);
+        }
+      }
+
+      zoom();
+    }
+
+    // 按钮松开或移开取消缩小
+    endZoomSub(e) {
+      const {
+        scale
+      } = this;
+      scale.zoomSubOn = false;
+    }
+
+    zoomChange(e) {
+      this.zoomImg(e.target.value);
+    }
+
+    // 缩放原图
+    zoomImg(newRange) {
+      const that = this;
+      const {
+        sourceImgMasking,
+        sourceImgMouseDown,
+        scale
+      } = this;
+      const {
+        maxWidth,
+        maxHeight,
+        minWidth,
+        minHeight,
+        width,
+        height,
+        x,
+        y,
+        range
+      } = scale;
+      const sim = sourceImgMasking;
+      // 蒙版宽高
+      const sWidth = sim.width;
+      const sHeight = sim.height;
+      // 新宽高
+      const nWidth = minWidth + (maxWidth - minWidth) * newRange / 100;
+      const nHeight = minHeight + (maxHeight - minHeight) * newRange / 100;
+      // 新坐标（根据蒙版中心点缩放）
+      let nX = sWidth / 2 - (nWidth / width) * (sWidth / 2 - x);
+      let nY = sHeight / 2 - (nHeight / height) * (sHeight / 2 - y);
+      // 判断新坐标是否超过蒙版限制
+      if (nX > 0) {
+        nX = 0;
+      }
+      if (nY > 0) {
+        nY = 0;
+      }
+      if (nX < sWidth - nWidth) {
+        nX = sWidth - nWidth;
+      }
+      if (nY < sHeight - nHeight) {
+        nY = sHeight - nHeight;
+      }
+      // 赋值处理
+      scale.x = nX;
+      scale.y = nY;
+      scale.width = nWidth;
+      scale.height = nHeight;
+      scale.range = newRange;
+      setTimeout(() => {
+        if (scale.range === newRange) {
+          that.createImg();
+        }
+      }, 300);
+    }
+
+    // 生成需求图片
+    createImg(e?: number) {
+      const that = this;
+      const {
+        mime,
+        sourceImg,
+        scale: {
+          x,
+          y,
+          width,
+          height,
+          degree
+        },
+        sourceImgMasking: {
+          scale
+        }
+      } = that;
+      const canvas = that.$refs.canvas;
+      const ctx: any = canvas.getContext('2d');
+      if (e) {
+        // 取消鼠标按下移动状态
+        that.sourceImgMouseDown.on = false;
+      }
+      canvas.width = that.width;
+      canvas.height = that.height;
+      ctx.clearRect(0, 0, that.width, that.height);
+      // 将透明区域设置为白色底边
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, that.width, that.height);
+      ctx.translate(that.width * 0.5, that.height * 0.5);
+      ctx.rotate(Math.PI * degree / 180);
+      ctx.translate(-that.width * 0.5, -that.height * 0.5);
+      ctx.drawImage(sourceImg, x / scale, y / scale, width / scale, height / scale);
+      that.createImgUrl = canvas.toDataURL(mime);
+    }
+
+    prepareUpload() {
+      const {
+        url,
+        createImgUrl,
+        field,
+        ki
+      } = this;
+      this.$emit('crop-success', createImgUrl, field, ki);
+      if (typeof url === 'string' && url) {
+        this.upload();
+      } else {
         this.off();
       }
-    });
+    }
+
+    // 上传图片
+    upload() {
+      const that = this;
+      const {
+        lang,
+        imgFormat,
+        mime,
+        url,
+        params,
+        headers,
+        field,
+        ki,
+        createImgUrl,
+        withCredentials
+      } = this;
+      const fmData = new FormData();
+      fmData.append(field, dataURLToBlob(createImgUrl, mime), field + '.' + imgFormat);
+      // 添加其他参数
+      if (typeof params === 'object' && params) {
+        Object.keys(params).forEach((k) => {
+          fmData.append(k, params[k]);
+        });
+      }
+      // 监听进度回调
+      const uploadProgress = (event) => {
+        if (event.lengthComputable) {
+          that.progress = 100 * Math.round(event.loaded) / event.total;
+        }
+      };
+      // 上传文件
+      that.reset();
+      that.loading = 1;
+      that.setStep(3);
+      axios.post(url, fmData).then((resData) => {
+        that.loading = 2;
+        // console.log(resData);
+        that.$emit('crop-upload-success', resData);
+      }).catch((err) => {
+        if (that.value) {
+          that.loading = 3;
+          that.hasError = true;
+          that.errorMsg = lang.fail;
+          that.$emit('crop-upload-fail', err, field, ki);
+        }
+      });
+    }
   }
-}
 </script>
 
 
