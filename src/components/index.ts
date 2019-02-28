@@ -19,3 +19,6 @@ export { default as TreeTable } from './TreeTable/index.vue';
 export { default as ImageCropper } from './ImageCropper/index.vue';
 export { default as BackToTop } from './BackToTop/index.vue';
 export { default as DndList } from './DndList/index.vue';
+export { default as Kanban } from './Kanban/index.vue';
+export { default as DragSelect } from './DragSelect/index.vue';
+export { default as DropZone } from './DropZone/index.vue';
