@@ -15,12 +15,12 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
   import {
-    DragSelect
+    ElDragSelect
   } from '@/components';
 
   @Component({
     components: {
-      DragSelect
+      ElDragSelect
     }
   })
   export default class DragSelectView extends Vue {

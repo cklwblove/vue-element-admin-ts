@@ -11,6 +11,7 @@
         {{ element.name }} {{ element.id }}
       </div>
     </draggable>
+  </div>
 </template>
 
 <script lang="ts">

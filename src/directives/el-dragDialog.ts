@@ -7,10 +7,10 @@ export default {
 
     // 获取原有属性 ie dom元素.currentStyle 火狐谷歌 window.getComputedStyle(dom元素, null);
     const getStyle = (() => {
-      if (window.document.currentStyle) {
+      if ((window.document as any).currentStyle) {
         return (dom, attr) => dom.currentStyle[attr];
       } else {
-        return (dom, attr) => getComputedStyle(dom, false)[attr];
+        return (dom, attr) => getComputedStyle(dom, null)[attr];
       }
     })();
 

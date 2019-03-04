@@ -1,15 +1,33 @@
 <template>
-
+  <div class="components-container">
+    <code>JsonEditor is base on <a href="https://github.com/codemirror/CodeMirror" target="_blank">CodeMirrorr</a> ,
+      lint base on json-lint </code>
+    <div class="editor-container">
+      <json-editor ref="jsonEditor" v-model="value"/>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
+  import { JsonEditor } from '@/components';
 
-  @Component
-  export default class JsonEditor extends Vue {
+  /* tslint:disable */
+  const jsonData = '[{"items":[{"market_type":"forexdata","symbol":"XAUUSD"},{"market_type":"forexdata","symbol":"UKOIL"},{"market_type":"forexdata","symbol":"CORN"}],"name":""},{"items":[{"market_type":"forexdata","symbol":"XAUUSD"},{"market_type":"forexdata","symbol":"XAGUSD"},{"market_type":"forexdata","symbol":"AUTD"},{"market_type":"forexdata","symbol":"AGTD"}],"name":"贵金属"},{"items":[{"market_type":"forexdata","symbol":"CORN"},{"market_type":"forexdata","symbol":"WHEAT"},{"market_type":"forexdata","symbol":"SOYBEAN"},{"market_type":"forexdata","symbol":"SUGAR"}],"name":"农产品"},{"items":[{"market_type":"forexdata","symbol":"UKOIL"},{"market_type":"forexdata","symbol":"USOIL"},{"market_type":"forexdata","symbol":"NGAS"}],"name":"能源化工"}]';
+
+  @Component({
+    components: {
+      JsonEditor
+    }
+  })
+  export default class JsonEditorView extends Vue {
+    value: any = JSON.parse(jsonData);
   }
 </script>
 
-<style rel="stylesheet/less" lang="less" scoped>
-
+<style scoped>
+  .editor-container {
+    position: relative;
+    height: 100%;
+  }
 </style>

@@ -10,68 +10,25 @@
   import 'dropzone/dist/dropzone.css';
 
   Dropzone.autoDiscover = false;
-  @Component({
-    props: {
-      id: {
-        type: String,
-        required: true
-      },
-      url: {
-        type: String,
-        required: true
-      },
-      clickable: {
-        type: Boolean,
-        default: true
-      },
-      defaultMsg: {
-        type: String,
-        default: '上传图片'
-      },
-      acceptedFiles: {
-        type: String,
-        default: ''
-      },
-      thumbnailHeight: {
-        type: Number,
-        default: 200
-      },
-      thumbnailWidth: {
-        type: Number,
-        default: 200
-      },
-      showRemoveLink: {
-        type: Boolean,
-        default: true
-      },
-      maxFilesize: {
-        type: Number,
-        default: 2
-      },
-      maxFiles: {
-        type: Number,
-        default: 3
-      },
-      autoProcessQueue: {
-        type: Boolean,
-        default: true
-      },
-      useCustomDropzoneOptions: {
-        type: Boolean,
-        default: false
-      },
-      defaultImg: {
-        default: '',
-        type: [String, Array]
-      },
-      couldPaste: {
-        type: Boolean,
-        default: false
-      }
-    }
-  })
+
+  @Component
   export default class DropZone extends Vue {
-    dropzone: string = '';
+    @Prop({required: true}) id!: string;
+    @Prop({required: true}) url!: string;
+    @Prop({default: true}) clickable!: boolean;
+    @Prop({default: '上传图片'}) defaultMsg!: string;
+    @Prop({default: ''}) acceptedFiles!: string;
+    @Prop({default: 200}) thumbnailHeight!: number;
+    @Prop({default: 200}) thumbnailWidth!: number;
+    @Prop({default: true}) showRemoveLink!: boolean;
+    @Prop({default: 2}) maxFilesize!: number;
+    @Prop({default: 3}) maxFiles!: number;
+    @Prop({default: true}) autoProcessQueue!: boolean;
+    @Prop({default: false}) useCustomDropzoneOptions!: boolean;
+    @Prop({default: ''}) defaultImg!: string | string[];
+    @Prop({default: false}) couldPaste!: boolean;
+
+    dropzone: any = null;
     initOnce: boolean = true;
 
     @Watch('defaultImg')
@@ -85,10 +42,10 @@
       this.initOnce = false;
     }
 
-    /* tslint:disable */
     mounted() {
-      const element = document.getElementById(this.id);
+      const element = document.getElementById(this.id) as HTMLElement;
       const vm = this;
+      /* tslint:disable */
       this.dropzone = new Dropzone(element, {
         clickable: this.clickable,
         thumbnailWidth: this.thumbnailWidth,
@@ -108,18 +65,18 @@
           if (Array.isArray(val)) {
             if (val.length === 0) return;
             val.map((v, i) => {
-              const mockFile = {name: 'name' + i, size: 12345, url: v};
-              this.options.addedfile.call(this, mockFile);
-              this.options.thumbnail.call(this, mockFile, v);
+              const mockFile: any = {name: 'name' + i, size: 12345, url: v};
+              (this as any).options.addedfile.call(this, mockFile);
+              (this as any).options.thumbnail.call(this, mockFile, v);
               mockFile.previewElement.classList.add('dz-success');
               mockFile.previewElement.classList.add('dz-complete');
               vm.initOnce = false;
               return true;
             });
           } else {
-            const mockFile = {name: 'name', size: 12345, url: val};
-            this.options.addedfile.call(this, mockFile);
-            this.options.thumbnail.call(this, mockFile, val);
+            const mockFile: any = {name: 'name', size: 12345, url: val};
+            (this as any).options.addedfile.call(this, mockFile);
+            (this as any).options.thumbnail.call(this, mockFile, val);
             mockFile.previewElement.classList.add('dz-success');
             mockFile.previewElement.classList.add('dz-complete');
             vm.initOnce = false;
@@ -188,7 +145,7 @@
       if (!val) return;
       if (Array.isArray(val)) {
         val.map((v, i) => {
-          const mockFile = {name: 'name' + i, size: 12345, url: v};
+          const mockFile: any = {name: 'name' + i, size: 12345, url: v};
           this.dropzone.options.addedfile.call(this.dropzone, mockFile);
           this.dropzone.options.thumbnail.call(this.dropzone, mockFile, v);
           mockFile.previewElement.classList.add('dz-success');
@@ -196,7 +153,7 @@
           return true;
         });
       } else {
-        const mockFile = {name: 'name', size: 12345, url: val};
+        const mockFile: any = {name: 'name', size: 12345, url: val};
         this.dropzone.options.addedfile.call(this.dropzone, mockFile);
         this.dropzone.options.thumbnail.call(this.dropzone, mockFile, val);
         mockFile.previewElement.classList.add('dz-success');
