@@ -1,6 +1,6 @@
 {
   "name": "vue-element-admin-ts",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "A front-end template built on vue-cli3 and typescript",
   "author": "liwb <liwb@gmail.com>",
