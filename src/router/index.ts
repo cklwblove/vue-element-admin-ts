@@ -162,6 +162,37 @@ export const asyncRouterMap = [
   nestedRouter,
   tableRouter,
   {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/list',
+    name: 'Example',
+    meta: {
+      title: 'example',
+      icon: 'example'
+    },
+    children: [
+      {
+        path: 'create',
+        component: () => import('@/views/example/create.vue'),
+        name: 'CreateArticle',
+        meta: {title: 'createArticle', icon: 'edit'}
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/example/edit.vue'),
+        name: 'EditArticle',
+        meta: {title: 'editArticle', noCache: true},
+        hidden: true
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/example/list.vue'),
+        name: 'ArticleList',
+        meta: {title: 'articleList', icon: 'list'}
+      }
+    ]
+  },
+  {
     path: '/error',
     component: Layout,
     redirect: 'noredirect',

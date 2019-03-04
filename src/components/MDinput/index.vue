@@ -108,7 +108,7 @@
   import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
   @Component
-  export default class MdInput extends Vue {
+  export default class MDinput extends Vue {
     @Prop() icon!: string;
     @Prop() name!: string;
     @Prop({default: 'text'}) type!: string;
