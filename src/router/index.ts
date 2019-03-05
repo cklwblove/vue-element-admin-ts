@@ -229,6 +229,36 @@ export const asyncRouterMap = [
       }
     ]
   },
+  {
+    path: '/excel',
+    component: Layout,
+    redirect: '/excel/export-excel',
+    name: 'Excel',
+    meta: {
+      title: 'excel',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'export-excel',
+        component: () => import('@/views/excel/exportExcel.vue'),
+        name: 'ExportExcel',
+        meta: { title: 'exportExcel' }
+      },
+      {
+        path: 'export-selected-excel',
+        component: () => import('@/views/excel/selectExcel.vue'),
+        name: 'SelectExcel',
+        meta: { title: 'selectExcel' }
+      },
+      {
+        path: 'upload-excel',
+        component: () => import('@/views/excel/uploadExcel.vue'),
+        name: 'UploadExcel',
+        meta: { title: 'uploadExcel' }
+      }
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 ];
 
