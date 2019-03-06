@@ -29,4 +29,4 @@ export { default as Sticky } from './Sticky/index.vue';
 export { default as Tinymce } from './Tinymce/index.vue';
 export { default as Upload } from './Upload/SingleImage.vue';
 export { default as MDinput } from './MDinput/index.vue';
-export { default as UploadExcel } from './UploadExcel/index.vue';
+export { default as UploadExcelComponent } from './UploadExcel/index.vue';

@@ -259,6 +259,18 @@ export const asyncRouterMap = [
       }
     ]
   },
+  {
+    path: '/tab',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: loadView('tab'),
+        name: 'Tab',
+        meta: { title: 'tab', icon: 'tab' }
+      }
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 ];
 

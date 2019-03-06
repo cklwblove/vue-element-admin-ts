@@ -9,8 +9,13 @@
 
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
+  import { UploadExcelComponent } from '@/components';
 
-  @Component
+  @Component({
+    components: {
+      UploadExcelComponent
+    }
+  })
   export default class UploadExcelView extends Vue {
     tableData: any[] = [];
     tableHeader: any[] = [];
