@@ -243,19 +243,19 @@ export const asyncRouterMap = [
         path: 'export-excel',
         component: () => import('@/views/excel/exportExcel.vue'),
         name: 'ExportExcel',
-        meta: { title: 'exportExcel' }
+        meta: {title: 'exportExcel'}
       },
       {
         path: 'export-selected-excel',
         component: () => import('@/views/excel/selectExcel.vue'),
         name: 'SelectExcel',
-        meta: { title: 'selectExcel' }
+        meta: {title: 'selectExcel'}
       },
       {
         path: 'upload-excel',
         component: () => import('@/views/excel/uploadExcel.vue'),
         name: 'UploadExcel',
-        meta: { title: 'uploadExcel' }
+        meta: {title: 'uploadExcel'}
       }
     ]
   },
@@ -267,7 +267,89 @@ export const asyncRouterMap = [
         path: 'index',
         component: loadView('tab'),
         name: 'Tab',
-        meta: { title: 'tab', icon: 'tab' }
+        meta: {title: 'tab', icon: 'tab'}
+      }
+    ]
+  },
+  {
+    path: '/pdf',
+    component: Layout,
+    redirect: '/pdf/index',
+    children: [
+      {
+        path: 'index',
+        component: loadView('pdf'),
+        name: 'PDF',
+        meta: {title: 'pdf', icon: 'pdf'}
+      }
+    ]
+  },
+  {
+    path: '/pdf/download',
+    component: () => import('@/views/pdf/download.vue'),
+    hidden: true
+  },
+  {
+    path: '/zip',
+    component: Layout,
+    redirect: '/zip/download',
+    alwaysShow: true,
+    meta: {title: 'zip', icon: 'zip'},
+    children: [
+      {
+        path: 'download',
+        component: loadView('zip'),
+        name: 'ExportZip',
+        meta: {title: 'exportZip'}
+      }
+    ]
+  },
+  {
+    path: '/theme',
+    component: Layout,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'index',
+        component: loadView('theme'),
+        name: 'Theme',
+        meta: {title: 'theme', icon: 'theme'}
+      }
+    ]
+  },
+
+  {
+    path: '/clipboard',
+    component: Layout,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'index',
+        component: loadView('clipboard'),
+        name: 'ClipboardDemo',
+        meta: {title: 'clipboardDemo', icon: 'clipboard'}
+      }
+    ]
+  },
+  {
+    path: '/i18n',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: loadView('i18n-demo'),
+        name: 'I18n',
+        meta: {title: 'i18n', icon: 'international'}
+      }
+    ]
+  },
+  {
+    path: 'external-link',
+    component: Layout,
+    children: [
+      {
+        path: 'https://github.com/PanJiaChen/vue-element-admin',
+        meta: {title: 'externalLink', icon: 'link'}
       }
     ]
   },
