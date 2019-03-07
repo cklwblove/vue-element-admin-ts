@@ -35,7 +35,7 @@
   export default class TreeTable extends Vue {
     @Prop({required: true}) data!: any[];
     @Prop({default: () => []}) columns!: any[];
-    @Prop() evalFunc!: () => void;
+    @Prop() evalFunc!: any;
     @Prop() evalArgs!: boolean;
     @Prop({default: false}) expandAll!: boolean;
 
@@ -48,8 +48,6 @@
       }
       const more: any[] = [];
       const func = this.evalFunc || treeToArray;
-      /* tslint:disable */
-      // TODO 异常待解决
       const args = this.evalArgs ? more.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll];
       return func.apply(null, args);
     }
