@@ -1,0 +1,100 @@
+<template>
+  <div class="app-container">
+
+    <el-button :loading="downloadLoading" style="margin-bottom:20px" type="primary" icon="document"
+               @click="handleDownload">Export
+    </el-button>
+
+    <el-table
+      v-loading="listLoading"
+      ref="multipleTable"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column align="center" label="Id" width="95">
+        <template slot-scope="scope">
+          {{ scope.$index }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Main Information" align="center">
+        <el-table-column label="Title">
+          <template slot-scope="scope">
+            {{ scope.row.title }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Author" width="110" align="center">
+          <template slot-scope="scope">
+            <el-tag>{{ scope.row.author }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="Readings" width="115" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.pageviews }}
+          </template>
+        </el-table-column>
+      </el-table-column>
+      <el-table-column align="center" label="Date" width="220">
+        <template slot-scope="scope">
+          <i class="el-icon-time"/>
+          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script lang="ts">
+  import { Component, Vue } from 'vue-property-decorator';
+  import { parseTime } from '@/utils';
+
+  @Component
+  export default class MergeHeader extends Vue {
+    list: any[] = [];
+    listLoading: boolean = true;
+    downloadLoading: boolean = false;
+
+    created() {
+      this.fetchData();
+    }
+
+    fetchData() {
+      this.listLoading = true;
+      this.$services.articleList({method: 'get'}).then((response) => {
+        this.list = response.items;
+        this.listLoading = false;
+      });
+    }
+
+    handleDownload() {
+      this.downloadLoading = true;
+      import('@/assets/js/export2Excel.js').then((excel) => {
+        const multiHeader = [['Id', 'Main Information', '', '', 'Date']];
+        const header = ['', 'Title', 'Author', 'Readings', ''];
+        const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time'];
+        const list = this.list;
+        const data = this.formatJson(filterVal, list);
+        const merges = ['A1:A2', 'B1:D1', 'E1:E2'];
+        excel.export_json_to_excel({
+          multiHeader,
+          header,
+          merges,
+          data
+        });
+        this.downloadLoading = false;
+      });
+    }
+
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) => filterVal.map((j) => {
+        if (j === 'timestamp') {
+          return parseTime(v[j], null);
+        } else {
+          return v[j];
+        }
+      }));
+    }
+  }
+</script>

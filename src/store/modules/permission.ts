@@ -21,14 +21,14 @@ function hasPermission(roles: string[], route: RouteConfig) {
  * @param routes asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter(routes: RouteConfig[], roles: string[]) {
+export function filterAsyncRoutes(routes: RouteConfig[], roles: string[]) {
   const res: RouteConfig[] = [];
 
   routes.forEach((route) => {
     const tmp: RouteConfig = {...route};
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRouter(tmp.children, roles);
+        tmp.children = filterAsyncRoutes(tmp.children, roles);
       }
       res.push(tmp);
     }
@@ -55,7 +55,7 @@ class Permission extends VuexModule implements IPermissionState {
     if (roles.includes('admin')) {
       accessedRouters = asyncRouterMap;
     } else {
-      accessedRouters = filterAsyncRouter(asyncRouterMap, roles);
+      accessedRouters = filterAsyncRoutes(asyncRouterMap, roles);
     }
 
     return accessedRouters;

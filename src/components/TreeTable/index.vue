@@ -1,115 +1,182 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs">
-    <el-table-column v-if="columns.length===0" width="150">
+  <el-table :data="tableData" :row-style="showRow" v-bind="$attrs" v-on="$listeners">
+    <slot name="selection"/>
+    <slot name="pre-column"/>
+    <el-table-column
+      v-for="item in columns"
+      :key="item.key"
+      :label="item.label"
+      :width="item.width"
+      :align="item.align||'center'"
+      :header-align="item.headerAlign"
+    >
       <template slot-scope="scope">
-        <span v-for="space in scope.row._level" :key="space" class="ms-tree-space"/>
-        <span v-if="iconShow(0,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
-          <i v-if="!scope.row._expanded" class="el-icon-plus"/>
-          <i v-else class="el-icon-minus"/>
-        </span>
-        {{ scope.$index }}
+        <slot :scope="scope" :name="item.key">
+          <template v-if="item.expand">
+            <span :style="{'padding-left':+scope.row._level*indent + 'px'} "/>
+            <span v-show="showSperadIcon(scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
+              <i v-if="!scope.row._expand" class="el-icon-plus"/>
+              <i v-else class="el-icon-minus"/>
+            </span>
+          </template>
+          <template v-if="item.checkbox">
+            <el-checkbox
+              v-if="scope.row[defaultChildren]&&scope.row[defaultChildren].length>0"
+              v-model="scope.row._select"
+              :style="{'padding-left':+scope.row._level*indent + 'px'} "
+              :indeterminate="scope.row._select"
+              @change="handleCheckAllChange(scope.row)"
+            />
+            <el-checkbox
+              v-else
+              v-model="scope.row._select"
+              :style="{'padding-left':+scope.row._level*indent + 'px'} "
+              @change="handleCheckAllChange(scope.row)"
+            />
+          </template>
+          {{ scope.row[item.key] }}
+        </slot>
       </template>
     </el-table-column>
-    <el-table-column v-for="(column, index) in columns" v-else :key="column.value" :label="column.text"
-                     :width="column.width">
-      <template slot-scope="scope">
-        <!-- Todo -->
-        <!-- eslint-disable-next-line vue/no-confusing-v-for-v-if -->
-        <span v-for="space in scope.row._level" v-if="index === 0" :key="space" class="ms-tree-space"/>
-        <span v-if="iconShow(index,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
-          <i v-if="!scope.row._expanded" class="el-icon-plus"/>
-          <i v-else class="el-icon-minus"/>
-        </span>
-        {{ scope.row[column.value] }}
-      </template>
-    </el-table-column>
-    <slot/>
   </el-table>
 </template>
 
 <script lang="ts">
-  import { Component, Vue, Prop } from 'vue-property-decorator';
-  import treeToArray from './eval';
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import treeToArray, { addAttrs } from './eval';
 
-  @Component
-  export default class TreeTable extends Vue {
-    @Prop({required: true}) data!: any[];
-    @Prop({default: () => []}) columns!: any[];
-    @Prop() evalFunc!: any;
-    @Prop() evalArgs!: boolean;
-    @Prop({default: false}) expandAll!: boolean;
+@Component
+export default class TreeTable extends Vue {
+  @Prop({required: true}) data!: any[];
+  @Prop({default: () => []}) columns!: any[];
+  @Prop({default: 50}) indent!: number;
+  @Prop({default: false}) defaultExpandAll!: boolean;
+  @Prop({default: 'children'}) defaultChildren!: string;
 
-    get formatData() {
-      let tmp: any[];
-      if (!Array.isArray(this.data)) {
-        tmp = [this.data];
-      } else {
-        tmp = this.data;
-      }
-      const more: any[] = [];
-      const func = this.evalFunc || treeToArray;
-      const args = this.evalArgs ? more.concat([tmp, this.expandAll], this.evalArgs) : [tmp, this.expandAll];
-      return func.apply(null, args);
+  guard: number = 1;
+
+  get children() {
+    return this.defaultChildren;
+  }
+
+  get tableData() {
+    const data = this.data;
+    if (this.data.length === 0) {
+      return [];
     }
+    addAttrs(data, {
+      expand: this.defaultExpandAll,
+      children: this.defaultChildren
+    });
 
-    showRow(row) {
-      const show = (row.row.parent ? (row.row.parent._expanded && row.row.parent._show) : true);
-      row.row._show = show;
-      return show ? 'animation:treeTableShow 1s;-webkit-animation:treeTableShow 1s;' : 'display:none;';
-    }
+    const retval = treeToArray(data, this.defaultChildren);
+    return retval;
+  }
 
-    // 切换下级是否展开
-    toggleExpanded(trIndex) {
-      const record = this.formatData[trIndex];
-      record._expanded = !record._expanded;
-    }
-
-    // 图标显示
-    iconShow(index, record) {
-      return (index === 0 && record.children && record.children.length > 0);
+  addBrother(row, data) {
+    if (row._parent) {
+      row._parent.children.push(data);
+    } else {
+      this.data.push(data);
     }
   }
+
+  addChild(row, data) {
+    if (!row.children) {
+      this.$set(row, 'children', []);
+    }
+    row.children.push(data);
+  }
+
+  delete(row) {
+    const {_index, _parent} = row;
+    if (_parent) {
+      _parent.children.splice(_index, 1);
+    } else {
+      this.data.splice(_index, 1);
+    }
+  }
+
+  getData() {
+    return this.tableData;
+  }
+
+  showRow({row}) {
+    const parent = row._parent;
+    const show = parent ? parent._expand && parent._show : true;
+    row._show = show;
+    return show
+      ? 'animation:treeTableShow 1s;-webkit-animation:treeTableShow 1s;'
+      : 'display:none;';
+  }
+
+  showSperadIcon(record) {
+    return record[this.children] && record[this.children].length > 0;
+  }
+
+  toggleExpanded(trIndex) {
+    const record = this.tableData[trIndex];
+    const expand = !record._expand;
+    record._expand = expand;
+  }
+
+  handleCheckAllChange(row) {
+    this.selcetRecursion(row, row._select, this.defaultChildren);
+    // this.isIndeterminate = row._select;
+  }
+
+  selcetRecursion(row, select, children = 'children') {
+    if (select) {
+      this.$set(row, '_expand', true);
+      this.$set(row, '_show', true);
+    }
+    const subItem = row[children];
+    if (subItem && subItem.length > 0) {
+      subItem.map((child) => {
+        child._select = select;
+        this.selcetRecursion(child, select, children);
+      });
+    }
+  }
+
+  updateTreeNode(item) {
+    return new Promise((resolve) => {
+      const {_id, _parent} = item;
+      const index = _id.split('-').slice(-1)[0]; // get last index
+      if (_parent) {
+        _parent.children.splice(index, 1, item);
+        resolve(this.data);
+      } else {
+        this.data.splice(index, 1, item);
+        resolve(this.data);
+      }
+    });
+  }
+}
 </script>
 
 <style>
   @keyframes treeTableShow {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-  @-webkit-keyframes treeTableShow {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-</style>
-
-<style rel="stylesheet/less" lang="less" scoped>
-  @color-blue: #2196F3;
-  @space-width: 18px;
-  .ms-tree-space {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1;
-    width: @space-width;
-    height: 14px;
-    &::before {
-      content: ""
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
-  .processContainer{
-    width: 100%;
-    height: 100%;
-  }
-  table td {
-    line-height: 26px;
+
+  @-webkit-keyframes treeTableShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
-  .tree-ctrl{
+  .tree-ctrl {
     position: relative;
     cursor: pointer;
-    color: @color-blue;
-    margin-left: -@space-width;
+    color: #2196f3;
   }
 </style>

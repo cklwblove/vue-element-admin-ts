@@ -14,6 +14,7 @@ import componentsRouter from './modules/components';
 import chartsRouter from './modules/charts';
 import tableRouter from './modules/table';
 import nestedRouter from './modules/nested';
+import treeTableRouter from './modules/treeTable';
 
 Vue.use(Router);
 
@@ -53,8 +54,8 @@ export const constantRouterMap = [
   },
   {
     path: '/login',
-    name: 'login',
-    component: loadView('login')
+    component: loadView('login'),
+    hidden: true
   },
   {
     path: '',
@@ -141,6 +142,15 @@ export const asyncRouterMap = [
           title: 'directivePermission'
           // if do not set roles, means: this page does not require permission
         }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/permission/role.vue'),
+        name: 'RolePermission',
+        meta: {
+          title: 'rolePermission',
+          roles: ['admin']
+        }
       }
     ]
   },
@@ -161,6 +171,7 @@ export const asyncRouterMap = [
   chartsRouter,
   nestedRouter,
   tableRouter,
+  treeTableRouter,
   {
     path: '/example',
     component: Layout,
@@ -250,6 +261,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/excel/selectExcel.vue'),
         name: 'SelectExcel',
         meta: {title: 'selectExcel'}
+      },
+      {
+        path: 'export-merge-header',
+        component: () => import('@/views/excel/mergeHeader.vue'),
+        name: 'MergeHeader',
+        meta: { title: 'mergeHeader' }
       },
       {
         path: 'upload-excel',

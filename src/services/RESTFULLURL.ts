@@ -8,5 +8,7 @@ export default {
   articleDetail: '/article/detail',
   articlePv: '/article/pv',
   articleCreate: '/article/create',
-  articleUpdate: '/article/update'
+  articleUpdate: '/article/update',
+  getRoutes: '/routes',
+  roles: '/roles',
 };

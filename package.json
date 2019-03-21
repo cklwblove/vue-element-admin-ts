@@ -36,7 +36,7 @@
     "driver.js": "^0.9.3",
     "dropzone": "^5.5.1",
     "echarts": "^4.1.0",
-    "element-ui": "^2.5.3",
+    "element-ui": "2.4.11",
     "file-saver": "^2.0.1",
     "fuse.js": "^3.4.2",
     "jsonlint": "^1.6.3",
