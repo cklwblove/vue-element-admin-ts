@@ -5,6 +5,7 @@ import { IErrorLogState } from './modules/errorLog';
 import { ITagsViewState } from './modules/tagsView';
 import { IUserState } from './modules/user';
 import { IPermissionState } from './modules/permission';
+import { ISettingsState } from './modules/settings';
 import getters from './getters';
 
 Vue.use(Vuex);
@@ -15,6 +16,7 @@ export interface IRootState {
   permission: IPermissionState;
   tagsView: ITagsViewState;
   errorLog: IErrorLogState;
+  settings: ISettingsState;
 }
 
 // Declare empty store first, dynamically register all modules later.

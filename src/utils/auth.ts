@@ -20,13 +20,11 @@ export function removeToken() {
   return store.remove(TokenKey);
 }
 
-export function getLanguage() {
-  return store.get(LANGUAGE);
-}
-
 export function setLanguage(language: string) {
   return store.set(LANGUAGE, language);
 }
+
+// getLanguage -> @/lang/index
 
 export function getSize() {
   return store.get(SIZE);

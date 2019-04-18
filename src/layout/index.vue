@@ -3,23 +3,30 @@
     <!--侧边栏出现的遮罩-->
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
     <sidebar class="sidebar-container"/>
-    <div class="main-container">
-      <navbar/>
-      <tags-view/>
+    <div :class="{hasTagsView:needTagsView}" class="main-container">
+      <div :class="{'fixed-header':fixedHeader}">
+        <navbar/>
+        <tags-view v-if="needTagsView"/>
+      </div>
       <app-main/>
+      <right-panel v-if="showSettings">
+        <settings/>
+      </right-panel>
     </div>
   </div>
 </template>
 
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
-  import { Navbar, Sidebar, AppMain, TagsView } from './components';
+  import { RightPanel } from '@/components';
+  import { Navbar, Sidebar, AppMain, TagsView, Settings } from './components';
   import { AppModule, DeviceType } from '@/store/modules/app';
   import ResizeMixin from './mixin/ResizeHandler';
 
   @Component({
     components: {
       Navbar,
+      RightPanel,
       Sidebar,
       AppMain,
       TagsView
@@ -33,6 +40,18 @@
 
     get device() {
       return this.$store.getters.device;
+    }
+
+    get showSettings() {
+      return this.$store.getters.showSettings;
+    }
+
+    get needTagsView() {
+      return this.$store.getters.tagsView;
+    }
+
+    get fixedHeader() {
+      return this.$store.getters.fixedHeader;
     }
 
     get classObj() {
@@ -73,5 +92,22 @@
     height: 100%;
     position: absolute;
     z-index: 999;
+  }
+
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9;
+    width: calc(100% - 210px);
+    transition: width 0.28s;
+  }
+
+  .hideSidebar .fixed-header {
+    width: calc(100% - 54px)
+  }
+
+  .mobile .fixed-header {
+    width: 100%;
   }
 </style>

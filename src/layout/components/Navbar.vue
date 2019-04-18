@@ -102,7 +102,7 @@ export default class Navbar extends Vue {
   logout() {
     this.actionLogOut().then(() => {
       // In order to re-instantiate the vue-router object to avoid bugs
-      location.reload();
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     });
   }
 }

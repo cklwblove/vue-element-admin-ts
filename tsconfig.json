@@ -22,7 +22,8 @@
     ],
     "paths": {
       "@/*": [
-        "src/*"
+        "src/*",
+        "mock/*"
       ]
     },
     "lib": [
@@ -36,6 +37,9 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "mock/*.ts",
+    "mock/**/*.ts",
+    "mock/**/*.tsx",
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "./types/*.d.ts"

@@ -54,7 +54,6 @@
   import AppLink from './Link.vue';
   import FixiOSBug from './FixiOSBug';
 
-  // TODO 侧边栏没有 tooltip 显示
   @Component({
     components: {
       AppLink
