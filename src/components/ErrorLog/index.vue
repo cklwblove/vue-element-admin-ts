@@ -44,8 +44,8 @@ export default class ErrorLog extends Vue {
   dialogTableVisible: boolean = false;
 
   get errorLogs() {
-    console.log('this.$store.getters', this.$store.getters);
-    return this.$store.getters.log || [];
+    // console.log('this.$store.getters', this.$store.getters);
+    return this.$store.getters.errorLogs || [];
   }
 }
 </script>

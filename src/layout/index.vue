@@ -35,8 +35,8 @@
     mixins: [ResizeMixin]
   })
   export default class Layout extends Vue {
-    created() {
-      console.log('this.$store', this.$store);
+    mounted() {
+      console.log('this.$store.state', this.$store.state);
     }
     get sidebar() {
       return this.$store.getters.sidebar;

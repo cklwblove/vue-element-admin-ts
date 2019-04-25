@@ -8,19 +8,19 @@
         <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange"/>
       </div>
 
-      <!--<div class="drawer-item">-->
-        <!--<span>{{ $t('settings.tagsView') }}</span>-->
-        <!--<el-switch v-model="tagsView" class="drawer-switch"/>-->
-      <!--</div>-->
+      <div class="drawer-item">
+        <span>{{ $t('settings.tagsView') }}</span>
+        <el-switch v-model="tagsViewModel" class="drawer-switch"/>
+      </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.fixedHeader') }}</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch"/>
+        <el-switch v-model="fixedHeaderModel" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.sidebarLogo') }}</span>
-        <el-switch v-model="sidebarLogo" class="drawer-switch"/>
+        <el-switch v-model="sidebarLogoModel" class="drawer-switch"/>
       </div>
 
     </div>
@@ -28,12 +28,9 @@
 </template>
 
 <script lang="ts">
-  import {
-    Getter,
-    Action
-  } from 'vuex-class';
   import { Component, Vue } from 'vue-property-decorator';
   import { ThemePicker } from '@/components';
+  import { SettingsModule } from '@/store/modules/settings';
 
   @Component({
     components: {
@@ -41,38 +38,42 @@
     }
   })
   export default class Settings extends Vue {
-    // @Getter fixedHeader;
-    // @Getter tagsView;
-    // @Getter sidebarLogo;
-    @Action('ChangeSetting') actionChangeSetting;
 
-    mounted() {
-      console.log('this.$store', this.$store);
+    get fixedHeaderModel() {
+      return this.$store.getters.fixedHeader;
     }
 
-    set fixedHeader(val) {
-      this.actionChangeSetting({
+    set fixedHeaderModel(val) {
+      SettingsModule.ChangeSetting({
         key: 'fixedHeader',
         value: val
       });
     }
 
-    // set tagsView(val) {
-    //   this.actionChangeSetting({
-    //     key: 'tagsView',
-    //     value: val
-    //   });
-    // }
+    get tagsViewModel() {
+      return this.$store.getters.tagsView;
+    }
 
-    set sidebarLogo(val) {
-      this.actionChangeSetting({
+    set tagsViewModel(val) {
+      SettingsModule.ChangeSetting({
+        key: 'tagsView',
+        value: val
+      });
+    }
+
+    get sidebarLogoModel() {
+      return this.$store.getters.sidebarLogo;
+    }
+
+    set sidebarLogoModel(val) {
+      SettingsModule.ChangeSetting({
         key: 'sidebarLogo',
         value: val
       });
     }
 
     themeChange(val) {
-      this.actionChangeSetting({
+      SettingsModule.ChangeSetting({
         key: 'theme',
         value: val
       });

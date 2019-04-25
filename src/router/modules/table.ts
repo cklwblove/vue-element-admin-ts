@@ -31,18 +31,6 @@ const tableRouter = {
       meta: {title: 'inlineEditTable'}
     },
     {
-      path: 'tree-table',
-      component: () => import('@/views/table/treeTable/treeTable.vue'),
-      name: 'TreeTableDemo',
-      meta: {title: 'treeTable'}
-    },
-    {
-      path: 'custom-tree-table',
-      component: () => import('@/views/table/treeTable/customTreeTable.vue'),
-      name: 'CustomTreeTableDemo',
-      meta: {title: 'customTreeTable'}
-    },
-    {
       path: 'complex-table',
       component: () => import('@/views/table/complexTable.vue'),
       name: 'ComplexTable',

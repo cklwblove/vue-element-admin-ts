@@ -112,7 +112,7 @@ class User extends VuexModule implements IUserState {
       if (!roles || roles.length <= 0) {
         throw Error('getInfo: roles must be a non-null array!');
       }
-      console.log('roles', roles);
+      // console.log('roles', roles);
       // TODO 动态生成路由
       PermissionModule.GenerateRoutes(roles).then(() => { // 根据roles权限生成可访问的路由表
         router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
