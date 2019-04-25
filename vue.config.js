@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const pkg = require('./package.json');
 
-const port = 3000;
+const port = 5577;
 
 const resolve = (dir) => {
   return path.join(__dirname, './', dir);

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "es6",
+    "module": "commonjs",
     "strict": true,
     "strictNullChecks": true,
     "jsx": "preserve",
@@ -13,6 +13,8 @@
     "esModuleInterop": true,
     // error TS7017: Index signature of object type implicitly has an 'any' type.
     "noImplicitAny": false,
+    // Don't emit; allow Babel to transform files.
+    "noEmit": true,
     "sourceMap": true,
     "allowJs": true,
     "baseUrl": ".",
@@ -37,9 +39,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "mock/*.ts",
     "mock/**/*.ts",
-    "mock/**/*.tsx",
+    "mock/*.ts",
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "./types/*.d.ts"

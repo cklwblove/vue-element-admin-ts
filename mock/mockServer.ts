@@ -26,8 +26,7 @@ function unregisterRoutes() {
 
 module.exports = (app) => {
   // es6 polyfill
-  require('@babel/register');
-
+  require('@babel/register')({ extensions: [ '.ts', '.tsx', '.js', '.jsx'] });
   // parse app.body
   // https://expressjs.com/en/4x/api.html#req.body
   app.use(bodyParser.json());
@@ -41,7 +40,7 @@ module.exports = (app) => {
 
   // watch files, hot reload mock server
   chokidar.watch(('./mock'), {
-    ignored: 'mock/mockServer.js',
+    ignored: 'mock/mockServer.ts',
     persistent: true,
     ignoreInitial: true
   }).on('all', (event, path) => {

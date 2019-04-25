@@ -67,12 +67,15 @@
     "xlsx": "^0.14.1"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/register": "^7.4.0",
     "@types/connect": "^3.4.32",
     "@vue/cli-plugin-babel": "^3.0.4",
     "@vue/cli-plugin-pwa": "^3.0.4",
     "@vue/cli-plugin-typescript": "^3.0.4",
     "@vue/cli-service": "^3.0.4",
     "archiver": "^3.0.0",
+    "babel-register-ts": "^7.0.0",
     "chalk": "^2.4.2",
     "chokidar": "^2.1.5",
     "compression-webpack-plugin": "^2.0.0",

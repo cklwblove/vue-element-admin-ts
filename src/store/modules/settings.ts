@@ -1,4 +1,5 @@
 import { getModule, Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
+import store from '@/store';
 import defaultSettings from '@/settings';
 
 const {showSettings, tagsView, fixedHeader, sidebarLogo, theme} = defaultSettings;
@@ -25,7 +26,7 @@ class Settings extends VuexModule implements ISettingsState {
   }
 
   @Mutation
-  private CHANGE_SETTING({key, value}) {
+  CHANGE_SETTING({key, value}) {
     if (this.hasOwnProperty(key)) {
       this[key] = value;
     }

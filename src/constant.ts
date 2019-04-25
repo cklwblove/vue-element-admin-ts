@@ -9,10 +9,12 @@ const TIMEOUT: number = 25000;
 const PAGE_NUM: number = 15;
 const UPLOAD_PREFIX: string = 'upload/';
 const HOME_PREFIX: string = 'home/';
+const SUCCESS_STATUS = 20000;
 
 export {
   TIMEOUT,
   PAGE_NUM,
   UPLOAD_PREFIX,
-  HOME_PREFIX
+  HOME_PREFIX,
+  SUCCESS_STATUS
 };

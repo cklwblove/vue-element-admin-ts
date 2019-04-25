@@ -8,10 +8,10 @@
         <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange"/>
       </div>
 
-      <div class="drawer-item">
-        <span>{{ $t('settings.tagsView') }}</span>
-        <el-switch v-model="tagsView" class="drawer-switch"/>
-      </div>
+      <!--<div class="drawer-item">-->
+        <!--<span>{{ $t('settings.tagsView') }}</span>-->
+        <!--<el-switch v-model="tagsView" class="drawer-switch"/>-->
+      <!--</div>-->
 
       <div class="drawer-item">
         <span>{{ $t('settings.fixedHeader') }}</span>
@@ -41,13 +41,13 @@
     }
   })
   export default class Settings extends Vue {
-    @Getter fixedHeader;
-    @Getter tagsView;
-    @Getter sidebarLogo;
+    // @Getter fixedHeader;
+    // @Getter tagsView;
+    // @Getter sidebarLogo;
     @Action('ChangeSetting') actionChangeSetting;
 
-    get fixedHeader() {
-      return this.fixedHeader;
+    mounted() {
+      console.log('this.$store', this.$store);
     }
 
     set fixedHeader(val) {
@@ -57,20 +57,12 @@
       });
     }
 
-    get tagsView() {
-      return this.tagsView;
-    }
-
-    set tagsView(val) {
-      this.actionChangeSetting({
-        key: 'tagsView',
-        value: val
-      });
-    }
-
-    get sidebarLogo() {
-      return this.sidebarLogo;
-    }
+    // set tagsView(val) {
+    //   this.actionChangeSetting({
+    //     key: 'tagsView',
+    //     value: val
+    //   });
+    // }
 
     set sidebarLogo(val) {
       this.actionChangeSetting({

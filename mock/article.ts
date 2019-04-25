@@ -1,5 +1,4 @@
 import Mock from 'mockjs';
-import { param2Obj } from '@/utils';
 
 const List: any[] = [];
 const count = 100;

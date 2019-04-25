@@ -1,7 +1,5 @@
-import variables from '@/styles/element-variables.scss';
-
 export default {
-  theme: variables.theme,
+  theme: '#1890ff',
 
   /**
    * @type {boolean} true | false

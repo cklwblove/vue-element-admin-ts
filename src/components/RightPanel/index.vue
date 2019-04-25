@@ -66,7 +66,7 @@ export default class RightPanel extends Vue {
 
   insertToBody() {
     const elx = this.$refs.rightPanel;
-    const body = document.querySelector('body');
+    const body = document.querySelector('body') as HTMLBodyElement;
     body.insertBefore(elx, body.firstChild);
   }
 }

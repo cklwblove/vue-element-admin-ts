@@ -1,5 +1,5 @@
 import Mock from 'mockjs';
-import { param2Obj } from '../src/utils';
+import { param2Obj } from '../src/utils/index';
 
 import role from './role';
 import article from './article';
@@ -20,6 +20,7 @@ export function mockXHR() {
   // mock patch
   // https://github.com/nuysoft/Mock/issues/300
   (Mock as any).XHR.prototype.proxy_send = (Mock as any).XHR.prototype.send;
+  // @ts-ignore
   (Mock as any).XHR.prototype.send = function() {
     if (this.custom.xhr) {
       this.custom.xhr.withCredentials = this.withCredentials || false;

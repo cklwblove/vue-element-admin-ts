@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Route } from 'vue-router';
 import { TagsViewModule } from '@/store/modules/tagsView';
 import ScrollPane from './ScrollPane.vue';
 import path from 'path';
@@ -40,7 +41,7 @@ export default class TagsView extends Vue {
   top: number = 0;
   left: number = 0;
   selectedTag: any = {};
-  affixTags: any[] = [];
+  affixTags: Route[] = [];
 
   $refs!: {
     scrollPane: any;
@@ -92,7 +93,7 @@ export default class TagsView extends Vue {
   }
 
   filterAffixTags(routes, basePath = '/') {
-    let tags = [];
+    let tags: any[] = [];
     routes.forEach((route) => {
       if (route.meta && route.meta.affix) {
         const tagPath = path.resolve(basePath, route.path);
@@ -114,7 +115,7 @@ export default class TagsView extends Vue {
   }
 
   initTags() {
-    const affixTags = this.affixTags = this.filterAffixTags(this.routes);
+    const affixTags: Route[] = this.affixTags = this.filterAffixTags(this.routes);
     for (const tag of affixTags) {
       // Must have tag name
       if (tag.name) {

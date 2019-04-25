@@ -3,7 +3,8 @@ import { setToken, getToken, removeToken } from '@/utils/auth';
 import services from '@/services';
 import store from '@/store';
 import { PermissionModule } from '@/store/modules/permission';
-import router from '@/router';
+import router, { resetRouter } from '@/router';
+import { SUCCESS_STATUS } from '@/constant';
 
 const permissionModule = PermissionModule;
 
@@ -80,39 +81,55 @@ class User extends VuexModule implements IUserState {
   @Action({commit: 'SET_TOKEN'})
   async LoginByUsername(userInfo: { username: string, password: string }) {
     const username = userInfo.username.trim();
-    const {token} = await services.loginByUsername({
+    const res = await services.loginByUsername({
       data: {
         username,
         password: userInfo.password
       }
     });
-    console.log('LoginByUsername token', token);
-    setToken(token);
-    return token;
+    const {code, data} = res;
+    if (code === SUCCESS_STATUS) {
+      const {token} = data;
+      setToken(token);
+    }
   }
 
   // 获取用户信息
-  @MutationAction({mutate: ['roles', 'name', 'avatar']})
+  @MutationAction({mutate: ['roles', 'name', 'avatar', 'introduction']})
   async GetUserInfo() {
-    const {roles, name, avatar} = await services.getUserInfo({
+    const {code, data} = await services.getUserInfo({
       method: 'get',
       data: {
         token: getToken()
       }
     });
-    if (roles && roles.length) {
+    if (!data) {
+      throw Error('Verification failed, please Login again.');
+    }
+    if (code === SUCCESS_STATUS) {
+      const {roles, name, avatar, introduction} = data;
+      // roles must be a non-empty array
+      if (!roles || roles.length <= 0) {
+        throw Error('getInfo: roles must be a non-null array!');
+      }
+      console.log('roles', roles);
       // TODO 动态生成路由
-      PermissionModule.GenerateRoutes({roles}).then(() => { // 根据roles权限生成可访问的路由表
+      PermissionModule.GenerateRoutes(roles).then(() => { // 根据roles权限生成可访问的路由表
         router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
       });
       return {
         roles,
         name,
-        avatar
+        avatar,
+        introduction
       };
-    } else {
-      throw Error('getInfo: roles must be a non-null array!');
     }
+    return {
+      roles: [],
+      name: '',
+      avatar: '',
+      introduction: ''
+    };
   }
 
   // 登出
@@ -120,6 +137,7 @@ class User extends VuexModule implements IUserState {
   async LogOut() {
     await services.logout({});
     removeToken();
+    resetRouter();
     return {
       token: '',
       roles: []
@@ -135,21 +153,29 @@ class User extends VuexModule implements IUserState {
   // 动态修改权限
   @MutationAction({mutate: ['token', 'roles', 'name', 'avatar', 'introduction']})
   async ChangeRoles(role: string) {
-    setToken(role);
-    const res = await services.getUserInfo({
+    const token = role + '-token';
+
+    setToken(token);
+
+    const {code, data} = await services.getUserInfo({
       method: 'get',
       data: {
         token: role
       }
     });
-    console.log('ChangeRoles res', res);
-    permissionModule.GenerateRoutes(res);
+    if (code === SUCCESS_STATUS) {
+      const {roles} = data;
+      console.log('ChangeRoles data', data);
+      resetRouter();
+      permissionModule.GenerateRoutes(roles);
+    }
+
     return {
-      token: role,
-      roles: res.roles,
-      name: res.name,
-      avatar: res.avatar,
-      introduction: res.introduction
+      token,
+      roles: data.roles,
+      name: data.name,
+      avatar: data.avatar,
+      introduction: data.introduction
     };
   }
 }

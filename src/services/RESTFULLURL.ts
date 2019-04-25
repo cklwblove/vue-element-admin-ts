@@ -1,6 +1,6 @@
 export default {
-  loginByUsername: '/login/login',
-  logout: '/login/logout',
+  loginByUsername: '/user/login',
+  logout: '/user/logout',
   getUserInfo: '/user/info/',
   getList: '/transaction/list',
   search: '/search/user',

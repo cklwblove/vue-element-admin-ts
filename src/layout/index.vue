@@ -29,11 +29,15 @@
       RightPanel,
       Sidebar,
       AppMain,
-      TagsView
+      TagsView,
+      Settings
     },
     mixins: [ResizeMixin]
   })
   export default class Layout extends Vue {
+    created() {
+      console.log('this.$store', this.$store);
+    }
     get sidebar() {
       return this.$store.getters.sidebar;
     }
