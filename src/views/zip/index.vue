@@ -39,6 +39,7 @@
 
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
+  import {SUCCESS_STATUS} from '@/constant';
 
   @Component
   export default class Zip extends Vue {
@@ -54,7 +55,12 @@
     fetchData() {
       this.listLoading = true;
       this.$services.articleList({method: 'get'}).then((response) => {
-        this.list = response.items;
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          this.list = data.items;
+        } else {
+          this.list = [];
+        }
         this.listLoading = false;
       });
     }

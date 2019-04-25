@@ -63,6 +63,7 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
   import { IListQuery } from '@/interface';
+  import {SUCCESS_STATUS} from '@/constant';
 
   @Component({
     filters: {
@@ -91,12 +92,17 @@
     getList() {
       this.listLoading = true;
       this.$services.articleList({method: 'get'}).then((response) => {
-        const items = response.items;
-        this.list = items.map((v) => {
-          this.$set(v, 'edit', false); // https://vuejs.org/v2/guide/reactivity.html
-          v.originalTitle = v.title; //  will be used when user click the cancel botton
-          return v;
-        });
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          const items = data.items;
+          this.list = items.map((v) => {
+            this.$set(v, 'edit', false); // https://vuejs.org/v2/guide/reactivity.html
+            v.originalTitle = v.title; //  will be used when user click the cancel botton
+            return v;
+          });
+        } else {
+          this.list = [];
+        }
         this.listLoading = false;
       });
     }

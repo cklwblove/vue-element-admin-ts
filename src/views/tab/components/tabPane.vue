@@ -55,6 +55,7 @@
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
   import { IListQuery } from '@/interface';
+  import {SUCCESS_STATUS} from '@/constant';
 
   interface IListQuery1 extends IListQuery {
     type: string;
@@ -93,7 +94,12 @@
       this.loading = true;
       this.$emit('create'); // for test
       this.$services.articleList({data: this.listQuery, method: 'get'}).then((response) => {
-        this.list = response.items;
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          this.list = data.items;
+        } else {
+          this.list = [];
+        }
         this.loading = false;
       });
     }

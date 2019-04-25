@@ -54,6 +54,7 @@
   import i18n from '@/lang';
   import { Component, Vue } from 'vue-property-decorator';
   import request from '@/services/request';
+  import {SUCCESS_STATUS} from '@/constant';
 
   interface IRole {
     key: string;
@@ -105,15 +106,24 @@
 
     async getRoutes() {
       const res = await this.$services.getRoutes({method: 'get'});
-      console.log(res);
-      this.serviceRoutes = res;
-      const routes = this.generateRoutes(res);
-      this.routes = this.i18n(routes);
+      const {code, data} = res;
+      // console.log('getRoutes', data);
+      if (code === SUCCESS_STATUS) {
+        this.serviceRoutes = data;
+        const routes = this.generateRoutes(data);
+        this.routes = this.i18n(routes);
+      }
     }
 
     async getRoles() {
       const res = await this.$services.roles({method: 'get'});
-      this.rolesList = res;
+      const {code, data} = res;
+      if (code === SUCCESS_STATUS) {
+        this.rolesList = data;
+      } else {
+        this.rolesList = [];
+      }
+
     }
 
     i18n(routes) {

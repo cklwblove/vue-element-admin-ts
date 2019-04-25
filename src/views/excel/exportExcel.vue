@@ -53,6 +53,7 @@ import { parseTime } from '@/utils';
 import FilenameOption from './components/FilenameOption.vue';
 import AutoWidthOption from './components/AutoWidthOption.vue';
 import BookTypeOption from './components/BookTypeOption.vue';
+import {SUCCESS_STATUS} from '@/constant';
 
 @Component({
   components: {
@@ -76,7 +77,12 @@ export default class ExportExcel extends Vue {
   fetchData() {
     this.listLoading = true;
     this.$services.articleList({method: 'get'}).then((response) => {
-      this.list = response.items;
+      const {code, data} = response;
+      if (code === SUCCESS_STATUS) {
+        this.list = data.items;
+      } else {
+        this.list = [];
+      }
       this.listLoading = false;
     });
   }

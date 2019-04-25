@@ -14,6 +14,7 @@
   import {
     DndList
   } from '@/components';
+  import {SUCCESS_STATUS} from '@/constant';
 
   @Component({
     components: {
@@ -30,8 +31,14 @@
 
     getData() {
       this.$services.articleList({method: 'get'}).then((response) => {
-        this.list1 = response.items.splice(0, 5);
-        this.list2 = response.items;
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          this.list1 = data.items.splice(0, 5);
+          this.list2 = data.items;
+        } else {
+          this.list1 = [];
+          this.list2 = [];
+        }
       });
     }
   }

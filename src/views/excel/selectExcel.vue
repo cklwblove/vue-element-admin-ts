@@ -54,6 +54,7 @@
   import { Component, Vue } from 'vue-property-decorator';
   import { IListQuery } from '@/interface';
   import { ElTable } from 'element-ui/types/table';
+  import {SUCCESS_STATUS} from '@/constant';
 
   @Component
   export default class SelectExcel extends Vue {
@@ -77,7 +78,12 @@
     fetchData() {
       this.listLoading = true;
       this.$services.articleList({data: this.listQuery, method: 'get'}).then((response) => {
-        this.list = response.items;
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          this.list = data.items;
+        } else {
+          this.list = [];
+        }
         this.listLoading = false;
       });
     }
