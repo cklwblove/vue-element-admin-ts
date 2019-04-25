@@ -18,21 +18,33 @@
         <svg-icon v-if="item.meta.icon" :name="item.meta.icon"/>
         <span slot="title">{{generateTitle(item.meta.title)}}</span>
       </template>
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :is-nest="true"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-        class="nest-menu"
-      />
+      <template v-for="child in item.children">
+        <template v-if="!child.hidden">
+          <sidebar-item
+            v-if="child.children&&child.children.length>0"
+            :is-nest="true"
+            :item="child"
+            :key="child.path"
+            :base-path="resolvePath(child.path)"
+            class="nest-menu"/>
+
+          <app-link v-else :to="resolvePath(child.path)" :key="child.name">
+            <el-menu-item :index="resolvePath(child.path)">
+              <template v-if="child.meta">
+                <svg-icon v-if="child.meta.icon" :name="child.meta.icon"/>
+                <span slot="title">{{generateTitle(child.meta.title)}}</span>
+              </template>
+            </el-menu-item>
+          </app-link>
+        </template>
+      </template>
     </el-submenu>
   </div>
 </template>
 
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
-  import { Route, RouteConfig } from 'vue-router';
+  import { Route } from 'vue-router';
   import path from 'path';
   import { isExternal } from '@/utils';
   import AppLink from './Link.vue';

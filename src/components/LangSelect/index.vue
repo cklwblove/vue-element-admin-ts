@@ -4,9 +4,9 @@
       <svg-icon name="language" class="international-icon"/>
     </div>
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item :disabled="language==='zh'" command="zh">中文</el-dropdown-item>
-      <el-dropdown-item :disabled="language==='en'" command="en">English</el-dropdown-item>
-      <el-dropdown-item :disabled="language==='es'" command="es">Español</el-dropdown-item>
+      <el-dropdown-item :disabled="lang==='zh'" command="zh">中文</el-dropdown-item>
+      <el-dropdown-item :disabled="lang==='en'" command="en">English</el-dropdown-item>
+      <el-dropdown-item :disabled="lang==='es'" command="es">Español</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 </template>
@@ -19,7 +19,7 @@
 
   @Component
   export default class LangSelect extends Vue {
-    get language() {
+    get lang() {
       return this.$store.getters.language;
     }
 

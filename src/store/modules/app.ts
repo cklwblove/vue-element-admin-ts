@@ -27,7 +27,7 @@ class App extends VuexModule implements IAppState {
 
   device = DeviceType.Desktop;
 
-  language = getLanguage() || 'en';
+  language = getLanguage();
 
   size = getSize() || 'medium';
 
