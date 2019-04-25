@@ -156,6 +156,7 @@
   import {
     Pagination
   } from '@/components';
+  import {SUCCESS_STATUS} from '@/constant';
 
   interface IListQuery1 extends IListQuery {
     importance: undefined;
@@ -261,8 +262,14 @@
       this.listLoading = true;
       this.$services.articleList({method: 'get', data: this.listQuery}).then((response) => {
         console.log('response', response);
-        this.list = response.items;
-        this.total = response.total;
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          this.list = data.items;
+          this.total = data.total;
+        } else {
+          this.list = [];
+          this.total = 0;
+        }
 
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -390,7 +397,11 @@
 
     handleFetchPv(pv) {
       this.$services.articlePv({data: pv}).then((response) => {
-        this.pvData = response.data.pvData;
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          this.pvData = data.pvData;
+        }
+
         this.dialogPvVisible = true;
       });
     }

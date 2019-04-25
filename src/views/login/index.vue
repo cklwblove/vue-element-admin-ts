@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+    <el-form ref="loginFormEl" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
              label-position="left">
       <div class="title-container">
         <h3 class="title">
@@ -14,6 +14,7 @@
           <svg-icon name="user"/>
         </span>
         <el-input
+          ref="username"
           v-model="loginForm.username"
           :placeholder="$t('login.username')"
           name="username"
@@ -29,9 +30,12 @@
         <el-input
           v-model="loginForm.password"
           :type="passwordType"
+          ref="password"
           :placeholder="$t('login.password')"
           name="password"
           auto-complete="on"
+          @keyup.native="checkCapslock"
+          @blur="capsTooltip = false"
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
@@ -79,6 +83,7 @@
   import { LangSelect } from '@/components';
   import { Route } from 'vue-router';
   import { ElForm } from 'element-ui/types/form';
+  import { ElInput } from 'element-ui/types/input';
   import { UserModule } from '@/store/modules/user';
 
   const validateUsername = (rule, value: string, callback) => {
@@ -103,6 +108,12 @@
     }
   })
   export default class Login extends Vue {
+    $refs!: {
+      loginFormEl: ElForm;
+      username: ElInput;
+      password: ElInput
+    };
+
     private loginForm = {
       username: 'admin',
       password: '1111111'
@@ -116,12 +127,34 @@
     private passwordType: string = 'password';
     private loading: boolean = false;
     private showDialog: boolean = false;
+    private capsTooltip: boolean = false;
     private redirect: string | undefined = undefined;
 
     // watch
     @Watch('$route', {immediate: true})
     private onRouteChange(route: Route) {
       this.redirect = route.query && route.query.redirect as string;
+    }
+
+    private mounted() {
+      if (this.loginForm.username === '') {
+        this.$refs.username.focus();
+      } else if (this.loginForm.password === '') {
+        this.$refs.password.focus();
+      }
+    }
+
+    private checkCapslock({shiftKey = '', key = ''} = {}) {
+      if (key && key.length === 1) {
+        if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
+          this.capsTooltip = true;
+        } else {
+          this.capsTooltip = false;
+        }
+      }
+      if (key === 'CapsLock' && this.capsTooltip === true) {
+        this.capsTooltip = false;
+      }
     }
 
     private showPwd(): void {
@@ -133,7 +166,7 @@
     }
 
     private handleLogin(): void {
-      (this.$refs.loginForm as ElForm).validate((valid) => {
+      (this.$refs.loginFormEl).validate((valid) => {
         if (valid) {
           this.loading = true;
           UserModule.LoginByUsername(this.loginForm).then(() => {

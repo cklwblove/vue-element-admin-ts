@@ -1,3 +1,5 @@
+import {SUCCESS_STATUS} from '../constant';
+
 export function isExternal(path: string) {
   return /^(https?:|mailto:|tel:)/.test(path);
 }
@@ -220,3 +222,10 @@ export function createUniqueString() {
   return (+(randomNum + timestamp)).toString(32);
 }
 
+export function callback(data, success, fail?) {
+  if (data.code === SUCCESS_STATUS) {
+    success();
+  } else {
+    fail();
+  }
+}

@@ -7,14 +7,13 @@
 
 import Vue, { AsyncComponent } from 'vue';
 import Router from 'vue-router';
-import Layout from '@/views/layout/Layout.vue';
+import Layout from '@/layout/index.vue';
 
 /* Router Modules */
 import componentsRouter from './modules/components';
 import chartsRouter from './modules/charts';
 import tableRouter from './modules/table';
 import nestedRouter from './modules/nested';
-import treeTableRouter from './modules/treeTable';
 
 Vue.use(Router);
 
@@ -171,7 +170,6 @@ export const asyncRouterMap = [
   chartsRouter,
   nestedRouter,
   tableRouter,
-  treeTableRouter,
   {
     path: '/example',
     component: Layout,
@@ -266,7 +264,7 @@ export const asyncRouterMap = [
         path: 'export-merge-header',
         component: () => import('@/views/excel/mergeHeader.vue'),
         name: 'MergeHeader',
-        meta: { title: 'mergeHeader' }
+        meta: {title: 'mergeHeader'}
       },
       {
         path: 'upload-excel',
@@ -373,8 +371,18 @@ export const asyncRouterMap = [
   {path: '*', redirect: '/404', hidden: true}
 ];
 
-export default new Router({
-  mode: 'hash',
+const createRouter: any = () => new Router({
+  // mode: 'history', // require service support
   scrollBehavior: () => ({x: 0, y: 0}),
   routes: constantRouterMap
 });
+
+const router = createRouter();
+
+// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+export function resetRouter() {
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
+}
+
+export default router;

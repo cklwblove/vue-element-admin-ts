@@ -15,13 +15,17 @@ import './directives';
 import './services';
 import './registerServiceWorker';
 // mock
-import './mock';
+import { mockXHR } from '../mock';
+
+// mock api in github pages site build
+if (process.env.NODE_ENV === 'production') {
+  mockXHR();
+}
 
 Vue.use(Element, {
   size: getSize() || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 });
-
 
 Vue.use(SvgIcon, {
   tagName: 'svg-icon',

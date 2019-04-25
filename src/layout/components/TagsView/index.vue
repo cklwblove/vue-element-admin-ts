@@ -26,10 +26,10 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Route } from 'vue-router';
 import { TagsViewModule } from '@/store/modules/tagsView';
-import {
-  ScrollPane
-} from '@/components';
+import ScrollPane from './ScrollPane.vue';
+import path from 'path';
 
 @Component({
   components: {
@@ -41,6 +41,7 @@ export default class TagsView extends Vue {
   top: number = 0;
   left: number = 0;
   selectedTag: any = {};
+  affixTags: Route[] = [];
 
   $refs!: {
     scrollPane: any;
@@ -49,6 +50,10 @@ export default class TagsView extends Vue {
 
   get visitedViews() {
     return this.$store.getters.visitedViews;
+  }
+
+  get routes() {
+    return this.$store.getters.permission_routers;
   }
 
   @Watch('$route')
@@ -67,6 +72,7 @@ export default class TagsView extends Vue {
   }
 
   mounted() {
+    this.initTags();
     this.addViewTags();
   }
 
@@ -84,6 +90,38 @@ export default class TagsView extends Vue {
 
   isActive(route) {
     return route.path === this.$route.path;
+  }
+
+  filterAffixTags(routes, basePath = '/') {
+    let tags: any[] = [];
+    routes.forEach((route) => {
+      if (route.meta && route.meta.affix) {
+        const tagPath = path.resolve(basePath, route.path);
+        tags.push({
+          fullPath: tagPath,
+          path: tagPath,
+          name: route.name,
+          meta: {...route.meta}
+        });
+      }
+      if (route.children) {
+        const tempTags = this.filterAffixTags(route.children, route.path);
+        if (tempTags.length >= 1) {
+          tags = [...tags, ...tempTags];
+        }
+      }
+    });
+    return tags;
+  }
+
+  initTags() {
+    const affixTags: Route[] = this.affixTags = this.filterAffixTags(this.routes);
+    for (const tag of affixTags) {
+      // Must have tag name
+      if (tag.name) {
+        TagsViewModule.AddVisitedView(tag);
+      }
+    }
   }
 
   addViewTags() {
@@ -142,9 +180,29 @@ export default class TagsView extends Vue {
     });
   }
 
-  closeAllTags() {
-    TagsViewModule.DelAllViews();
-    this.$router.push('/');
+  closeAllTags(view) {
+    TagsViewModule.DelAllViews().then(({visitedViews}) => {
+      if (this.affixTags.some((tag) => tag.path === view.path)) {
+        return;
+      }
+      this.toLastView(visitedViews, view);
+    });
+  }
+
+  toLastView(visitedViews, view) {
+    const latestView = visitedViews.slice(-1)[0];
+    if (latestView) {
+      this.$router.push(latestView);
+    } else {
+      // now the default is to redirect to the home page if there is no tags-view,
+      // you can adjust it according to your needs.
+      if (view.name === 'Dashboard') {
+        // to reload home page
+        this.$router.replace({path: '/redirect' + view.fullPath});
+      } else {
+        this.$router.push('/');
+      }
+    }
   }
 
   openMenu(tag, e) {
@@ -226,7 +284,7 @@ export default class TagsView extends Vue {
     .contextmenu {
       margin: 0;
       background: #fff;
-      z-index: 100;
+      z-index: 3000;
       position: absolute;
       list-style-type: none;
       padding: 5px 0;

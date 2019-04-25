@@ -1,4 +1,5 @@
-import {getLanguage, setLanguage, getSidebarStatus, setSidebarStatus, getSize, setSize} from '@/utils/auth';
+import { setLanguage, getSidebarStatus, setSidebarStatus, getSize, setSize } from '@/utils/auth';
+import { getLanguage } from '@/lang';
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators';
 import store from '@/store';
 
@@ -26,7 +27,7 @@ class App extends VuexModule implements IAppState {
 
   device = DeviceType.Desktop;
 
-  language = getLanguage() || 'en';
+  language = getLanguage();
 
   size = getSize() || 'medium';
 

@@ -83,10 +83,11 @@
     value: string = '';
 
     get lang() {
-      return this.$store.state.app.language;
+      return this.$store.getters.language;
     }
 
     set lang(lang) {
+      // console.log('lang', lang);
       this.$i18n.locale = lang;
       AppModule.SetLanguage(lang);
     }

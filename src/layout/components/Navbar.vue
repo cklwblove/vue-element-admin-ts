@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container"/>
+    <hamburger id="hamburger-container" :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container"/>
 
     <breadcrumb class="breadcrumb-container"/>
 
@@ -17,10 +17,6 @@
         </el-tooltip>
 
         <lang-select class="right-menu-item hover-effect"/>
-
-        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
-          <theme-picker class="right-menu-item hover-effect"/>
-        </el-tooltip>
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -63,7 +59,6 @@ import {
   ScreenFull,
   SizeSelect,
   LangSelect,
-  ThemePicker,
   Search
 } from '@/components';
 
@@ -75,7 +70,6 @@ import {
     ScreenFull,
     SizeSelect,
     LangSelect,
-    ThemePicker,
     Search
   }
 })
@@ -102,7 +96,7 @@ export default class Navbar extends Vue {
   logout() {
     this.actionLogOut().then(() => {
       // In order to re-instantiate the vue-router object to avoid bugs
-      location.reload();
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     });
   }
 }
@@ -112,6 +106,9 @@ export default class Navbar extends Vue {
   .navbar {
     height: 50px;
     overflow: hidden;
+    position: relative;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
     .hamburger-container {
       line-height: 46px;
@@ -119,6 +116,7 @@ export default class Navbar extends Vue {
       float: left;
       cursor: pointer;
       transition: background .3s;
+      -webkit-tap-highlight-color:transparent;
 
       &:hover {
         background: rgba(0, 0, 0, .025)

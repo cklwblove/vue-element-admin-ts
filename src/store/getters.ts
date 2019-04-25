@@ -13,10 +13,14 @@ const getters = {
   introduction: (state: IRootState) => state.user.introduction,
   status: (state: IRootState) => state.user.status,
   roles: (state: IRootState) => state.user.roles,
-  setting: (state: IRootState) => state.user.setting,
   permission_routers: (state: IRootState) => state.permission.routers,
   addRouters: (state: IRootState) => state.permission.addRouters,
-  errorLogs: (state: IRootState) => state.errorLog.logs
+  errorLogs: (state: IRootState) => state.errorLog.logs,
+  theme: (state: IRootState) => state.settings.theme,
+  fixedHeader: (state: IRootState) => state.settings.fixedHeader,
+  tagsView: (state: IRootState) => state.settings.tagsView,
+  sidebarLogo: (state: IRootState) => state.settings.sidebarLogo,
+  showSettings: (state: IRootState) => state.settings.showSettings
 };
 
 export default getters;

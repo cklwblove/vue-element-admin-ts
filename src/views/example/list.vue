@@ -60,6 +60,7 @@
   import { Component, Vue } from 'vue-property-decorator';
   import { Pagination } from '@/components';
   import {IListQuery} from '@/interface';
+  import {SUCCESS_STATUS} from '@/constant';
 
   @Component({
     components: {
@@ -92,8 +93,14 @@
     getList() {
       this.listLoading = true;
       this.$services.articleList({data: this.listQuery, method: 'get'}).then((response) => {
-        this.list = response.items;
-        this.total = response.total;
+        const {code, data} = response;
+        if (code === SUCCESS_STATUS) {
+          this.list = data.items;
+          this.total = data.total;
+        } else {
+          this.list = [];
+          this.total = 0;
+        }
         this.listLoading = false;
       });
     }

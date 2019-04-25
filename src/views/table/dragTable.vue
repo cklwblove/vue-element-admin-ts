@@ -63,6 +63,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { IListQuery } from '@/interface';
 import Sortable from 'sortablejs';
+import {SUCCESS_STATUS} from '@/constant';
 
 @Component({
   filters: {
@@ -95,8 +96,14 @@ export default class DragTable extends Vue {
   getList() {
     this.listLoading = true;
     this.$services.articleList({method: 'get', data: this.listQuery}).then((response) => {
-      this.list = response.items;
-      this.total = response.total;
+      const {code, data} = response;
+      if (code === SUCCESS_STATUS) {
+        this.list = data.items;
+        this.total = data.total;
+      } else {
+        this.list = [];
+        this.total = 0;
+      }
       this.listLoading = false;
       this.oldList = this.list.map((v) => v.id);
       this.newList = this.oldList.slice();

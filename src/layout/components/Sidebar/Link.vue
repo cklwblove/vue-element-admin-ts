@@ -29,7 +29,3 @@ export default class Link extends Vue {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

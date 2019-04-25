@@ -1,9 +1,9 @@
 <template>
-  <div v-if="!item.hidden&&item.children" class="menu-wrapper">
+  <div v-if="!item.hidden" class="menu-wrapper">
 
     <template
       v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <app-link :to="resolvePath(onlyOneChild.path)">
+      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <template v-if="onlyOneChild.meta">
             <svg-icon v-if="onlyOneChild.meta.icon" :name="onlyOneChild.meta.icon || item.meta.icon"/>
@@ -13,14 +13,11 @@
       </app-link>
     </template>
 
-    <el-submenu v-else ref="submenu" :index="resolvePath(item.path)">
-      <template v-if="item.meta">
-        <template slot="title">
-          <svg-icon v-if="item.meta.icon" :name="item.meta.icon"/>
-          <span slot="title">{{generateTitle(item.meta.title)}}</span>
-        </template>
+    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
+      <template slot="title">
+        <svg-icon v-if="item.meta.icon" :name="item.meta.icon"/>
+        <span slot="title">{{generateTitle(item.meta.title)}}</span>
       </template>
-
       <template v-for="child in item.children">
         <template v-if="!child.hidden">
           <sidebar-item
@@ -42,7 +39,6 @@
         </template>
       </template>
     </el-submenu>
-
   </div>
 </template>
 
@@ -54,7 +50,6 @@
   import AppLink from './Link.vue';
   import FixiOSBug from './FixiOSBug';
 
-  // TODO 侧边栏没有 tooltip 显示
   @Component({
     components: {
       AppLink
@@ -68,8 +63,8 @@
 
     onlyOneChild: null = null;
 
-    hasOneShowingChild(children, parent) {
-      const showingChildren = children.filter((item) => {
+    hasOneShowingChild(children = [], parent) {
+      const showingChildren = children.filter((item: any) => {
         if (item.hidden) {
           return false;
         } else {

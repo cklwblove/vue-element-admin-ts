@@ -13,6 +13,8 @@
     "esModuleInterop": true,
     // error TS7017: Index signature of object type implicitly has an 'any' type.
     "noImplicitAny": false,
+    // Don't emit; allow Babel to transform files.
+    "noEmit": true,
     "sourceMap": true,
     "allowJs": true,
     "baseUrl": ".",
@@ -22,7 +24,8 @@
     ],
     "paths": {
       "@/*": [
-        "src/*"
+        "src/*",
+        "mock/*"
       ]
     },
     "lib": [
@@ -36,6 +39,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "mock/**/*.ts",
+    "mock/*.ts",
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "./types/*.d.ts"
