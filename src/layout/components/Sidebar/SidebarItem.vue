@@ -1,9 +1,9 @@
 <template>
-  <div v-if="!item.hidden&&item.children" class="menu-wrapper">
+  <div v-if="!item.hidden" class="menu-wrapper">
 
     <template
       v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <app-link :to="resolvePath(onlyOneChild.path)">
+      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <template v-if="onlyOneChild.meta">
             <svg-icon v-if="onlyOneChild.meta.icon" :name="onlyOneChild.meta.icon || item.meta.icon"/>
@@ -13,42 +13,26 @@
       </app-link>
     </template>
 
-    <el-submenu v-else ref="submenu" :index="resolvePath(item.path)">
-      <template v-if="item.meta">
-        <template slot="title">
-          <svg-icon v-if="item.meta.icon" :name="item.meta.icon"/>
-          <span slot="title">{{generateTitle(item.meta.title)}}</span>
-        </template>
+    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
+      <template slot="title">
+        <svg-icon v-if="item.meta.icon" :name="item.meta.icon"/>
+        <span slot="title">{{generateTitle(item.meta.title)}}</span>
       </template>
-
-      <template v-for="child in item.children">
-        <template v-if="!child.hidden">
-          <sidebar-item
-            v-if="child.children&&child.children.length>0"
-            :is-nest="true"
-            :item="child"
-            :key="child.path"
-            :base-path="resolvePath(child.path)"
-            class="nest-menu"/>
-
-          <app-link v-else :to="resolvePath(child.path)" :key="child.name">
-            <el-menu-item :index="resolvePath(child.path)">
-              <template v-if="child.meta">
-                <svg-icon v-if="child.meta.icon" :name="child.meta.icon"/>
-                <span slot="title">{{generateTitle(child.meta.title)}}</span>
-              </template>
-            </el-menu-item>
-          </app-link>
-        </template>
-      </template>
+      <sidebar-item
+        v-for="child in item.children"
+        :key="child.path"
+        :is-nest="true"
+        :item="child"
+        :base-path="resolvePath(child.path)"
+        class="nest-menu"
+      />
     </el-submenu>
-
   </div>
 </template>
 
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
-  import { Route } from 'vue-router';
+  import { Route, RouteConfig } from 'vue-router';
   import path from 'path';
   import { isExternal } from '@/utils';
   import AppLink from './Link.vue';
@@ -67,8 +51,8 @@
 
     onlyOneChild: null = null;
 
-    hasOneShowingChild(children, parent) {
-      const showingChildren = children.filter((item) => {
+    hasOneShowingChild(children = [], parent) {
+      const showingChildren = children.filter((item: any) => {
         if (item.hidden) {
           return false;
         } else {

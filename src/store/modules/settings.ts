@@ -22,6 +22,7 @@ class Settings extends VuexModule implements ISettingsState {
 
   @Action({commit: 'CHANGE_SETTING'})
   ChangeSetting(data: any) {
+    console.log('data', data);
     return data;
   }
 

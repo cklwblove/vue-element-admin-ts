@@ -35,9 +35,7 @@
     mixins: [ResizeMixin]
   })
   export default class Layout extends Vue {
-    mounted() {
-      console.log('this.$store.state', this.$store.state);
-    }
+
     get sidebar() {
       return this.$store.getters.sidebar;
     }
@@ -108,7 +106,7 @@
   }
 
   .hideSidebar .fixed-header {
-    width: calc(100% - 54px)
+    width: calc(100% - 54px);
   }
 
   .mobile .fixed-header {

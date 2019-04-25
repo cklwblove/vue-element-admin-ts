@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import {SUCCESS_STATUS} from '@/constant';
 
 @Component({
   filters: {
@@ -45,8 +46,13 @@ export default class TransactionTable extends Vue {
 
   fetchData() {
     this.$services.getList({method: 'get'}).then((response) => {
-      console.log('fetchData response', response);
-      this.list = response.items.slice(0, 8);
+      // console.log('fetchData response', response);
+      const {code, data} = response;
+      if (code === SUCCESS_STATUS) {
+        this.list = data.items.slice(0, 8);
+      } else {
+        this.list = [];
+      }
     });
   }
 }
