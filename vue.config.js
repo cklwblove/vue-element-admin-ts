@@ -9,6 +9,14 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const pkg = require('./package.json');
 
 const port = 5577;
+// page title
+const name = `${pkg.name}`;
+
+const cdn = {
+  // inject tinymce into index.html
+  // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
+  js: ['https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.2/tinymce.min.js']
+};
 
 const resolve = (dir) => {
   return path.join(__dirname, './', dir);
@@ -105,7 +113,7 @@ module.exports = {
     modules: false
   },
   configureWebpack: () => ({
-    name: `${pkg.name}`,
+    name: name,
     resolve: {
       alias: {
         '@': resolve('src'),
@@ -131,7 +139,6 @@ module.exports = {
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   chainWebpack: (config) => {
     // module
-
     config
       .when(process.env.NODE_ENV === 'development',
         config => config.devtool('cheap-source-map')
@@ -150,6 +157,7 @@ module.exports = {
     config
       .plugin('html')
       .tap(args => {
+        args[0].cdn = cdn;
         args[0].minify = {
           removeComments: true,
           collapseWhitespace: true,
@@ -165,6 +173,17 @@ module.exports = {
         return args;
       });
 
+    // set preserveWhitespace
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .loader('vue-loader')
+      .tap(options => {
+        options.compilerOptions.preserveWhitespace = true;
+        return options;
+      })
+      .end();
+
     // optimization
     // https://imweb.io/topic/5b66dd601402769b60847149
     config
@@ -172,10 +191,12 @@ module.exports = {
         config => {
           config
             .plugin('ScriptExtHtmlWebpackPlugin')
+            .after('html')
             .use('script-ext-html-webpack-plugin', [{
               // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
-            }]);
+            }])
+            .end();
           config
             .optimization
             .splitChunks({
