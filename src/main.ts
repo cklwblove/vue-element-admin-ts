@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Component from 'vue-class-component';
 import Element from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { getSize } from '@/utils/auth';
@@ -16,6 +17,13 @@ import './services';
 import './registerServiceWorker';
 // mock
 import { mockXHR } from '../mock';
+
+// 注册钩子函数
+Component.registerHooks([
+  'beforeRouteEnter',
+  'beforeRouteLeave',
+  'beforeRouteUpdate'
+]);
 
 // mock api in github pages site build
 if (process.env.NODE_ENV === 'production') {
