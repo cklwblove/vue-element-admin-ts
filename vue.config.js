@@ -1,8 +1,10 @@
 'use strict';
 
 const path = require('path');
+const webpack = require('webpack');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const chalk = require('chalk');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -31,6 +33,27 @@ const genPlugins = () => {
     new ProgressBarPlugin({
       format: '  build [:bar] ' + chalk.green.bold(':percent') + ' (:elapsed seconds)',
       clear: false
+    }),
+    new webpack.DllReferencePlugin({
+      context: process.cwd(),
+      manifest: require('./public/vendor/vendor-manifest.json')
+    }),
+    new webpack.DllReferencePlugin({
+      context: process.cwd(),
+      manifest: require('./public/vendor/element-manifest.json')
+    }),
+    new webpack.DllReferencePlugin({
+      context: process.cwd(),
+      manifest: require('./public/vendor/axios-manifest.json')
+    }),
+    // 将 dll 注入到 生成的 html 模板中
+    new AddAssetHtmlPlugin({
+      // dll文件位置
+      filepath: path.resolve(__dirname, './public/vendor/*.js'),
+      // dll 引用路径
+      publicPath: './vendor',
+      // dll最终输出的目录
+      outputPath: './vendor'
     })
   ];
 
@@ -208,11 +231,11 @@ module.exports = {
                   priority: 10,
                   chunks: 'initial' // 只打包初始时依赖的第三方
                 },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-                },
+                // elementUI: {
+                //   name: 'chunk-elementUI', // split elementUI into a single package
+                //   priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                //   test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+                // },
                 commons: {
                   name: 'chunk-commons',
                   test: resolve('src/components'), // 可自定义拓展你的规则
