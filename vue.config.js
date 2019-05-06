@@ -3,7 +3,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
-const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const chalk = require('chalk');
@@ -36,15 +35,15 @@ const genPlugins = () => {
     }),
     new webpack.DllReferencePlugin({
       context: process.cwd(),
-      manifest: require('./public/vendor/vendor-manifest.json')
-    }),
-    new webpack.DllReferencePlugin({
-      context: process.cwd(),
       manifest: require('./public/vendor/element-manifest.json')
     }),
     new webpack.DllReferencePlugin({
       context: process.cwd(),
       manifest: require('./public/vendor/axios-manifest.json')
+    }),
+    new webpack.DllReferencePlugin({
+      context: process.cwd(),
+      manifest: require('./public/vendor/vendor-manifest.json')
     }),
     // 将 dll 注入到 生成的 html 模板中
     new AddAssetHtmlPlugin({
@@ -54,6 +53,20 @@ const genPlugins = () => {
       publicPath: './vendor',
       // dll最终输出的目录
       outputPath: './vendor'
+    }),
+    new AddAssetHtmlPlugin({
+      // dll文件位置
+      filepath: path.resolve(__dirname, './public/config.local.js'),
+      hash: true
+    }),
+    new AddAssetHtmlPlugin({
+      // dll文件位置
+      filepath: path.resolve(__dirname, './public/vendor/*.css'),
+      // dll 引用路径
+      publicPath: './vendor',
+      // dll最终输出的目录
+      outputPath: './vendor',
+      typeOfAsset: 'css'
     })
   ];
 
@@ -73,16 +86,6 @@ const genPlugins = () => {
       })
     );
   }
-
-  // HtmlWebpackIncludeAssetsPlugin
-  // 为静态资源文件添加 hash，防止缓存
-  plugins.push(
-    new HtmlWebpackIncludeAssetsPlugin({
-      assets: ['config.local.js'],
-      append: false,
-      hash: true
-    })
-  );
 
   return plugins;
 };

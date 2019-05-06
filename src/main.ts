@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import Element from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
 import { getSize } from '@/utils/auth';
 import SvgIcon from 'vue-svgicon';
 import App from './App.vue';
