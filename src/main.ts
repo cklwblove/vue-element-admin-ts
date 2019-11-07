@@ -13,7 +13,7 @@ import './router/router.interceptor';
 import './filters';
 import './directives';
 import './services';
-import './registerServiceWorker';
+import './pwa/register-service-worker';
 // mock
 import { mockXHR } from '../mock';
 
