@@ -134,9 +134,7 @@ module.exports = {
     // 开启 CSS source maps?
     sourceMap: isProd() ? true : false,
     // css预设器配置项
-    loaderOptions: {},
-    // 启用 CSS modules for all css / pre-processor files.
-    modules: false
+    loaderOptions: {}
   },
   configureWebpack: () => ({
     name: name,
@@ -155,7 +153,6 @@ module.exports = {
         // 文件别名
         'services': resolve('src/services'),
         'variable': resolve('src/assets/less/variable.less'),
-        'utils': resolve('node_modules/@liwb/cloud-utils/dist/cloud-utils.esm'),
         'mixins': resolve('node_modules/magicless/magicless.less')
       }
     },

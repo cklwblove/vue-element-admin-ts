@@ -110,7 +110,7 @@
 <script lang="ts">
   import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
   import axios from 'axios';
-  import { dataURLToBlob } from 'utils';
+  import { dataURLToBlob } from '@liwb/cloud-utils';
   import language from './utils/language';
   import mimes from './utils/mimes';
   import effectRipple from './utils/effectRipple';

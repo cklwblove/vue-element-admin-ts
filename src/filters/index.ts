@@ -7,7 +7,7 @@
 
 import Vue from 'vue';
 
-import { formatDate } from 'utils';
+import { formatDate } from '@liwb/cloud-utils';
 
 import {
   parseTime,

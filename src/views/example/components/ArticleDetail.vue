@@ -79,7 +79,7 @@
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
   import { ElForm } from 'element-ui/types/form';
-  import { isValidURI } from 'utils';
+  import { isValidURI } from '@liwb/cloud-utils';
   import { TagsViewModule } from '@/store/modules/tagsView';
   import {
     Tinymce,
