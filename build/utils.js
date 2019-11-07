@@ -10,12 +10,11 @@ exports.cssLoaders = function (options) {
   const cssLoader = {
     loader: 'css-loader',
     options: {
-      minimize: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'dll',
       sourceMap: options.sourceMap
     }
   }
 
-  var postcssLoader = {
+  const postcssLoader = {
     loader: 'postcss-loader',
     options: {
       sourceMap: options.sourceMap
@@ -35,7 +34,7 @@ exports.cssLoaders = function (options) {
           // you can specify a publicPath here
           // by default it use publicPath in webpackOptions.output
           // 解决图片作为背景引入时，路径不对的问题
-          publicPath: '../../'
+          publicPath: './'
         }
       })
     } else {
@@ -109,5 +108,3 @@ exports.createNotifierCallback = function () {
 exports.resolve = function (dir) {
   return path.join(__dirname, '..', dir)
 }
-
-

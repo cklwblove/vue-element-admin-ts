@@ -793,7 +793,7 @@
         withCredentials
       } = this;
       const fmData = new FormData();
-      fmData.append(field, dataURLToBlob(createImgUrl, mime), field + '.' + imgFormat);
+      fmData.append(field, dataURLToBlob(createImgUrl), field + '.' + imgFormat);
       // 添加其他参数
       if (typeof params === 'object' && params) {
         Object.keys(params).forEach((k) => {

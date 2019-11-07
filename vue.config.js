@@ -1,12 +1,14 @@
 'use strict';
 
 const path = require('path');
+const {formatDate} = require('@liwb/cloud-utils');
 const webpack = require('webpack');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const chalk = require('chalk');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const TerserPlugin = require('terser-webpack-plugin');
 const pkg = require('./package.json');
 
 const port = 5577;
@@ -25,6 +27,42 @@ const resolve = (dir) => {
 
 const isProd = () => {
   return process.env.NODE_ENV === 'production';
+};
+
+function addStyleResource(rule) {
+  rule
+    .use('style-resource')
+    .loader('style-resources-loader')
+    .options({
+      patterns: [
+        path.resolve(__dirname, 'src/assets/less/variable.less'),
+        path.resolve(__dirname, 'node_modules/magicless/magicless.less')
+      ],
+      injector: 'prepend'
+    });
+}
+
+const getOptimization = () => {
+  let optimization = {};
+  if (isProd()) {
+    optimization = {
+      // https://webpack.docschina.org/configuration/optimization/#optimization-minimizer
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+            compress: {
+              warnings: false,
+              drop_console: true,
+              drop_debugger: true,
+              pure_funcs: ['console.log']
+            }
+          }
+        })
+      ]
+    };
+  }
+  return optimization;
 };
 
 const genPlugins = () => {
@@ -67,6 +105,13 @@ const genPlugins = () => {
       // dll最终输出的目录
       outputPath: './vendor',
       typeOfAsset: 'css'
+    }),
+    // bannerPlugin
+    new webpack.BannerPlugin({
+      banner: `Current version ${pkg.version} and build time ${formatDate(
+        new Date(),
+        'yyyy-MM-dd HH:mm:ss'
+      )}`
     })
   ];
 
@@ -156,12 +201,22 @@ module.exports = {
         'mixins': resolve('node_modules/magicless/magicless.less')
       }
     },
-    plugins: genPlugins()
+    plugins: genPlugins(),
+    // 生产环境去掉 console.log
+    // https://github.com/cklwblove/vue-cli3-template/issues/12
+    optimization: getOptimization()
   }),
   // webpack配置
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   chainWebpack: (config) => {
     // module
+
+    // style-resources-loader
+    const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+    types.forEach((type) =>
+      addStyleResource(config.module.rule('less').oneOf(type))
+    );
+
     config
       .when(process.env.NODE_ENV === 'development',
         config => config.devtool('cheap-source-map')

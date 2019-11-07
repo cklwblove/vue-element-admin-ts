@@ -24,7 +24,7 @@
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
       <el-form :model="role" label-width="80px" label-position="left">
         <el-form-item label="Name">
-          <el-input v-model="role.name" placeholder="Role Name"/>
+          <el-input v-model="role.name" placeholder="Role Name" />
         </el-form-item>
         <el-form-item label="Desc">
           <el-input
@@ -36,7 +36,7 @@
         </el-form-item>
         <el-form-item label="Menus">
           <el-tree ref="tree" :check-strictly="checkStrictly" :data="routesData" :props="defaultProps" show-checkbox
-                   node-key="path" class="permission-tree"/>
+                   node-key="path" class="permission-tree" />
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
@@ -50,11 +50,11 @@
 <script lang="ts">
   import path from 'path';
   import { deepClone } from '@/utils';
-  import { ElTree } from 'element-ui/types/tree';
+  import { Tree } from 'element-ui';
   import i18n from '@/lang';
   import { Component, Vue } from 'vue-property-decorator';
   import request from '@/services/request';
-  import {SUCCESS_STATUS} from '@/constant';
+  import { SUCCESS_STATUS } from '@/constant';
 
   interface IRole {
     key: string;
@@ -91,7 +91,7 @@
     };
 
     $refs!: {
-      tree: ElTree
+      tree: Tree
     };
 
     get routesData() {
