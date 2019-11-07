@@ -43,15 +43,29 @@ export function toThousandFilter(num) {
   return (+num || 0).toString().replace(/^-?\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','));
 }
 
+// Filter for article status
+export const articleStatusFilter = (status: string) => {
+  const statusMap: { [key: string]: string } = {
+    published: 'success',
+    success: 'success',
+    draft: 'info',
+    deleted: 'danger',
+    pending: 'danger'
+  };
+  return statusMap[status];
+};
+
 // register global utility filters.
 const filters = {
   formatDate,
   parseTime,
   formatTime,
   numberFormatter,
-  toThousandFilter
+  toThousandFilter,
+  articleStatusFilter
 };
 
 Object.keys(filters).forEach((key) => {
-  Vue.filter(key, filters[key]);
+  // tslint:disable-next-line:ban-types
+  Vue.filter(key, (filters as { [key: string]: Function })[key]);
 });

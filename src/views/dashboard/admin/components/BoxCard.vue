@@ -34,18 +34,10 @@ import {
 } from '@/components';
 
 @Component({
+  name: 'BoxCard',
   components: {
     PanThumb,
     Mallki
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        success: 'success',
-        pending: 'danger'
-      };
-      return statusMap[status];
-    }
   }
 })
 export default class BoxCard extends Vue {

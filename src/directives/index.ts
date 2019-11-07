@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { DirectiveOptions } from 'vue';
 
 import permission from './permission';
 import waves from './waves';
@@ -13,5 +13,5 @@ const directives = {
 };
 
 Object.keys(directives).forEach((key) => {
-  Vue.directive(key, directives[key]);
+  Vue.directive(key, (directives as { [key: string]: DirectiveOptions })[key]);
 });

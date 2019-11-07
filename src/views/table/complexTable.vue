@@ -76,7 +76,7 @@
       </el-table-column>
       <el-table-column :label="$t('table.status')" class-name="status-col" width="100">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          <el-tag :type="scope.row.status | articleStatusFilter">{{ scope.row.status }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width">
@@ -190,18 +190,11 @@
   }, {});
 
   @Component({
+    name: 'ComplexTable',
     components: {
       Pagination
     },
     filters: {
-      statusFilter(status) {
-        const statusMap = {
-          published: 'success',
-          draft: 'info',
-          deleted: 'danger'
-        };
-        return statusMap[status];
-      },
       typeFilter(type) {
         return calendarTypeKeyValue[type];
       }

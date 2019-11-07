@@ -12,7 +12,7 @@
     </el-table-column>
     <el-table-column label="Status" width="100" align="center">
       <template slot-scope="scope">
-        <el-tag :type="scope.row.status | statusFilter"> {{ scope.row.status }}</el-tag>
+        <el-tag :type="scope.row.status | articleStatusFilter"> {{ scope.row.status }}</el-tag>
       </template>
     </el-table-column>
   </el-table>
@@ -23,14 +23,8 @@ import { Component, Vue } from 'vue-property-decorator';
 import {SUCCESS_STATUS} from '@/constant';
 
 @Component({
+  name: 'TransactionTable',
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        success: 'success',
-        pending: 'danger'
-      };
-      return statusMap[status];
-    },
     orderNoFilter(str) {
       return str.substring(0, 30);
     }

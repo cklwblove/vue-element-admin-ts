@@ -29,7 +29,7 @@
 
       <el-table-column class-name="status-col" label="Status" width="110">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          <el-tag :type="scope.row.status | articleStatusFilter">{{ scope.row.status }}</el-tag>
         </template>
       </el-table-column>
 
@@ -66,16 +66,7 @@
   import {SUCCESS_STATUS} from '@/constant';
 
   @Component({
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          published: 'success',
-          draft: 'info',
-          deleted: 'danger'
-        };
-        return statusMap[status];
-      }
-    }
+    name: 'InlineEditTabele'
   })
   export default class InlineEditTable extends Vue {
     list: string[] | number[] = [];
