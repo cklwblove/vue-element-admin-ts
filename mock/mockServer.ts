@@ -1,6 +1,9 @@
 const chokidar = require('chokidar');
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
+const path = require('path');
+
+const mockDir = path.join(process.cwd(), 'mock');
 
 function registerRoutes(app) {
   let mockLastIndex;
@@ -18,7 +21,7 @@ function registerRoutes(app) {
 
 function unregisterRoutes() {
   Object.keys(require.cache).forEach((i) => {
-    if (i.includes('/mock')) {
+    if (i.includes(mockDir)) {
       delete require.cache[require.resolve(i)];
     }
   });
@@ -26,7 +29,7 @@ function unregisterRoutes() {
 
 module.exports = (app) => {
   // es6 polyfill
-  require('@babel/register')({ extensions: [ '.ts', '.tsx', '.js', '.jsx'] });
+  require('@babel/register')({extensions: ['.ts', '.tsx', '.js', '.jsx']});
   // parse app.body
   // https://expressjs.com/en/4x/api.html#req.body
   app.use(bodyParser.json());
@@ -39,23 +42,26 @@ module.exports = (app) => {
   let mockStartIndex = mockRoutes.mockStartIndex;
 
   // watch files, hot reload mock server
-  chokidar.watch(('./mock'), {
+  chokidar.watch(mockDir, {
     ignored: 'mock/mockServer.ts',
-    persistent: true,
     ignoreInitial: true
   }).on('all', (event, path) => {
     if (event === 'change' || event === 'add') {
-      // remove mock routes stack
-      app._router.stack.splice(mockStartIndex, mockRoutesLength);
+      try {
+        // remove mock routes stack
+        app._router.stack.splice(mockStartIndex, mockRoutesLength);
 
-      // clear routes cache
-      unregisterRoutes();
+        // clear routes cache
+        unregisterRoutes();
 
-      const mockRoutes = registerRoutes(app);
-      mockRoutesLength = mockRoutes.mockRoutesLength;
-      mockStartIndex = mockRoutes.mockStartIndex;
+        const mockRoutes = registerRoutes(app);
+        mockRoutesLength = mockRoutes.mockRoutesLength;
+        mockStartIndex = mockRoutes.mockStartIndex;
 
-      console.log(chalk.magentaBright(`\n > Mock Server hot reload success! changed  ${path}`));
+        console.log(chalk.magentaBright(`\n > Mock Server hot reload success! changed  ${path}`));
+      } catch (error) {
+        console.log(chalk.redBright(error));
+      }
     }
   });
 };
