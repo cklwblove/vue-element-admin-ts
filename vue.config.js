@@ -212,10 +212,10 @@ module.exports = {
     // module
 
     // style-resources-loader
-    const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
-    types.forEach((type) =>
-      addStyleResource(config.module.rule('less').oneOf(type))
-    );
+    // const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+    // types.forEach((type) =>
+    //   addStyleResource(config.module.rule('less').oneOf(type))
+    // );
 
     config
       .when(process.env.NODE_ENV === 'development',

@@ -59,7 +59,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .sw-update-popup > button {
     margin-top: 0.5em;
     padding: 0.25em 1.5em;

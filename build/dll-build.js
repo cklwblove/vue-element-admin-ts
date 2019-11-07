@@ -1,6 +1,7 @@
 const path = require('path');
 const utils = require('./utils');
 const webpack = require('webpack');
+const chalk = require('chalk');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -8,7 +9,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 // dll文件存放的目录
 const dllPath = '../public/vendor';
 
-module.exports = {
+const dllConf = {
   mode: 'production',
   entry: {
     // 需要提取的库文件
@@ -17,7 +18,7 @@ module.exports = {
     vendor: ['vue', 'vue-router', 'vuex', 'normalize.css']
   },
   module: {
-    rules:[
+    rules: [
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
@@ -69,3 +70,26 @@ module.exports = {
     })
   ]
 };
+
+webpack(dllConf, function (err, stats) {
+  if (err) throw err;
+  process.stdout.write(stats.toString({
+    colors: true,
+    modules: false,
+    children: false,
+    chunks: false,
+    chunkModules: false
+  }) + '\n\n');
+
+  if (stats.hasErrors()) {
+    const info = stats.toJson();
+    console.error('\n');
+    console.error(chalk.magenta('编译打包出错了 ~~~~(>_<)~~~~ \n'));
+    console.error(chalk.magenta('具体错误信息如下 \n'));
+    console.error(chalk.red(`${info.errors}.\n`));
+    console.log(chalk.red('  Build failed with errors.\n'));
+    process.exit(1);
+  }
+
+  console.log(chalk.cyan('  Build dll complete.\n'));
+});
