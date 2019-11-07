@@ -1,4 +1,6 @@
 export default {
+  title: 'Vue Element Admin Typescript',
+
   theme: '#1890ff',
 
   /**

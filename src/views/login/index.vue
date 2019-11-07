@@ -6,12 +6,12 @@
         <h3 class="title">
           {{ $t('login.title') }}
         </h3>
-        <lang-select class="set-language"/>
+        <lang-select class="set-language" />
       </div>
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon name="user"/>
+          <svg-icon name="user" />
         </span>
         <el-input
           ref="username"
@@ -25,7 +25,7 @@
 
       <el-form-item prop="password">
         <span class="svg-container">
-          <svg-icon name="password"/>
+          <svg-icon name="password" />
         </span>
         <el-input
           v-model="loginForm.password"
@@ -39,7 +39,7 @@
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :name="passwordType === 'password' ? 'eye' : 'eye-open'"/>
+          <svg-icon :name="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
@@ -71,7 +71,7 @@
       <br>
       <br>
       <br>
-      <social-sign/>
+      <social-sign />
     </el-dialog>
   </div>
 </template>
@@ -102,6 +102,7 @@
   };
 
   @Component({
+    name: 'Login',
     components: {
       SocialSign,
       LangSelect
@@ -166,15 +167,14 @@
     }
 
     private handleLogin(): void {
-      (this.$refs.loginFormEl).validate((valid) => {
+      (this.$refs.loginFormEl).validate(async (valid) => {
         if (valid) {
           this.loading = true;
-          UserModule.LoginByUsername(this.loginForm).then(() => {
+          await UserModule.LoginByUsername(this.loginForm);
+          this.$router.push({path: this.redirect || '/'});
+          setTimeout(() => {
             this.loading = false;
-            this.$router.push({path: this.redirect || '/'});
-          }).catch(() => {
-            this.loading = false;
-          });
+          }, 0.5 * 1000);
         } else {
           console.log('error submit!!');
           return false;

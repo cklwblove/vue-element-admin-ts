@@ -38,32 +38,32 @@ export function filterAsyncRoutes(routes: RouteConfig[], roles: string[]) {
 }
 
 export interface IPermissionState {
-  routers: RouteConfig[];
-  addRouters: RouteConfig[];
+  routes: RouteConfig[];
+  dynamicRoutes: RouteConfig[];
 }
 
 @Module({dynamic: true, store, name: 'permission'})
 class Permission extends VuexModule implements IPermissionState {
-  routers = [];
-  addRouters = [];
+  routes = [];
+  dynamicRoutes = [];
 
   @Action({commit: 'SET_ROUTERS'})
   GenerateRoutes(roles) {
     // console.log('GenerateRoutes', roles);
-    let accessedRouters;
+    let accessedRoutes;
     if (roles.includes('admin')) {
-      accessedRouters = asyncRouterMap;
+      accessedRoutes = asyncRouterMap;
     } else {
-      accessedRouters = filterAsyncRoutes(asyncRouterMap, roles);
+      accessedRoutes = filterAsyncRoutes(asyncRouterMap, roles);
     }
 
-    return accessedRouters;
+    return accessedRoutes;
   }
 
   @Mutation
-  private SET_ROUTERS(routers) {
-    this.addRouters = routers;
-    this.routers = (constantRouterMap as any).concat(routers);
+  private SET_ROUTERS(routes) {
+    this.routes = (constantRouterMap as any).concat(routes);
+    this.dynamicRoutes = routes;
   }
 }
 

@@ -10,17 +10,12 @@ import { Message } from 'element-ui';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import { getToken } from '@/utils/auth';
+import getPageTitle from '@/utils/getPageTitle';
 import { Route } from 'vue-router';
 import { UserModule } from '@/store/modules/user';
+import { PermissionModule } from '@/store/modules/permission';
 
 NProgress.configure({showSpinner: false});
-
-// permission judge function
-function hasPermission(roles, permissionRoles) {
-  if (roles.indexOf('admin') >= 0) return true; // admin permission passed directly
-  if (!permissionRoles) return true;
-  return roles.some((role) => permissionRoles.indexOf(role) >= 0);
-}
 
 const whiteList = ['/login', '/auth-redirect']; // no redirect whitelist
 
@@ -33,25 +28,34 @@ router.beforeEach(async (to: Route, from: Route, next: any) => {
       // if current page is dashboard will not trigger	afterEach hook, so manually handle it
       NProgress.done();
     } else {
-      // console.log('store.getters.roles', store.getters);
-      if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-        UserModule.GetUserInfo().then(() => { // 拉取user_info
-          // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-          next({...to, replace: true});
-        }).catch((err) => {
-          UserModule.FedLogOut().then(() => {
-            Message.error(err);
-            next({path: '/'});
-          });
-        });
+      console.log('store.getters.roles', store.getters);
+      // determine whether the user has obtained his permission roles through getInfo
+      const hasRoles = store.getters.roles && store.getters.roles.length > 0;
+
+      if (hasRoles) {
+        next();
       } else {
-        // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-        if (hasPermission(store.getters.roles, to.meta.roles)) {
-          next();
-        } else {
-          next({path: '/401', replace: true, query: {noGoBack: true}});
+        try {
+          // get user info
+          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
+          await UserModule.GetUserInfo();
+          const roles = UserModule.roles;
+          // generate accessible routes map based on roles
+          await PermissionModule.GenerateRoutes(roles);
+          const dynamicRoutes = PermissionModule.dynamicRoutes;
+          // dynamically add accessible routes
+          router.addRoutes(dynamicRoutes);
+
+          // hack method to ensure that addRoutes is complete
+          // set the replace: true, so the navigation will not leave a history record
+          next({...to, replace: true});
+        } catch (error) {
+          // remove token and go to login page to re-login
+          await UserModule.ResetToken();
+          Message.error(error || 'Has Error');
+          next(`/login?redirect=${to.path}`);
+          NProgress.done();
         }
-        // 可删 ↑
       }
     }
   } else {
@@ -65,6 +69,8 @@ router.beforeEach(async (to: Route, from: Route, next: any) => {
   }
 });
 
-router.afterEach(() => {
+router.afterEach((to) => {
   NProgress.done(); // finish progress bar
+  // set page title
+  document.title = getPageTitle(to.meta.title);
 });
