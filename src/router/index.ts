@@ -379,6 +379,24 @@ const createRouter: any = () => new Router({
 
 const router = createRouter();
 
+/*
+* Preventing "NavigationDuplicated" errors in console in Vue-router >= 3.1.0
+* https://github.com/vuejs/vue-router/issues/2881#issuecomment-520554378
+* */
+
+const routerMethods = ['push', 'replace'];
+
+routerMethods.forEach((method: string) => {
+  const originalCall = (Router.prototype as any)[method];
+  // tslint:disable-next-line:space-before-function-paren
+  (Router.prototype as any)[method] = function (location: any, onResolve: any, onReject: any): Promise<any> {
+    if (onResolve || onReject) {
+      return originalCall.call(this, location, onResolve, onReject);
+    }
+    return (originalCall.call(this, location) as any).catch((err: any) => err);
+  };
+});
+
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter();

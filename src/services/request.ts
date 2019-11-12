@@ -8,7 +8,7 @@
  */
 
 import Qs from 'qs';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import autoMatchBaseUrl from './autoMatchBaseUrl';
 import { TIMEOUT, HOME_PREFIX } from '../constant';
 import store from '@/store';
@@ -100,7 +100,7 @@ function checkStatus(response) {
   };
 }
 
-export default function request(url, {
+export default function request(url: string, {
   method = 'post',
   timeout = TIMEOUT,
   prefix = HOME_PREFIX,
@@ -151,5 +151,5 @@ export default function request(url, {
     }
   }
 
-  return axios(defaultConfig);
+  return axios(defaultConfig as AxiosRequestConfig);
 }

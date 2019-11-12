@@ -14,7 +14,7 @@ export default class ScreenFull extends Vue {
 
   click() {
     if (screenfull) {
-      if (!screenfull.enabled) {
+      if (!(screenfull as any).enabled) {
         this.$message({
           message: 'you browser can not work',
           type: 'warning'
