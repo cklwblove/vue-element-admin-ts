@@ -9,25 +9,27 @@ import { Component, Vue } from 'vue-property-decorator';
 
 const tagAndTagSpacing = 4;
 
-@Component
+@Component({
+  name: 'ScrollPane'
+})
 export default class ScrollPane extends Vue {
   left: number = 0;
 
   $refs!: {
-    scrollContainer: any
+    scrollContainer: Vue
     tag: any
   };
 
   handleScroll(e) {
     const eventDelta = e.wheelDelta || -e.deltaY * 40;
-    const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap;
+    const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap as HTMLElement;
     $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4;
   }
 
   moveToTarget(currentTag) {
-    const $container = this.$refs.scrollContainer.$el;
+    const $container = this.$refs.scrollContainer.$el as HTMLElement;
     const $containerWidth = $container.offsetWidth;
-    const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap;
+    const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap as HTMLElement;
     const tagList = this.$parent.$refs.tag as any;
 
     let firstTag = null;

@@ -15,12 +15,6 @@ const port = 5577;
 // page title
 const name = `${pkg.name}`;
 
-const cdn = {
-  // inject tinymce into index.html
-  // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
-  js: ['https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.2/tinymce.min.js']
-};
-
 const resolve = (dir) => {
   return path.join(__dirname, './', dir);
 };
@@ -235,7 +229,6 @@ module.exports = {
     config
       .plugin('html')
       .tap(args => {
-        args[0].cdn = cdn;
         args[0].minify = {
           removeComments: true,
           collapseWhitespace: true,
