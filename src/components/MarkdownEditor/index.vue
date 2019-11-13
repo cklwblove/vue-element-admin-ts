@@ -12,7 +12,9 @@
   import Editor from 'tui-editor';
   import defaultOptions from './defaultOptions';
 
-  @Component
+  @Component({
+    name: 'MarkdownEditor'
+  })
   export default class MarkdownEditor extends Vue {
     @Prop({default: ''}) value!: string;
     @Prop({

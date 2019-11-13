@@ -34,7 +34,6 @@ const dynamicLoadScript = (src, callback) => {
   }
 
   function stdOnEnd(script) {
-    // tslint:disable-next-line:space-before-function-paren
     script.onload = function () {
       // this.onload = null here is necessary
       // because even IE9 works not like others
@@ -44,7 +43,6 @@ const dynamicLoadScript = (src, callback) => {
       }
       callbacks = null;
     };
-    // tslint:disable-next-line:space-before-function-paren
     script.onerror = function () {
       this.onerror = this.onload = null;
       cb(new Error('Failed to load ' + src), script);
@@ -52,7 +50,6 @@ const dynamicLoadScript = (src, callback) => {
   }
 
   function ieOnEnd(script) {
-    // tslint:disable-next-line:space-before-function-paren
     script.onreadystatechange = function () {
       if (this.readyState !== 'complete' && this.readyState !== 'loaded') return;
       this.onreadystatechange = null;
