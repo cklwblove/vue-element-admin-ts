@@ -1,7 +1,7 @@
 <template>
   <div :class="{'show':show}" class="header-search">
     show {{show}}
-    <svg-icon name="search" class="search-icon" @click="click"/>
+    <svg-icon name="search" class="search-icon" @click="click" />
     <el-select
       ref="headerSearchSelect"
       v-model="search"
@@ -12,7 +12,7 @@
       placeholder="Search"
       class="header-search-select"
       @change="change">
-      <el-option v-for="item in options" :key="item.path" :value="item" :label="item.title.join(' > ')"/>
+      <el-option v-for="item in options" :key="item.path" :value="item" :label="item.title.join(' > ')" />
     </el-select>
   </div>
 </template>
@@ -20,19 +20,20 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { ElSelect } from 'element-ui/types/select';
+import { RouteConfig } from 'vue-router';
 import Fuse from 'fuse.js';
 import path from 'path';
 import i18n from '@/lang';
 
 @Component({
-  name: 'Search'
+  name: 'HeaderSearch'
 })
 export default class HeaderSearch extends Vue {
   search: string = '';
-  options: any[] = [];
-  searchPool: any[] = [];
+  options: RouteConfig[] = [];
+  searchPool: RouteConfig[] = [];
   show: boolean = false;
-  fuse: any = null;
+  fuse?: Fuse<RouteConfig>;
 
   get routers() {
     return this.$store.getters.permission_routers;
@@ -59,12 +60,12 @@ export default class HeaderSearch extends Vue {
 
   @Watch('show')
   onShowChange(value) {
-    // TODO 这里 addEventListener 会被立刻执行，所以迁移到了created
+    if (value) {
+      document.body.addEventListener('click', this.close);
+    } else {
+      document.body.removeEventListener('click', this.close);
+    }
     console.log('onShowChange value', value);
-  }
-
-  created() {
-    document.body.addEventListener('click', this.close);
   }
 
   mounted() {
@@ -130,16 +131,18 @@ export default class HeaderSearch extends Vue {
         continue;
       }
 
-      const data = {
+      const data: RouteConfig = {
         path: path.resolve(basePath, router.path),
-        title: [...prefixTitle]
+        meta: {
+          title: [...prefixTitle]
+        }
       };
 
       if (router.meta && router.meta.title) {
         // generate internationalized title
         const i18nTitle = i18n.t(`route.${router.meta.title}`);
 
-        data.title = [...data.title, i18nTitle];
+        data.meta.title = [...data.meta.title, i18nTitle];
 
         if (router.redirect !== 'noredirect') {
           // only push the routes with title
@@ -150,7 +153,7 @@ export default class HeaderSearch extends Vue {
 
       // recursive child routers
       if (router.children) {
-        const tempRouters = this.generateRouters(router.children, data.path, data.title);
+        const tempRouters = this.generateRouters(router.children, data.path, data.meta.title);
         if (tempRouters.length >= 1) {
           res = [...res, ...tempRouters];
         }
@@ -161,7 +164,9 @@ export default class HeaderSearch extends Vue {
 
   querySearch(query) {
     if (query !== '') {
-      this.options = this.fuse.search(query);
+      if (this.fuse) {
+        this.options = this.fuse.search(query);
+      }
     } else {
       this.options = [];
     }

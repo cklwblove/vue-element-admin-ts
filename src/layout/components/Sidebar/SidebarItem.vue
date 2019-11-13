@@ -6,7 +6,7 @@
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <template v-if="onlyOneChild.meta">
-            <svg-icon v-if="onlyOneChild.meta.icon" :name="onlyOneChild.meta.icon || item.meta.icon"/>
+            <svg-icon v-if="onlyOneChild.meta.icon" :name="onlyOneChild.meta.icon || item.meta.icon" />
             <span slot="title">{{generateTitle(onlyOneChild.meta.title)}}</span>
           </template>
         </el-menu-item>
@@ -15,7 +15,7 @@
 
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
-        <svg-icon v-if="item.meta.icon" :name="item.meta.icon"/>
+        <svg-icon v-if="item.meta.icon" :name="item.meta.icon" />
         <span slot="title">{{generateTitle(item.meta.title)}}</span>
       </template>
       <template v-for="child in item.children">
@@ -26,12 +26,12 @@
             :item="child"
             :key="child.path"
             :base-path="resolvePath(child.path)"
-            class="nest-menu"/>
+            class="nest-menu" />
 
           <app-link v-else :to="resolvePath(child.path)" :key="child.name">
             <el-menu-item :index="resolvePath(child.path)">
               <template v-if="child.meta">
-                <svg-icon v-if="child.meta.icon" :name="child.meta.icon"/>
+                <svg-icon v-if="child.meta.icon" :name="child.meta.icon" />
                 <span slot="title">{{generateTitle(child.meta.title)}}</span>
               </template>
             </el-menu-item>
@@ -44,20 +44,21 @@
 
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
-  import { Route } from 'vue-router';
+  import { RouteConfig } from 'vue-router';
   import path from 'path';
   import { isExternal } from '@/utils';
   import AppLink from './Link.vue';
   import FixiOSBug from './FixiOSBug';
 
   @Component({
+    name: 'SidebarItem',
     components: {
       AppLink
     },
     mixins: [FixiOSBug]
   })
   export default class SidebarItem extends Vue {
-    @Prop({required: true, default: {}}) item!: Route;
+    @Prop({required: true, default: {}}) item!: RouteConfig;
     @Prop({default: false}) isNest!: boolean;
     @Prop({default: ''}) basePath!: string;
 

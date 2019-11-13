@@ -16,7 +16,9 @@
 <script lang="ts">
   import { Component, Vue, Prop } from 'vue-property-decorator';
 
-  @Component
+  @Component({
+    name: 'Logo'
+  })
   export default class Logo extends Vue {
     @Prop({required: true}) collapse!: boolean;
     title: string = 'Vue Element Admin';

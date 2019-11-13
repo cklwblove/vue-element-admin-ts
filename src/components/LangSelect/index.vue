@@ -14,22 +14,19 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
   import { AppModule } from '@/store/modules/app';
-  import i18n from '@/lang';
-  import {Message} from 'element-ui';
 
-  @Component
+  @Component({
+    name: 'LangSelect'
+  })
   export default class LangSelect extends Vue {
     get lang() {
       return this.$store.getters.language;
     }
 
     private handleSetLanguage(lang): void {
-      // TODO this 指向为 null?
-      // console.log('this', this);
-      // console.log('lang', lang);
-      i18n.locale = lang;
+      this.$i18n.locale = lang;
       AppModule.SetLanguage(lang);
-      Message({
+      this.$message({
         message: 'Switch Language Success',
         type: 'success'
       });

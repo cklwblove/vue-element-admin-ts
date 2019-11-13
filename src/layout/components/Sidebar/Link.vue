@@ -9,7 +9,9 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { isExternal } from '@/utils';
 
-@Component
+@Component({
+  name: 'Link'
+})
 export default class Link extends Vue {
   @Prop({required: true, default: ''}) to!: string;
 

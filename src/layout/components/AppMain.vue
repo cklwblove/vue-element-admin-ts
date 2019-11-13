@@ -11,14 +11,16 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
 
-  @Component
+  @Component({
+    name: 'AppMain'
+  })
   export default class AppMain extends Vue {
     get cachedViews() {
       return this.$store.getters.cachedViews;
     }
 
     get key() {
-      return this.$route.fullPath;
+      return this.$route.path;
     }
   }
 </script>

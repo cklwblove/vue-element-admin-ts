@@ -63,6 +63,7 @@ import {
 } from '@/components';
 
 @Component({
+  name: 'Navbar',
   components: {
     Breadcrumb,
     Hamburger,

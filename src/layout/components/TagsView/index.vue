@@ -32,6 +32,7 @@ import ScrollPane from './ScrollPane.vue';
 import path from 'path';
 
 @Component({
+  name: 'TagsView',
   components: {
     ScrollPane
   }

@@ -33,6 +33,7 @@
   import { SettingsModule } from '@/store/modules/settings';
 
   @Component({
+    name: 'Settings',
     components: {
       ThemePicker
     }

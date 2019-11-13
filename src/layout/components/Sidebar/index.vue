@@ -24,6 +24,7 @@
   import variable from '@/assets/js/variable';
 
   @Component({
+    name: 'Sidebar',
     components: {
       SidebarItem,
       Logo

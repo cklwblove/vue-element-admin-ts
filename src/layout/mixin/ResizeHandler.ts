@@ -5,7 +5,9 @@ const {body} = document;
 const WIDTH = 1024;
 const RATIO = 3;
 
-@Component
+@Component({
+  name: 'ResizeHandlerMixin'
+})
 export default class ResizeHandlerMixin extends Vue {
   get sidebar() {
     return this.$store.getters.sidebar;
@@ -24,6 +26,10 @@ export default class ResizeHandlerMixin extends Vue {
 
   beforeMount() {
     window.addEventListener('resize', this.resizeHandler);
+  }
+
+  beforeDestroy() {
+    window.removeEventListener('resize', this.resizeHandler);
   }
 
   mounted() {
