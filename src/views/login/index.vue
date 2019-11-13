@@ -78,7 +78,7 @@
 
 <script lang="ts">
   import { Component, Vue, Watch } from 'vue-property-decorator';
-  import { isvalidUsername } from '@/utils/validate';
+  import { isValidUsername } from '@/utils/validate';
   import SocialSign from './socialSignIn.vue';
   import { LangSelect } from '@/components';
   import { Route } from 'vue-router';
@@ -87,7 +87,7 @@
   import { UserModule } from '@/store/modules/user';
 
   const validateUsername = (rule, value: string, callback) => {
-    if (!isvalidUsername(value)) {
+    if (!isValidUsername(value)) {
       callback(new Error('Please enter the correct user name'));
     } else {
       callback();
