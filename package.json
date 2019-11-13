@@ -100,7 +100,7 @@
     "script-loader": "^0.7.2",
     "serve-static": "^1.14.1",
     "style-resources-loader": "^1.2.1",
-    "typescript": "^3.2.2",
+    "typescript": "~3.6.4",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.5.21",
     "webpack-bundle-analyzer": "^3.0.3"
