@@ -217,6 +217,14 @@ module.exports = {
       .rule('svg')
       .exclude.add(resolve('src/icons'))
       .end();
+    config.module
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/icons'))
+      .end()
+      .use('url-loader')
+      .loader('url-loader')
+      .end();
 
     config
       .when(process.env.NODE_ENV === 'development',
