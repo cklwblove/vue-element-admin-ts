@@ -206,10 +206,17 @@ module.exports = {
     // module
 
     // style-resources-loader
-    // const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
-    // types.forEach((type) =>
-    //   addStyleResource(config.module.rule('less').oneOf(type))
-    // );
+    const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+    types.forEach((type) =>
+      addStyleResource(config.module.rule('less').oneOf(type))
+    );
+
+    // svg
+    // exclude icons
+    config.module
+      .rule('svg')
+      .exclude.add(resolve('src/icons'))
+      .end();
 
     config
       .when(process.env.NODE_ENV === 'development',
